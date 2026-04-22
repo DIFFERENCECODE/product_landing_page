@@ -1,0 +1,7 @@
+Place your sejoy_1.png file here.
+
+The image is referenced in:
+  - src/components/MarketingLandingPage.tsx  (hero + kit section)
+  - src/app/checkout/page.tsx (if your existing code includes it)
+
+Make sure the filename is exactly: sejoy_1.png

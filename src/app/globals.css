@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+/* ─── Base typography scale ────────────────────────────────── */
+/* H1: 60px  H2: 30px  H3: 20px  H4: 18px  H5: 16px          */
+
+@layer base {
+  :root {
+    --bg: #1c4a40;
+    --surface: #183e35;
+    --card: #1e463c;
+    --border: rgba(255, 255, 255, 0.10);
+    --accent: #a4d65e;
+    --accent-hover: #8dc24a;
+    --muted: rgba(255, 255, 255, 0.62);
+    --accent-fg: #1a3a2a;
+  }
+
+  html {
+    background-color: var(--bg);
+    color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background-color: var(--bg);
+    min-height: 100vh;
+  }
+
+  h1 {
+    font-size: 60px;
+    line-height: 1.05;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 30px;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: 20px;
+    line-height: 1.3;
+    font-weight: 600;
+  }
+
+  h4 {
+    font-size: 18px;
+    line-height: 1.4;
+    font-weight: 600;
+  }
+
+  h5 {
+    font-size: 16px;
+    line-height: 1.5;
+    font-weight: 500;
+  }
+}
+
+/* ─── Reusable component classes ────────────────────────────── */
+@layer components {
+  /* Primary CTA button */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           rounded-full bg-[var(--accent)] text-[var(--accent-fg)]
+           font-semibold px-6 py-3 text-base
+           transition-colors hover:bg-[var(--accent-hover)]
+           focus-visible:outline-none focus-visible:ring-2
+           focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2
+           focus-visible:ring-offset-[var(--bg)];
+  }
+
+  /* Ghost / secondary button */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           rounded-full border border-[var(--border)] text-white
+           font-semibold px-6 py-3 text-base
+           transition-colors hover:border-white/50;
+  }
+
+  /* Card surface */
+  .card {
+    @apply rounded-2xl bg-[var(--card)] border border-[var(--border)] p-6;
+  }
+
+  /* Section label ("WHAT YOU MEASURE" style) */
+  .section-label {
+    @apply text-xs font-semibold tracking-widest uppercase text-[var(--accent)];
+  }
+}
