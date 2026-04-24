@@ -1,148 +1,189 @@
-# Meterbolic — Runbook
+# Meo — Runbook
 
-## 1. Local Setup
+The Meo Metabolic Intelligence System landing page / checkout.
 
-### Prerequisites
-- Node.js ≥ 18.17 (`node -v`)
-- npm ≥ 9 (`npm -v`)
-- [Stripe CLI](https://stripe.com/docs/stripe-cli) for webhook testing
+See also:
+- `FUNNEL.md` — marketing copy (hooks, ads, emails, VSL, creative, compliance)
+- `STRIPE_SETUP.md` — one-shot product creation in Stripe
+- `scripts/setup-stripe-meo.sh` — the actual script
 
-### Steps
+---
+
+## 1. Local setup
 
 ```bash
-# 1. Clone and install
-git clone git@github.com:Lech-iyoko/product_landing_page.git
+git clone https://github.com/DIFFERENCECODE/product_landing_page.git
 cd product_landing_page
 npm install
 
-# 2. Set up environment
+# env setup
 cp .env.local.example .env.local
-# → Fill in STRIPE_SECRET_KEY, NEXT_PUBLIC_KIT_PRICE_ID, and
-#   the other NEXT_PUBLIC_ADDON_* price IDs (see section 2 below)
+# then edit .env.local — see section 2.
 
-# 3. Place the Sejoy product image
-cp /path/to/sejoy_1.png public/sejoy_1.png
-
-# 4. Start the dev server
+# run
 npm run dev
-# App runs at http://localhost:3000
+# → http://localhost:3000
 ```
 
 ---
 
-## 2. Stripe Test Mode Setup
+## 2. Populate env (Stripe)
 
-### Create products & prices in Stripe Dashboard
-
-1. Go to **Dashboard → Products → Add product**
-2. Create the following (all one-time, GBP):
-
-| Product | Price | Env var |
-|---|---|---|
-| Metabolic Health Kit | £197 | `NEXT_PUBLIC_KIT_PRICE_ID` |
-| Glucose & MultiMeter | £60 | `NEXT_PUBLIC_ADDON_GLUCOSE_MULTI_PRICE_ID` |
-| Glucose Meter | £30 | `NEXT_PUBLIC_ADDON_GLUCOSE_METER_PRICE_ID` |
-| SyAI CGM | £70 | `NEXT_PUBLIC_ADDON_CGM_PRICE_ID` |
-| Extra Glucose Strips | £15 | `NEXT_PUBLIC_ADDON_GLUCOSE_STRIPS_PRICE_ID` |
-| Extra Ketone Strips | £25 | `NEXT_PUBLIC_ADDON_KETONE_STRIPS_PRICE_ID` |
-
-3. Copy each `price_xxx` ID into `.env.local`
-
-### Test card numbers
-
-| Scenario | Card |
-|---|---|
-| Successful payment | `4242 4242 4242 4242` |
-| Card declined | `4000 0000 0000 0002` |
-| 3D Secure | `4000 0027 6000 3184` |
-
-Use any future expiry date, any 3-digit CVC, any postcode.
-
----
-
-## 3. Webhook Test Command (local)
+One-shot: create all Meo products + prices in your Stripe account and
+get the env block printed out ready to paste.
 
 ```bash
-# Terminal 1 — run the app
-npm run dev
+export STRIPE_SK="sk_test_..."    # or sk_live_...
+bash scripts/setup-stripe-meo.sh
+```
 
-# Terminal 2 — forward Stripe events to local server
+The script prints 6 `NEXT_PUBLIC_*_PRICE_ID` lines — paste them into
+`.env.local`. Also set:
+
+```
+STRIPE_SECRET_KEY=sk_..._same_as_STRIPE_SK_above
+STRIPE_WEBHOOK_SECRET=whsec_...
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+```
+
+For local webhook testing:
+```bash
 stripe listen --forward-to localhost:3000/api/webhooks/stripe
-
-# Stripe CLI will print a webhook signing secret:
-#   > Ready! Your webhook signing secret is whsec_xxx
-# Copy that value into .env.local as STRIPE_WEBHOOK_SECRET
-# then restart the dev server.
-
-# Terminal 2 — trigger a test checkout.session.completed event
-stripe trigger checkout.session.completed
+# copy the whsec_ it prints into STRIPE_WEBHOOK_SECRET.
 ```
 
-Expected log output in Terminal 1:
-```
-[stripe-webhook] checkout.session.completed — id=cs_test_xxx email=...
-[waitlist] New signup (stub — wire WAITLIST_WEBHOOK_URL): { email: '...', source: 'stripe-webhook', joinedAt: '...' }
-```
+Test cards: `4242 4242 4242 4242` success · `4000 0000 0000 0002` decline.
 
 ---
 
-## 4. Wiring the Waitlist to Your Backend
+## 3. End-to-end happy path
 
-The `POST /api/waitlist` route is stubbed to log locally. To connect it to  
-your MeO RDS database or AWS SES pipeline:
+1. `http://localhost:3000` — Meo landing
+2. "Get your Meo Starter System →" — navigates to `/checkout`
+3. Review order, add upsells if desired, click "Pay £xxx →"
+4. Redirected to Stripe Checkout → enter test card → complete
+5. Redirected to `/checkout/success?session_id=cs_test_...`
+6. Success page shows "Order confirmed!" + receipt
+7. Webhook fires → server-side log `[stripe-webhook] ... completed`
+8. Waitlist auto-enrol runs (stub logs locally, or forwards to `WAITLIST_WEBHOOK_URL`)
+
+---
+
+## 4. Deploying to AWS (EC2 + Caddy)
+
+Target host: `api.meterbolic.org` (or any EC2 with an nginx/Caddy front)
+
+### 4.1. Build + package locally
 
 ```bash
-# .env.local
-WAITLIST_WEBHOOK_URL=https://your-backend.com/internal/waitlist
+npm run build         # produces .next/
+tar -czf /tmp/meo-landing.tgz \
+  --exclude=node_modules \
+  --exclude=.git \
+  --exclude=.env.local \
+  .
 ```
 
-The route will `POST { email, source, joinedAt }` to that URL.  
-Your backend endpoint should return a 2xx status on success.
-
----
-
-## 5. Deploy to Vercel
+### 4.2. Upload + extract on server
 
 ```bash
-# Install Vercel CLI (if needed)
-npm i -g vercel
-
-# Deploy
-vercel
-
-# Set production environment variables
-vercel env add STRIPE_SECRET_KEY
-vercel env add STRIPE_WEBHOOK_SECRET
-vercel env add NEXT_PUBLIC_KIT_PRICE_ID
-vercel env add NEXT_PUBLIC_ADDON_GLUCOSE_MULTI_PRICE_ID
-vercel env add NEXT_PUBLIC_ADDON_GLUCOSE_METER_PRICE_ID
-vercel env add NEXT_PUBLIC_ADDON_CGM_PRICE_ID
-vercel env add NEXT_PUBLIC_ADDON_GLUCOSE_STRIPS_PRICE_ID
-vercel env add NEXT_PUBLIC_ADDON_KETONE_STRIPS_PRICE_ID
-vercel env add NEXT_PUBLIC_BASE_URL          # e.g. https://meterbolic.com
-# Optional:
-vercel env add WAITLIST_WEBHOOK_URL
+scp /tmp/meo-landing.tgz ubuntu@api.meterbolic.org:/tmp/
+ssh ubuntu@api.meterbolic.org "
+  sudo mkdir -p /srv/meo-landing
+  sudo tar -xzf /tmp/meo-landing.tgz -C /srv/meo-landing
+  cd /srv/meo-landing && sudo npm ci --omit=dev
+"
 ```
 
-### Register the production webhook in Stripe
+### 4.3. Set production env
 
-1. **Dashboard → Developers → Webhooks → Add endpoint**
-2. URL: `https://meterbolic.com/api/webhooks/stripe`
-3. Events: `checkout.session.completed`
-4. Copy the signing secret → update `STRIPE_WEBHOOK_SECRET` in Vercel env vars
-5. `vercel --prod` to redeploy with the new secret
+```bash
+ssh ubuntu@api.meterbolic.org
+sudo nano /srv/meo-landing/.env.local
+# paste all env vars (STRIPE_SECRET_KEY, price IDs, NEXT_PUBLIC_BASE_URL, ...)
+```
+
+### 4.4. systemd unit
+
+`/etc/systemd/system/meo-landing.service`:
+```ini
+[Unit]
+Description=Meo landing page (Next.js)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/srv/meo-landing
+EnvironmentFile=/srv/meo-landing/.env.local
+ExecStart=/usr/bin/node /srv/meo-landing/node_modules/next/dist/bin/next start -p 3100
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now meo-landing
+sudo systemctl status meo-landing
+```
+
+### 4.5. Caddy reverse proxy
+
+Add to `/etc/caddy/Caddyfile`:
+```
+meo.meterbolic.com {
+  reverse_proxy localhost:3100
+}
+```
+
+```bash
+sudo systemctl reload caddy
+```
+
+### 4.6. Webhook in Stripe Dashboard
+
+Stripe Dashboard → Developers → Webhooks → Add endpoint
+- URL: `https://meo.meterbolic.com/api/webhooks/stripe`
+- Events: `checkout.session.completed`
+- Copy the signing secret → update `STRIPE_WEBHOOK_SECRET` on the server → restart:
+  ```bash
+  sudo systemctl restart meo-landing
+  ```
 
 ---
 
-## 6. End-to-End Happy Path (Stripe Test Mode)
+## 5. Deploying to AWS Amplify (alternative)
 
-1. Open `http://localhost:3000`
-2. Click **Get your kit →** — lands on `/checkout`
-3. Add optional add-ons if desired; observe live order summary update
-4. Click **Pay £xxx →** — redirected to Stripe Checkout
-5. Enter card `4242 4242 4242 4242`, any future date, any CVC
-6. Complete payment — redirected to `/checkout/success?session_id=cs_test_xxx`
-7. Success page shows **Order confirmed!** with receipt details
-8. Waitlist auto-enrolment fires and shows "✓ You're on the MeO AI waitlist"
-9. Check Terminal 1 logs for `[waitlist]` entry (or your backend)
-10. Check Terminal 2 (`stripe listen`) for `checkout.session.completed` event
+Amplify hosts Next.js natively with zero ops. More expensive at scale.
+
+```bash
+# Install Amplify CLI if you don't have it
+npm i -g @aws-amplify/cli
+
+# In the repo:
+amplify init
+amplify add hosting      # choose "Amplify Hosting"
+amplify publish
+
+# Then add env vars via the Amplify console:
+#   Amplify Console → App → Environment variables
+#   (add STRIPE_SECRET_KEY, all NEXT_PUBLIC_*_PRICE_ID, etc.)
+```
+
+---
+
+## 6. Rollback
+
+If a deploy breaks production, the fastest rollback:
+
+```bash
+# On server:
+cd /srv/meo-landing
+sudo tar -xzf /tmp/meo-landing-previous.tgz .    # keep previous tarballs
+sudo systemctl restart meo-landing
+```
+
+In Stripe: a bad checkout flow doesn't charge cards until payment is submitted, so the only live risk is the webhook failing to fire. Re-queue via Stripe Dashboard → Webhooks → Recent deliveries → Retry.

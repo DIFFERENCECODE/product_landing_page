@@ -13,14 +13,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Meterbolic — Know your Metabolic Health in Minutes",
+  title: "Meo — Metabolic Intelligence System",
   description:
-    "One finger-prick. Five biomarkers. Your complete lipid picture at home — plus a personalised plan, the eBook, and 3 months of your MeO AI coach.",
+    "See what your cholesterol is actually telling you. Meo turns a 3-minute finger-prick into a complete metabolic picture — interpreted by AI, framed for longevity, and actionable the same day.",
   openGraph: {
-    title: "Meterbolic — Know your Metabolic Health in Minutes",
+    title: "Meo — Metabolic Intelligence System",
     description:
-      "One finger-prick. Five biomarkers. Your complete lipid picture at home.",
+      "Digital lipid meter + Meo AI + eBook. At-home lipid tracking with AI interpretation. 30-day money-back.",
     type: "website",
+    siteName: "Meo",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Meo — Metabolic Intelligence System",
+    description: "Your cholesterol, read back to you. 3 minutes, at home, interpreted by Meo AI.",
   },
 };
 
