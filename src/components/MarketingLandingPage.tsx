@@ -152,7 +152,7 @@ function SectionHeader({
       )}
       <h2
         className="font-extrabold mb-4 leading-tight"
-        style={{ color: C.fg, fontFamily: 'Georgia, serif', fontSize: 'clamp(28px, 4vw, 40px)' }}
+        style={{ color: C.fg, fontFamily: 'var(--font-serif), Georgia, serif', fontSize: 'clamp(28px, 4vw, 40px)' }}
       >
         {title}
       </h2>
@@ -213,7 +213,7 @@ function Hero() {
 
           <h1
             className="font-extrabold leading-[1.05] mb-6"
-            style={{ color: C.fg, fontFamily: 'Georgia, serif', fontSize: 'clamp(40px, 6vw, 68px)' }}
+            style={{ color: C.fg, fontFamily: 'var(--font-serif), Georgia, serif', fontSize: 'clamp(40px, 6vw, 68px)' }}
           >
             See what your<br />
             cholesterol is<br />
@@ -322,7 +322,7 @@ function ProblemSection() {
           ))}
         </div>
 
-        <p className="mt-10 text-center text-lg font-medium" style={{ color: C.primary, fontFamily: 'Georgia, serif' }}>
+        <p className="mt-10 text-center text-lg font-medium" style={{ color: C.primary, fontFamily: 'var(--font-serif), Georgia, serif' }}>
           That isn&apos;t a willpower problem. That&apos;s a visibility problem.
         </p>
       </div>
@@ -502,7 +502,7 @@ function LipidTrackingSection() {
           <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: C.pillFg }}>
             The device
           </p>
-          <h2 className="font-extrabold mb-5" style={{ color: C.fg, fontFamily: 'Georgia, serif', fontSize: 'clamp(28px, 4vw, 36px)' }}>
+          <h2 className="font-extrabold mb-5" style={{ color: C.fg, fontFamily: 'var(--font-serif), Georgia, serif', fontSize: 'clamp(28px, 4vw, 36px)' }}>
             A lab&apos;s precision. Your kitchen table&apos;s convenience.
           </h2>
           <p className="text-base mb-8" style={{ color: C.muted }}>
@@ -620,7 +620,7 @@ function MeoAISection() {
           </div>
           <h2
             className="font-extrabold mb-4"
-            style={{ color: C.fg, fontFamily: 'Georgia, serif', fontSize: 'clamp(32px, 5vw, 48px)' }}
+            style={{ color: C.fg, fontFamily: 'var(--font-serif), Georgia, serif', fontSize: 'clamp(32px, 5vw, 48px)' }}
           >
             An intelligence that speaks your<br />
             <span style={{ color: C.primary }}>biology</span> back to you.
@@ -689,7 +689,7 @@ function MeoAISection() {
         </div>
 
         <div className="text-center mt-14">
-          <p className="text-lg font-medium mb-6" style={{ color: C.fg, fontFamily: 'Georgia, serif' }}>
+          <p className="text-lg font-medium mb-6" style={{ color: C.fg, fontFamily: 'var(--font-serif), Georgia, serif' }}>
             Your data, read aloud. Daily.
           </p>
           <CTAButton size="lg">Try Meo AI now <ArrowRight className="h-4 w-4" /></CTAButton>
@@ -716,7 +716,7 @@ function EbookSection() {
           <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: C.pillFg }}>
             The action manual
           </p>
-          <h2 className="font-extrabold mb-5" style={{ color: C.fg, fontFamily: 'Georgia, serif', fontSize: 'clamp(28px, 4vw, 36px)' }}>
+          <h2 className="font-extrabold mb-5" style={{ color: C.fg, fontFamily: 'var(--font-serif), Georgia, serif', fontSize: 'clamp(28px, 4vw, 36px)' }}>
             Insight without action is just <span style={{ color: C.primary }}>anxiety</span>.
           </h2>
           <p className="text-base mb-3" style={{ color: C.muted }}>
@@ -811,7 +811,7 @@ function NumbersVsInsightsSection() {
             </div>
           ))}
         </div>
-        <p className="text-center text-lg font-medium mt-10" style={{ color: C.fg, fontFamily: 'Georgia, serif' }}>
+        <p className="text-center text-lg font-medium mt-10" style={{ color: C.fg, fontFamily: 'var(--font-serif), Georgia, serif' }}>
           Numbers change nothing. <span style={{ color: C.primary }}>Understanding</span> changes everything.
         </p>
         <div className="text-center mt-8">
@@ -923,7 +923,7 @@ function GuaranteeSection() {
         </p>
         <h2
           className="font-extrabold mb-4"
-          style={{ color: C.fg, fontFamily: 'Georgia, serif', fontSize: 'clamp(28px, 4vw, 36px)' }}
+          style={{ color: C.fg, fontFamily: 'var(--font-serif), Georgia, serif', fontSize: 'clamp(28px, 4vw, 36px)' }}
         >
           &ldquo;Start seeing, or send it back.&rdquo;
         </h2>
@@ -1074,7 +1074,7 @@ function NewsletterSection() {
         </div>
         <h2
           className="font-extrabold mb-3"
-          style={{ color: C.fg, fontFamily: 'Georgia, serif', fontSize: 'clamp(26px, 4vw, 34px)' }}
+          style={{ color: C.fg, fontFamily: 'var(--font-serif), Georgia, serif', fontSize: 'clamp(26px, 4vw, 34px)' }}
         >
           Stay ahead of your health.
         </h2>
