@@ -200,7 +200,7 @@ function Navbar() {
 // ─── Hero ────────────────────────────────────────────────────────────
 function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center pt-24 pb-16 px-6" style={{ background: C.bg }}>
+    <section className="relative min-h-screen flex items-center pt-24 pb-12 sm:pb-16 px-5 sm:px-6" style={{ background: C.bg }}>
       <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <div
@@ -234,13 +234,16 @@ function Hero() {
           </div>
 
           <div
-            className="inline-block rounded-2xl p-6"
+            className="block sm:inline-block w-full sm:w-auto rounded-2xl p-5 sm:p-6"
             style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
           >
             <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: C.muted }}>
               Launch price
             </p>
-            <p className="font-bold mb-1 flex items-baseline gap-3" style={{ color: C.fg, fontSize: '34px' }}>
+            <p
+              className="font-bold mb-1 flex items-baseline flex-wrap gap-x-3 gap-y-1"
+              style={{ color: C.fg, fontSize: 'clamp(28px, 5vw, 34px)' }}
+            >
               {formatGBP(KIT_PRODUCT.price)}
               <span className="text-base font-normal line-through" style={{ color: C.muted }}>£197</span>
               <span className="text-xs font-medium px-2 py-0.5 rounded" style={{ background: C.pill, color: C.pillFg }}>
@@ -294,7 +297,7 @@ function ProblemSection() {
     "And nobody tells you whether a 42-year-old's TC/HDL ratio should really be where yours is.",
   ];
   return (
-    <section className="py-24 px-6" style={{ background: C.bgDeep }}>
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
       <div className="max-w-4xl mx-auto">
         <SectionHeader
           eyebrow="The visibility problem"
@@ -337,7 +340,7 @@ function WhyTestsFailSection() {
     ['Arrives as raw numbers', 'You need to know: is this getting better, worse, or staying put?'],
   ];
   return (
-    <section className="py-24 px-6" style={{ background: C.bg }}>
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
       <div className="max-w-4xl mx-auto">
         <SectionHeader
           eyebrow="Why the standard blood test fails"
@@ -347,18 +350,39 @@ function WhyTestsFailSection() {
           className="mt-10 rounded-2xl overflow-hidden"
           style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
         >
-          <div className="grid grid-cols-2 text-xs font-semibold uppercase tracking-widest px-6 py-4" style={{ background: 'rgba(255,255,255,0.04)', color: C.muted }}>
+          {/* Header row — visible only on sm+ since the stacked mobile
+              layout has inline labels on each cell. */}
+          <div
+            className="hidden sm:grid grid-cols-2 text-xs font-semibold uppercase tracking-widest px-6 py-4"
+            style={{ background: 'rgba(255,255,255,0.04)', color: C.muted }}
+          >
             <div>Standard blood test</div>
             <div>What&apos;s missing</div>
           </div>
           {rows.map(([l, r], i) => (
             <div
               key={i}
-              className="grid grid-cols-2 gap-6 px-6 py-5 text-sm"
+              className="px-5 sm:px-6 py-5 text-sm grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6"
               style={{ borderTop: `1px solid ${C.border}` }}
             >
-              <div style={{ color: C.muted }}>{l}</div>
-              <div style={{ color: C.fg }}>{r}</div>
+              <div style={{ color: C.muted }}>
+                <span
+                  className="sm:hidden block text-[10px] font-semibold uppercase tracking-widest mb-1"
+                  style={{ color: C.pillFg }}
+                >
+                  Standard test
+                </span>
+                {l}
+              </div>
+              <div style={{ color: C.fg }}>
+                <span
+                  className="sm:hidden block text-[10px] font-semibold uppercase tracking-widest mb-1"
+                  style={{ color: C.pillFg }}
+                >
+                  What&apos;s missing
+                </span>
+                {r}
+              </div>
             </div>
           ))}
         </div>
@@ -378,7 +402,7 @@ function MeetMeoSection() {
     { icon: <BookOpen className="h-6 w-6" style={{ color: C.primary }} />, title: 'The eBook', sub: 'turns meaning into action' },
   ];
   return (
-    <section className="py-24 px-6" style={{ background: C.bgDeep }}>
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
       <div className="max-w-5xl mx-auto">
         <SectionHeader
           eyebrow="Meet Meo"
@@ -418,7 +442,7 @@ function MeetMeoSection() {
 // ─── Biomarkers ──────────────────────────────────────────────────────
 function BiomarkersSection() {
   return (
-    <section className="py-24 px-6" style={{ background: C.bg }}>
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
       <div className="max-w-5xl mx-auto text-center">
         <SectionHeader
           eyebrow="What Meo measures"
@@ -451,7 +475,7 @@ function BiomarkersSection() {
 // ─── Lipid tracking deep-dive ────────────────────────────────────────
 function LipidTrackingSection() {
   return (
-    <section className="py-24 px-6" style={{ background: C.bgDeep }}>
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
       <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
         <motion.div
           initial={{ opacity: 0, x: -24 }}
@@ -508,7 +532,7 @@ function LipidTrackingSection() {
 // ─── Kraft-style insulin pattern (compliance-safe, simplified) ──────
 function InsulinPatternSection() {
   return (
-    <section className="py-24 px-6" style={{ background: C.bg }}>
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
       <div className="max-w-3xl mx-auto">
         <SectionHeader
           eyebrow="Pattern insight"
@@ -542,7 +566,7 @@ function InsulinPatternSection() {
 // ─── Biological Age Score ────────────────────────────────────────────
 function BioAgeSection() {
   return (
-    <section className="py-24 px-6" style={{ background: C.bgDeep }}>
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
       <div className="max-w-4xl mx-auto text-center">
         <SectionHeader
           eyebrow="Biological Age Score"
@@ -584,7 +608,7 @@ function MeoAISection() {
     { title: 'Surface', body: 'Flags the drift before it becomes a trend. You get notified when it’s a signal, not every reading.' },
   ];
   return (
-    <section className="py-28 px-6 relative" style={{ background: C.bg }}>
+    <section className="py-20 sm:py-28 px-5 sm:px-6 relative" style={{ background: C.bg }}>
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-10">
           <div
@@ -686,7 +710,7 @@ function EbookSection() {
     'A 6-week gentle-protocol you can stick to at weddings, on trips, on sick days',
   ];
   return (
-    <section className="py-24 px-6" style={{ background: C.bgDeep }}>
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
         <div>
           <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: C.pillFg }}>
@@ -733,7 +757,7 @@ function BenefitsSection() {
     '30-day money-back guarantee, no questions',
   ];
   return (
-    <section className="py-24 px-6" style={{ background: C.bg }}>
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
       <div className="max-w-5xl mx-auto">
         <SectionHeader eyebrow="Outcomes" title={<>What you actually walk away with.</>} />
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -765,7 +789,7 @@ function NumbersVsInsightsSection() {
     ['Triglycerides: 1.8 mmol/L', '"Your TG is trending in a direction we see most often after 2–3 weeks of restaurant-heavy eating. Easy recovery. Here’s the 1 change that historically moves it most."'],
   ];
   return (
-    <section className="py-24 px-6" style={{ background: C.bgDeep }}>
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
       <div className="max-w-5xl mx-auto">
         <SectionHeader
           eyebrow="Numbers vs. Insights"
@@ -807,7 +831,7 @@ function TestimonialsSection() {
     { quote: 'I asked Meo AI why my LDL went up. It pulled in two weeks of travel and said the pattern usually stabilises within 10 days. It did. Exactly that.', who: 'Clara V., Amsterdam' },
   ];
   return (
-    <section className="py-24 px-6" style={{ background: C.bg }}>
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
       <div className="max-w-5xl mx-auto">
         <SectionHeader eyebrow="Real readings · real people" title={<>The first people using Meo.</>} />
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -853,7 +877,7 @@ function ObjectionsSection() {
     },
   ];
   return (
-    <section className="py-24 px-6" style={{ background: C.bgDeep }}>
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
       <div className="max-w-4xl mx-auto">
         <SectionHeader eyebrow="The honest answers" title={<>What you&apos;re probably wondering.</>} />
         <div className="mt-10 space-y-4">
@@ -880,7 +904,7 @@ function ObjectionsSection() {
 // ─── Guarantee ───────────────────────────────────────────────────────
 function GuaranteeSection() {
   return (
-    <section className="py-24 px-6" style={{ background: C.bg }}>
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
       <div
         className="max-w-3xl mx-auto rounded-3xl p-10 text-center"
         style={{
@@ -916,7 +940,7 @@ function GuaranteeSection() {
 function AddonsSection() {
   const items = KIT_ADDONS.slice(0, 3); // headline 3 on the landing; full list at checkout
   return (
-    <section className="py-24 px-6" style={{ background: C.bgDeep }}>
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
       <div className="max-w-5xl mx-auto">
         <SectionHeader
           eyebrow="Go deeper"
@@ -965,7 +989,7 @@ function AddonsSection() {
 function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
   return (
-    <section className="py-24 px-6" style={{ background: C.bg }}>
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
       <div className="max-w-3xl mx-auto">
         <SectionHeader eyebrow="FAQ" title={<>Common questions.</>} />
         <div className="mt-10 space-y-3">
@@ -1033,7 +1057,7 @@ function NewsletterSection() {
   };
 
   return (
-    <section className="py-20 px-6" style={{ background: C.bgDeep }}>
+    <section className="py-14 sm:py-20 px-5 sm:px-6" style={{ background: C.bgDeep }}>
       <motion.div
         className="max-w-2xl mx-auto text-center"
         initial={{ opacity: 0, y: 20 }}

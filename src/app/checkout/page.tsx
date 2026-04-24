@@ -115,21 +115,21 @@ export default function CheckoutPage() {
         </Link>
       </nav>
 
-      <div className="max-w-6xl mx-auto px-6 pt-24 pb-10">
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 pt-20 sm:pt-24 pb-10">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-[var(--muted)] text-sm mb-8 hover:text-white transition-colors"
+          className="inline-flex items-center gap-2 text-[var(--muted)] text-sm mb-6 sm:mb-8 hover:text-white transition-colors"
         >
           <ArrowLeft size={14} /> Back
         </Link>
 
         <h1 className="mb-3">Complete your order</h1>
-        <p className="text-[var(--muted)] mb-10 max-w-2xl">
+        <p className="text-[var(--muted)] mb-8 sm:mb-10 max-w-2xl">
           Pay with card. We&apos;ll automatically add you to the MeO AI waitlist
           — you&apos;ll be first to know when your account is ready.
         </p>
 
-        <div className="grid lg:grid-cols-[1fr_360px] gap-8 items-start">
+        <div className="grid lg:grid-cols-[1fr_360px] gap-6 sm:gap-8 items-start">
           {/* ── Left column ── */}
           <div className="space-y-6">
             {/* Section 1 — Your kit */}
@@ -257,8 +257,11 @@ function AddonRow({
   onDecrement: () => void;
   onIncrement: () => void;
 }) {
+  // On mobile the name + description + qty controls would collide
+  // horizontally, so stack: name+description full width, then a row
+  // below with price and the qty stepper. Desktop keeps the inline layout.
   return (
-    <div className="flex items-center justify-between gap-4 py-2 border-b border-[var(--border)] last:border-0">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-3 sm:py-2 border-b border-[var(--border)] last:border-0">
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <h4 className="font-semibold">{addon.name}</h4>
@@ -268,29 +271,31 @@ function AddonRow({
             </span>
           )}
         </div>
-        <p className="text-[var(--muted)] text-xs mt-0.5 truncate">
+        <p className="text-[var(--muted)] text-xs mt-0.5 line-clamp-2 sm:truncate">
           {addon.description}
         </p>
       </div>
-      <div className="flex items-center gap-3 flex-shrink-0">
+      <div className="flex items-center justify-between sm:justify-end gap-3 flex-shrink-0">
         <span className="font-semibold text-sm">£{addon.price}</span>
-        <button
-          onClick={onDecrement}
-          disabled={qty === 0}
-          aria-label={`Decrease ${addon.name} quantity`}
-          className="w-7 h-7 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center disabled:opacity-30 hover:border-white/50 transition-colors"
-        >
-          <Minus size={12} />
-        </button>
-        <span className="w-4 text-center text-sm">{qty}</span>
-        <button
-          onClick={onIncrement}
-          disabled={qty === 9}
-          aria-label={`Increase ${addon.name} quantity`}
-          className="w-7 h-7 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center disabled:opacity-30 hover:border-white/50 transition-colors"
-        >
-          <Plus size={12} />
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onDecrement}
+            disabled={qty === 0}
+            aria-label={`Decrease ${addon.name} quantity`}
+            className="w-9 h-9 sm:w-7 sm:h-7 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center disabled:opacity-30 hover:border-white/50 active:scale-95 transition-all"
+          >
+            <Minus size={14} />
+          </button>
+          <span className="w-5 text-center text-sm font-semibold">{qty}</span>
+          <button
+            onClick={onIncrement}
+            disabled={qty === 9}
+            aria-label={`Increase ${addon.name} quantity`}
+            className="w-9 h-9 sm:w-7 sm:h-7 rounded-full bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center disabled:opacity-30 hover:border-white/50 active:scale-95 transition-all"
+          >
+            <Plus size={14} />
+          </button>
+        </div>
       </div>
     </div>
   );
