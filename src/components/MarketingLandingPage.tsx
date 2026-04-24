@@ -146,7 +146,7 @@ function SectionHeader({
   return (
     <div className={align === 'center' ? 'text-center' : 'text-left'}>
       {eyebrow && (
-        <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: C.pillFg }}>
+        <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>
           {eyebrow}
         </p>
       )}
@@ -175,7 +175,7 @@ function Navbar() {
       <Link href="/" className="flex items-center gap-1.5">
         <span className="text-xl font-bold" style={{ color: C.fg }}>Me</span>
         <DropletIcon size={20} />
-        <span className="hidden sm:inline text-xs ml-2 uppercase tracking-widest" style={{ color: C.muted }}>
+        <span className="hidden sm:inline text-xs ml-2 tracking-wide" style={{ color: C.muted }}>
           Metabolic Intelligence
         </span>
       </Link>
@@ -237,7 +237,7 @@ function Hero() {
             className="block sm:inline-block w-full sm:w-auto rounded-2xl p-5 sm:p-6"
             style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
           >
-            <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: C.muted }}>
+            <p className="text-xs font-semibold tracking-wide mb-1" style={{ color: C.muted }}>
               Launch price
             </p>
             <p
@@ -353,7 +353,7 @@ function WhyTestsFailSection() {
           {/* Header row — visible only on sm+ since the stacked mobile
               layout has inline labels on each cell. */}
           <div
-            className="hidden sm:grid grid-cols-2 text-xs font-semibold uppercase tracking-widest px-6 py-4"
+            className="hidden sm:grid grid-cols-2 text-xs font-semibold tracking-wide px-6 py-4"
             style={{ background: 'rgba(255,255,255,0.04)', color: C.muted }}
           >
             <div>Standard blood test</div>
@@ -367,7 +367,7 @@ function WhyTestsFailSection() {
             >
               <div style={{ color: C.muted }}>
                 <span
-                  className="sm:hidden block text-[10px] font-semibold uppercase tracking-widest mb-1"
+                  className="sm:hidden block text-[10px] font-semibold tracking-wide mb-1"
                   style={{ color: C.pillFg }}
                 >
                   Standard test
@@ -376,7 +376,7 @@ function WhyTestsFailSection() {
               </div>
               <div style={{ color: C.fg }}>
                 <span
-                  className="sm:hidden block text-[10px] font-semibold uppercase tracking-widest mb-1"
+                  className="sm:hidden block text-[10px] font-semibold tracking-wide mb-1"
                   style={{ color: C.pillFg }}
                 >
                   What&apos;s missing
@@ -499,7 +499,7 @@ function LipidTrackingSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: C.pillFg }}>
+          <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>
             The device
           </p>
           <h2 className="font-extrabold mb-5" style={{ color: C.fg, fontFamily: 'var(--font-serif), Georgia, serif', fontSize: 'clamp(28px, 4vw, 36px)' }}>
@@ -680,7 +680,7 @@ function MeoAISection() {
               className="rounded-2xl p-5"
               style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
             >
-              <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: C.pillFg }}>
+              <p className="text-xs font-bold tracking-wide mb-2" style={{ color: C.pillFg }}>
                 {p.title}
               </p>
               <p className="text-sm" style={{ color: C.fg }}>{p.body}</p>
@@ -713,7 +713,7 @@ function EbookSection() {
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: C.pillFg }}>
+          <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>
             The action manual
           </p>
           <h2 className="font-extrabold mb-5" style={{ color: C.fg, fontFamily: 'var(--font-serif), Georgia, serif', fontSize: 'clamp(28px, 4vw, 36px)' }}>
@@ -796,7 +796,7 @@ function NumbersVsInsightsSection() {
           title={<>Your meter gives you numbers. Meo gives you <span style={{ color: C.primary }}>understanding</span>.</>}
         />
         <div className="mt-10 rounded-2xl overflow-hidden" style={{ background: C.bgCard, border: `1px solid ${C.border}` }}>
-          <div className="grid grid-cols-1 sm:grid-cols-[1fr_2fr] text-xs font-semibold uppercase tracking-widest px-6 py-4" style={{ background: 'rgba(255,255,255,0.04)', color: C.muted }}>
+          <div className="grid grid-cols-1 sm:grid-cols-[1fr_2fr] text-xs font-semibold tracking-wide px-6 py-4" style={{ background: 'rgba(255,255,255,0.04)', color: C.muted }}>
             <div>What a meter alone gives you</div>
             <div>What the Meo system gives you</div>
           </div>
@@ -918,7 +918,7 @@ function GuaranteeSection() {
         >
           <Shield className="h-8 w-8" style={{ color: C.primary }} />
         </div>
-        <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: C.pillFg }}>
+        <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>
           30 days, risk-free
         </p>
         <h2
@@ -967,7 +967,7 @@ function AddonsSection() {
               </div>
               {addon.recommended && (
                 <span
-                  className="self-start px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider"
+                  className="self-start px-2 py-0.5 rounded text-xs font-bold tracking-wide"
                   style={{ background: C.pill, color: C.pillFg }}
                 >
                   Recommended

@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
-import { KIT_PRODUCT } from '@/lib/kitProducts';
+import { KIT_PRODUCT, KIT_ADDONS } from '@/lib/kitProducts';
 
 interface AddonItem {
   priceId: string;
   quantity: number;
 }
+
+// Build a lookup of recurring price IDs from the addon catalog so the
+// handler can decide whether to use Stripe's `payment` or `subscription`
+// mode. Stripe rejects a recurring price under `mode: payment` — that
+// was the live error before this fix.
+const RECURRING_PRICE_IDS = new Set<string>(
+  KIT_ADDONS.filter((a) => a.recurring).map((a) => a.priceId),
+);
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,7 +36,7 @@ export async function POST(req: NextRequest) {
     }
 
     const origin =
-      req.headers.get('origin') || 'https://app.meterbolic.com';
+      req.headers.get('origin') || 'https://shop.meterbolic.com';
 
     // Base kit is always included (quantity 1)
     const lineItems: { price: string; quantity: number }[] = [
@@ -42,8 +50,21 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // If any selected price is recurring, the whole session must run as
+    // a subscription. Stripe's `subscription` mode happily accepts a mix
+    // of recurring and one-time prices in the same session — the
+    // one-times become the first invoice's add-ons. Pure one-time
+    // baskets stay in `payment` mode so we don't accidentally create a
+    // subscription with a £0 recurring component.
+    const hasRecurring = lineItems.some((li) =>
+      RECURRING_PRICE_IDS.has(li.price),
+    );
+    const mode: 'payment' | 'subscription' = hasRecurring
+      ? 'subscription'
+      : 'payment';
+
     const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
+      mode,
       line_items: lineItems,
       // Collect shipping address via Stripe
       shipping_address_collection: {
@@ -54,7 +75,8 @@ export async function POST(req: NextRequest) {
       success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/checkout`,
       metadata: {
-        product: 'metabolic_health_kit',
+        product: 'meo_starter_system',
+        mode_used: mode,
       },
     });
 

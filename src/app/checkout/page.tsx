@@ -129,7 +129,7 @@ export default function CheckoutPage() {
           — you&apos;ll be first to know when your account is ready.
         </p>
 
-        <div className="grid lg:grid-cols-[1fr_360px] gap-6 sm:gap-8 items-start">
+        <div className="grid lg:grid-cols-[1fr_minmax(280px,340px)] gap-6 sm:gap-8 items-start">
           {/* ── Left column ── */}
           <div className="space-y-6">
             {/* Section 1 — Your kit */}
@@ -137,7 +137,7 @@ export default function CheckoutPage() {
               <div className="flex justify-between items-center mb-4">
                 <h3>1. Your kit</h3>
                 <span className="text-xs font-semibold border border-[var(--accent)] text-[var(--accent)] rounded px-2 py-0.5">
-                  INCLUDED
+                  Included
                 </span>
               </div>
               <div className="rounded-xl bg-[var(--bg)] border border-[var(--border)] p-4 flex justify-between items-start">
@@ -202,39 +202,43 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* ── Right column — Order summary ── */}
-          <aside className="card sticky top-6">
+          {/* ── Right column — Order summary ──
+              All flex rows below use `min-w-0` on the left child + `shrink-0`
+              on the right child so long item names ("Meo Test Strip
+              Subscription") wrap inside the 280-340px column instead of
+              overflowing and clipping the price. */}
+          <aside className="card lg:sticky lg:top-6 w-full overflow-hidden">
             <h3 className="mb-4">Order summary</h3>
-            <div className="flex justify-between mb-1">
-              <div>
-                <p className="font-semibold text-sm">{KIT_PRODUCTS.baseKit.name}</p>
+            <div className="flex justify-between gap-3 mb-2">
+              <div className="min-w-0">
+                <p className="font-semibold text-sm break-words">{KIT_PRODUCTS.baseKit.name}</p>
                 <p className="text-[var(--muted)] text-xs">Complete bundle</p>
               </div>
-              <span className="font-semibold">£{KIT_PRODUCTS.baseKit.price}</span>
+              <span className="font-semibold shrink-0">£{KIT_PRODUCTS.baseKit.price}</span>
             </div>
             {KIT_PRODUCTS.addons
               .filter((a: AddonProduct) => (quantities[a.id] ?? 0) > 0)
               .map((a: AddonProduct) => (
-                <div key={a.id} className="flex justify-between mt-1 text-sm">
-                  <span className="text-[var(--muted)]">
+                <div key={a.id} className="flex justify-between gap-3 mt-1 text-sm">
+                  <span className="text-[var(--muted)] min-w-0 break-words">
                     {a.name} × {quantities[a.id]}
                   </span>
-                  <span>£{a.price * (quantities[a.id] ?? 0)}</span>
+                  <span className="shrink-0">£{a.price * (quantities[a.id] ?? 0)}</span>
                 </div>
               ))}
             <div className="border-t border-[var(--border)] mt-4 pt-4 space-y-1 text-sm">
-              <div className="flex justify-between text-[var(--muted)]">
+              <div className="flex justify-between gap-3 text-[var(--muted)]">
                 <span>Subtotal</span>
-                <span>£{total}</span>
+                <span className="shrink-0">£{total}</span>
               </div>
-              <div className="flex justify-between text-[var(--muted)]">
+              <div className="flex justify-between gap-3 text-[var(--muted)]">
                 <span>Shipping</span>
-                <span className="text-[var(--accent)]">Free</span>
+                <span className="text-[var(--accent)] shrink-0">Free</span>
               </div>
             </div>
-            <div className="flex justify-between mt-4 font-bold text-lg">
+            <div className="flex justify-between gap-3 mt-4 font-bold text-lg">
               <span>Total</span>
-              <span>£{total}</span>
+              <span className="shrink-0">£{total}</span>
             </div>
             <p className="text-[var(--muted)] text-xs mt-4 text-center">
               ✓ Free UK shipping · Secured by Stripe
@@ -267,7 +271,7 @@ function AddonRow({
           <h4 className="font-semibold">{addon.name}</h4>
           {addon.recommended && (
             <span className="text-xs font-semibold border border-[var(--accent)] text-[var(--accent)] rounded px-1.5 py-0.5">
-              RECOMMENDED
+              Recommended
             </span>
           )}
         </div>

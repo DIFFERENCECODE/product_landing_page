@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Fraunces, Inter } from "next/font/google";
+import { Geist, Geist_Mono, Fraunces, DM_Sans } from "next/font/google";
 import "./globals.css";
 
-// Body sans — Inter is the modern, neutral, warm default. Pairs well
-// with Fraunces and renders consistently across platforms.
-const inter = Inter({
+// Body sans — DM Sans is a clean geometric sans with low contrast,
+// pairs well with Fraunces (high-contrast serif) and reads warmer than
+// Inter for marketing copy.
+const dmSans = DM_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
@@ -65,7 +66,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${fraunces.variable} ${geist.variable} ${geistMono.variable} antialiased`}
+        className={`${dmSans.variable} ${fraunces.variable} ${geist.variable} ${geistMono.variable} antialiased`}
       >
         {children}
       </body>
