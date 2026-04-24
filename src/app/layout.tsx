@@ -40,21 +40,108 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://shop.meterbolic.com";
+
 export const metadata: Metadata = {
-  title: "Meo — Metabolic Intelligence System",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Meo — Metabolic Intelligence System",
+    template: "%s · Meo",
+  },
   description:
-    "See what your cholesterol is actually telling you. Meo turns a 3-minute finger-prick into a complete metabolic picture — interpreted by AI, framed for longevity, and actionable the same day.",
+    "See what your cholesterol is actually telling you. Meo turns a 3-minute finger-prick into a complete metabolic picture — interpreted by AI, framed for longevity, actionable the same day.",
+  keywords: [
+    "at-home cholesterol test",
+    "lipid meter",
+    "metabolic health",
+    "biological age",
+    "Kraft test",
+    "Meo AI",
+    "cholesterol monitoring",
+    "longevity",
+    "HDL LDL TG",
+  ],
+  authors: [{ name: "Meterbolic" }],
+  creator: "Meterbolic",
+  publisher: "Meterbolic",
+  category: "health",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "Meo — Metabolic Intelligence System",
     description:
       "Digital lipid meter + Meo AI + eBook. At-home lipid tracking with AI interpretation. 30-day money-back.",
     type: "website",
     siteName: "Meo",
+    url: SITE_URL,
+    locale: "en_GB",
   },
   twitter: {
     card: "summary_large_image",
     title: "Meo — Metabolic Intelligence System",
-    description: "Your cholesterol, read back to you. 3 minutes, at home, interpreted by Meo AI.",
+    description:
+      "Your cholesterol, read back to you. 3 minutes, at home, interpreted by Meo AI.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  icons: {
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+  },
+};
+
+// JSON-LD structured data — Organization + Product schema. Helps
+// Google show rich results (price, star rating once we have reviews,
+// brand info) and gives social platforms more to work with.
+const ORG_LD = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Meterbolic",
+  url: SITE_URL,
+  logo: `${SITE_URL}/favicon.svg`,
+  description:
+    "Meo is the Metabolic Intelligence System by Meterbolic — at-home lipid testing, AI interpretation, and an action manual.",
+  sameAs: ["https://meterbolic.com"],
+};
+
+const PRODUCT_LD = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: "Meo Starter System",
+  description:
+    "Digital lipid meter + 1 month of Meo AI + eBook. At-home cholesterol monitoring with AI-powered interpretation and a Biological Age Score.",
+  image: [`${SITE_URL}/sejoy_1.png`],
+  brand: { "@type": "Brand", name: "Meo" },
+  category: "Health & Wellness Monitoring Tools",
+  offers: {
+    "@type": "Offer",
+    priceCurrency: "GBP",
+    price: "149.00",
+    availability: "https://schema.org/InStock",
+    url: `${SITE_URL}/checkout`,
+    shippingDetails: {
+      "@type": "OfferShippingDetails",
+      shippingRate: {
+        "@type": "MonetaryAmount",
+        value: "0",
+        currency: "GBP",
+      },
+      shippingDestination: [
+        { "@type": "DefinedRegion", addressCountry: "GB" },
+        { "@type": "DefinedRegion", addressCountry: "US" },
+        { "@type": "DefinedRegion", addressCountry: "CA" },
+        { "@type": "DefinedRegion", addressCountry: "AU" },
+      ],
+    },
   },
 };
 
@@ -65,6 +152,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Inject JSON-LD as inline scripts so Google can ingest at first paint. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_LD) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(PRODUCT_LD) }}
+        />
+      </head>
       <body
         className={`${dmSans.variable} ${fraunces.variable} ${geist.variable} ${geistMono.variable} antialiased`}
       >

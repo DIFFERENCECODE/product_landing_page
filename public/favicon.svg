@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#1c4a40"/>
+      <stop offset="100%" stop-color="#0f2a24"/>
+    </linearGradient>
+    <linearGradient id="droplet" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#cdf08a"/>
+      <stop offset="100%" stop-color="#a4d65e"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" ry="14" fill="url(#bg)"/>
+  <path
+    d="M32 12C32 12 18 30 18 41C18 49.732 24.268 56 32 56C39.732 56 46 49.732 46 41C46 30 32 12 32 12Z"
+    fill="url(#droplet)"
+  />
+</svg>

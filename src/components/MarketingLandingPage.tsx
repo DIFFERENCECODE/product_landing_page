@@ -63,6 +63,7 @@ import {
   FAQ_ITEMS,
   formatGBP,
 } from '@/lib/kitProducts';
+import { BioAgeDial, KraftCurve, EbookCover, LipidDroplet } from './Visuals';
 
 // ─── Brand colours ───────────────────────────────────────────────────
 const C = {
@@ -533,30 +534,50 @@ function LipidTrackingSection() {
 function InsulinPatternSection() {
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <SectionHeader
           eyebrow="Pattern insight"
           title={<>The <span style={{ color: C.primary }}>pattern</span> behind the number.</>}
         />
-        <div className="mt-10 space-y-5 text-base" style={{ color: C.muted }}>
-          <p>
-            Decades ago, cardiologist Dr. Joseph Kraft showed that much of what we now call &quot;pre-diabetes&quot; is visible in insulin response patterns years before a standard fasting glucose test picks anything up.
-          </p>
-          <p>
-            Meo AI reads patterns inspired by that framework — analysed across your lipid readings over time — and surfaces a simplified <strong style={{ color: C.fg }}>insulin-pattern signal</strong>.
-          </p>
-          <p className="font-medium" style={{ color: C.fg }}>
-            It is not a diagnosis. It&apos;s a pattern flag: a gentle nudge that says <em>&quot;something here is worth watching.&quot;</em>
-          </p>
-          <div
-            className="rounded-2xl p-5 flex items-start gap-4 mt-8"
-            style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
-          >
-            <Quote className="h-5 w-5 mt-1 shrink-0" style={{ color: C.primary }} />
-            <p className="italic text-sm" style={{ color: C.fg }}>
-              Think of it the way a financial advisor reads a trend line — not the way a doctor reads a lab result.
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-10 items-center">
+          <div className="space-y-5 text-base" style={{ color: C.muted }}>
+            <p>
+              Decades ago, cardiologist Dr. Joseph Kraft showed that much of what we now call &quot;pre-diabetes&quot; is visible in insulin response patterns years before a standard fasting glucose test picks anything up.
+            </p>
+            <p>
+              Meo AI reads patterns inspired by that framework — analysed across your lipid readings over time — and surfaces a simplified <strong style={{ color: C.fg }}>insulin-pattern signal</strong>.
+            </p>
+            <p className="font-medium" style={{ color: C.fg }}>
+              It is not a diagnosis. It&apos;s a pattern flag: a gentle nudge that says <em>&quot;something here is worth watching.&quot;</em>
             </p>
           </div>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="rounded-2xl p-5 sm:p-6"
+            style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+          >
+            <div className="flex items-baseline justify-between mb-3">
+              <p className="text-xs tracking-wide" style={{ color: C.muted }}>
+                Insulin response · 3 hours
+              </p>
+              <p className="text-xs" style={{ color: C.muted }}>
+                Illustrative
+              </p>
+            </div>
+            <KraftCurve width={520} height={220} />
+          </motion.div>
+        </div>
+        <div
+          className="mt-8 rounded-2xl p-5 flex items-start gap-4 max-w-3xl mx-auto"
+          style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+        >
+          <Quote className="h-5 w-5 mt-1 shrink-0" style={{ color: C.primary }} />
+          <p className="italic text-sm" style={{ color: C.fg }}>
+            Think of it the way a financial advisor reads a trend line — not the way a doctor reads a lab result.
+          </p>
         </div>
       </div>
     </section>
@@ -567,31 +588,49 @@ function InsulinPatternSection() {
 function BioAgeSection() {
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
-      <div className="max-w-4xl mx-auto text-center">
+      <div className="max-w-5xl mx-auto">
         <SectionHeader
           eyebrow="Biological Age Score"
           title={<>Your number, read in <span style={{ color: C.primary }}>years</span>.</>}
           subtitle="Every reading feeds a single number we call your Biological Age Score. It's not a diagnosis. It's a compass."
         />
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-5">
-          {[
-            { icon: <TrendingUp className="h-5 w-5" style={{ color: C.primary }} />, label: 'Drops when your ratios improve' },
-            { icon: <Activity className="h-5 w-5" style={{ color: C.primary }} />, label: 'Rises when they drift' },
-            { icon: <Sparkles className="h-5 w-5" style={{ color: C.primary }} />, label: 'One number, updated weekly' },
-          ].map((x, i) => (
-            <div
-              key={i}
-              className="rounded-2xl p-6 flex flex-col items-center gap-3"
-              style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
-            >
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: C.pill }}>
-                {x.icon}
-              </div>
-              <p className="text-sm" style={{ color: C.fg }}>{x.label}</p>
-            </div>
-          ))}
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="flex justify-center"
+          >
+            <BioAgeDial score={38} delta={-2.4} size={300} />
+          </motion.div>
+          <div className="space-y-4">
+            {[
+              { icon: <TrendingUp className="h-5 w-5" style={{ color: C.primary }} />, label: 'Drops when your ratios improve' },
+              { icon: <Activity className="h-5 w-5" style={{ color: C.primary }} />, label: 'Rises when they drift' },
+              { icon: <Sparkles className="h-5 w-5" style={{ color: C.primary }} />, label: 'One number, updated weekly' },
+            ].map((x, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: 16 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.07 }}
+                className="rounded-2xl p-5 flex items-center gap-4"
+                style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+              >
+                <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                  style={{ background: C.pill }}
+                >
+                  {x.icon}
+                </div>
+                <p className="text-sm" style={{ color: C.fg }}>{x.label}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
-        <p className="mt-10 max-w-2xl mx-auto italic text-base" style={{ color: C.muted }}>
+        <p className="mt-10 max-w-2xl mx-auto italic text-base text-center" style={{ color: C.muted }}>
           This is the metric you&apos;ll start watching every week. The one you&apos;ll text your partner about. The one your friends will ask you for.
         </p>
       </div>
@@ -711,7 +750,16 @@ function EbookSection() {
   ];
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
-      <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+      <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[auto_1fr] gap-10 lg:gap-14 items-center">
+        <motion.div
+          initial={{ opacity: 0, x: -16 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="flex justify-center"
+        >
+          <EbookCover width={220} />
+        </motion.div>
         <div>
           <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>
             The action manual
@@ -725,11 +773,6 @@ function EbookSection() {
           <p className="text-sm mb-6" style={{ color: C.muted }}>
             Included digitally with every Meo Starter System.
           </p>
-        </div>
-        <div
-          className="rounded-2xl p-6"
-          style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
-        >
           <ul className="space-y-3">
             {chapters.map((c, i) => (
               <li key={i} className="flex items-start gap-3 text-sm" style={{ color: C.fg }}>
