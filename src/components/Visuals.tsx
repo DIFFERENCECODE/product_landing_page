@@ -303,89 +303,133 @@ export function KraftCurve({ width = 480, height = 220 }: { width?: number; heig
 }
 
 // ─── eBook cover mock ───────────────────────────────────────────────
-export function EbookCover({ width = 200 }: { width?: number }) {
+//
+// Flat (no 3D transform) — keeps text crisp. ViewBox is 4× the
+// previous size so type renders at higher precision regardless of
+// display width. shape-rendering="crispEdges" on the rects + a real
+// drop-shadow filter (instead of the CSS `filter: drop-shadow`
+// shorthand which can blur the whole element on some browsers).
+export function EbookCover({ width = 240 }: { width?: number }) {
   const height = (width * 4) / 3;
   return (
     <div
       className="relative mx-auto"
-      style={{
-        width,
-        height,
-        transform: 'perspective(900px) rotateY(-12deg) rotateX(2deg)',
-        transformStyle: 'preserve-3d',
-        filter: 'drop-shadow(8px 14px 30px rgba(0,0,0,0.45))',
-      }}
+      style={{ width, height }}
+      role="img"
+      aria-label="eBook cover: Lower your biology — a 6-week protocol"
     >
-      <svg viewBox="0 0 200 267" width={width} height={height}>
+      <svg
+        viewBox="0 0 800 1067"
+        width={width}
+        height={height}
+        style={{ display: 'block' }}
+        shapeRendering="geometricPrecision"
+      >
         <defs>
           <linearGradient id="bookCover" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#1f5246" />
             <stop offset="100%" stopColor="#0c2a23" />
           </linearGradient>
           <linearGradient id="bookSpine" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#0a1f1a" />
+            <stop offset="0%" stopColor="#08231d" />
             <stop offset="100%" stopColor="#162e27" />
           </linearGradient>
+          <filter id="bookShadow" x="-10%" y="-5%" width="120%" height="115%">
+            <feDropShadow
+              dx="14"
+              dy="22"
+              stdDeviation="18"
+              floodColor="#000"
+              floodOpacity="0.45"
+            />
+          </filter>
         </defs>
 
-        {/* Spine */}
-        <rect x="0" y="0" width="10" height="267" fill="url(#bookSpine)" />
-        {/* Cover */}
-        <rect x="10" y="0" width="190" height="267" fill="url(#bookCover)" />
-        {/* Subtle inner border */}
-        <rect
-          x="22"
-          y="14"
-          width="166"
-          height="239"
-          rx="4"
-          fill="none"
-          stroke="rgba(255,255,255,0.08)"
-        />
+        <g filter="url(#bookShadow)">
+          {/* Spine */}
+          <rect x="0" y="0" width="40" height="1067" fill="url(#bookSpine)" />
+          {/* Cover */}
+          <rect x="40" y="0" width="760" height="1067" fill="url(#bookCover)" />
+          {/* Top highlight on spine */}
+          <rect x="0" y="0" width="40" height="1067" fill="rgba(255,255,255,0.04)" />
+          {/* Inner border */}
+          <rect
+            x="88"
+            y="56"
+            width="664"
+            height="955"
+            rx="10"
+            fill="none"
+            stroke="rgba(255,255,255,0.10)"
+            strokeWidth="2"
+          />
+        </g>
+
         {/* Brand mark — droplet */}
-        <g transform="translate(36, 38)">
+        <g transform="translate(140, 152)">
           <path
-            d="M14 0C14 0 4 14 4 22C4 28.4183 8.4 33 14 33C19.6 33 24 28.4183 24 22C24 14 14 0 14 0Z"
+            d="M56 0C56 0 16 56 16 88C16 113.673 33.6 132 56 132C78.4 132 96 113.673 96 88C96 56 56 0 56 0Z"
             fill={PRIMARY}
           />
         </g>
+
         {/* Title */}
         <text
-          x="36"
-          y="120"
+          x="144"
+          y="500"
           fill={FG}
           fontFamily="var(--font-serif), Georgia, serif"
-          fontSize="22"
+          fontSize="92"
           fontWeight={600}
+          textRendering="geometricPrecision"
         >
           Lower
         </text>
         <text
-          x="36"
-          y="144"
+          x="144"
+          y="592"
           fill={FG}
           fontFamily="var(--font-serif), Georgia, serif"
-          fontSize="22"
+          fontSize="92"
           fontWeight={600}
+          textRendering="geometricPrecision"
         >
           your
         </text>
         <text
-          x="36"
-          y="168"
+          x="144"
+          y="684"
           fill={PRIMARY}
           fontFamily="var(--font-serif), Georgia, serif"
-          fontSize="22"
+          fontSize="92"
           fontWeight={600}
+          textRendering="geometricPrecision"
         >
           biology.
         </text>
+
         {/* Subtitle */}
-        <text x="36" y="200" fill={MUTED} fontSize="9" letterSpacing="0.18em">
+        <text
+          x="144"
+          y="816"
+          fill={MUTED}
+          fontFamily="var(--font-sans), sans-serif"
+          fontSize="28"
+          letterSpacing="0.2em"
+          textRendering="geometricPrecision"
+        >
           A 6-WEEK PROTOCOL
         </text>
-        {/* Author block */}
-        <text x="36" y="240" fill={MUTED} fontSize="9">
+
+        {/* Author block at the bottom */}
+        <text
+          x="144"
+          y="960"
+          fill={MUTED}
+          fontFamily="var(--font-sans), sans-serif"
+          fontSize="26"
+          textRendering="geometricPrecision"
+        >
           by the Meo team
         </text>
       </svg>

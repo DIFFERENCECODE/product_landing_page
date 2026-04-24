@@ -6,12 +6,14 @@ const nextConfig = {
 
   // No auth redirects — this is a public storefront only.
   //
-  // Cache headers: Next.js prerendered pages default to
-  // `Cache-Control: s-maxage=31536000` (1 year on shared caches),
-  // which causes stale HTML in browsers after a deploy. Force the
-  // HTML routes to revalidate on every request and let Next.js's
-  // ISR/SSG keep the response time fast — but the *browser* always
-  // checks for the latest etag.
+  // Cache headers: temporarily set HTML to `no-store` to force-bust
+  // every browser that has an old `s-maxage=31536000` HTML cached
+  // (Next.js's pre-fix default). Once a few days have passed and
+  // every visitor has seen at least one no-store response, switch
+  // back to `must-revalidate` for performance.
+  //
+  // Static assets (/_next/...) and API responses keep their default
+  // cache directives — only HTML routes are affected here.
   async headers() {
     return [
       {
@@ -19,7 +21,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=0, must-revalidate',
+            value: 'no-store, must-revalidate',
           },
         ],
       },

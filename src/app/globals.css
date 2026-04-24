@@ -42,9 +42,13 @@
 
   /* All display-size headings use Fraunces (variable serif, soft axis
      tuned via CSS below). Inline usages in MarketingLandingPage.tsx that
-     reference var(--font-serif) pick this up automatically. */
+     reference var(--font-serif) pick this up automatically.
+     Fallback: Georgia only, then generic serif — Times New Roman is
+     intentionally excluded because its rendering on Windows looks
+     dated and clashes with the brand if the variable serif fails. */
   h1, h2 {
-    font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+    font-family: var(--font-serif), "Iowan Old Style", "Apple Garamond",
+                 Georgia, "Hoefler Text", "DejaVu Serif", serif;
     /* Fraunces ships with a SOFT axis; 50 gives the warm, wellness-y
        edge without losing legibility. opsz auto-optimises for display
        sizes. */

@@ -5,11 +5,16 @@ import "./globals.css";
 // Body sans — DM Sans is a clean geometric sans with low contrast,
 // pairs well with Fraunces (high-contrast serif) and reads warmer than
 // Inter for marketing copy.
+//
+// `style` MUST include 'italic' or any <em>/italic CSS will fall back
+// to the next font in the chain (and on some browsers that ends up
+// rendering as a synthetic serif italic that looks broken).
 const dmSans = DM_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
   display: "swap",
   weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
 });
 
 // Display serif — Fraunces is a variable font with actual editorial
