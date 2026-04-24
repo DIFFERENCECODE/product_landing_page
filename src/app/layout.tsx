@@ -19,16 +19,29 @@ const dmSans = DM_Sans({
 
 // Display serif — Fraunces is a variable font with actual editorial
 // character; used by premium wellness brands (Athletic Greens, Levels,
-// etc.) for display headlines. Replaces the plain Georgia fallback.
+// etc.) for display headlines.
 //
-// `axes` on a Google variable font requires the `weight` to be omitted
-// (next/font rejects specifying both). The variable weight covers the
-// whole 100-900 range, so globals.css can set font-weight freely.
+// `fallback` overrides next/font's default size-adjusted Times New
+// Roman fallback. If Fraunces fails to load (e.g. the browser still
+// has a stuck HTML cache referencing a deleted font hash), the page
+// degrades to Iowan Old Style / Georgia rather than Times New Roman.
+// `adjustFontFallback: false` disables Next.js's auto layout-shift
+// shim, which is what was injecting `Fraunces Fallback` -> Times New
+// Roman into the production CSS.
 const fraunces = Fraunces({
   variable: "--font-serif",
   subsets: ["latin"],
   display: "swap",
   axes: ["opsz", "SOFT"],
+  adjustFontFallback: false,
+  fallback: [
+    "Iowan Old Style",
+    "Apple Garamond",
+    "Georgia",
+    "Hoefler Text",
+    "DejaVu Serif",
+    "serif",
+  ],
 });
 
 // Keep Geist as a secondary fallback and Geist Mono for any numeric/
