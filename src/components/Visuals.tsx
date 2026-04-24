@@ -114,7 +114,7 @@ export function BioAgeDial({
         {/* Score */}
         <text
           x="140"
-          y="135"
+          y="128"
           textAnchor="middle"
           fill={FG}
           fontFamily="var(--font-serif), Georgia, serif"
@@ -123,15 +123,27 @@ export function BioAgeDial({
         >
           {score}
         </text>
+        {/* Two-line label — keeps the proper "Biological Age Score"
+            terminology readable inside the dial without overflowing. */}
         <text
           x="140"
-          y="162"
+          y="155"
           textAnchor="middle"
           fill={MUTED}
           fontSize="12"
-          letterSpacing="0.2em"
+          letterSpacing="0.08em"
         >
-          BIO AGE
+          Biological Age
+        </text>
+        <text
+          x="140"
+          y="172"
+          textAnchor="middle"
+          fill={MUTED}
+          fontSize="12"
+          letterSpacing="0.08em"
+        >
+          Score
         </text>
 
         {/* Delta pill */}
