@@ -3,7 +3,7 @@
 /* Cache-bust class — actually emitted to CSS, forces a new hash on
    each deploy by changing the content slug. Reference it from any
    element if you want; otherwise it just sits there. */
-.cache-bust-2026-04-25-5 { display: contents; }
+.cache-bust-2026-04-25-7-cabinet-link { display: contents; }
 
 /* ─── Base typography scale ────────────────────────────────── */
 /* Responsive via clamp(min, preferred, max).
@@ -31,21 +31,15 @@
     text-size-adjust: 100%;
   }
 
-  /* Tailwind v4 sets its own --font-sans / --font-serif at :root that
-     include "Times New Roman" in the serif fallback chain, so we
-     OVERRIDE them at :root to point at the next/font variables that
-     resolve to DM Sans / Fraunces. Without this override the html
-     element resolves var(--font-sans) using Tailwind's default
-     (system-ui), and the next/font definitions on <body> only ever
-     applied if a property explicitly used var(--font-sans) on a body
-     descendant — which left raw <p>/<h3>/<h4> with no rule rendering
-     against the html-level resolution. */
+  /* Cabinet Grotesk for everything. Both --font-sans and --font-serif
+     point at the same family — the JSX uses both variables in inline
+     styles, this keeps existing call sites working without touching
+     any component. */
   :root {
-    --font-sans: "DM Sans", "DM Sans Fallback", -apple-system,
-                 BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-                 Arial, sans-serif;
-    --font-serif: "Fraunces", "Iowan Old Style", "Apple Garamond",
-                  Georgia, "Hoefler Text", "DejaVu Serif", serif;
+    --font-sans: "Cabinet Grotesk", -apple-system, BlinkMacSystemFont,
+                 "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-serif: "Cabinet Grotesk", -apple-system, BlinkMacSystemFont,
+                  "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
 
   body {
@@ -59,20 +53,13 @@
     font-family: var(--font-sans);
   }
 
-  /* All display-size headings use Fraunces (variable serif, soft axis
-     tuned via CSS below). Inline usages in MarketingLandingPage.tsx that
-     reference var(--font-serif) pick this up automatically.
-     Fallback: Georgia only, then generic serif — Times New Roman is
-     intentionally excluded because its rendering on Windows looks
-     dated and clashes with the brand if the variable serif fails. */
+  /* All headings use Cabinet Grotesk — same face as body for a
+     single-typeface look. Just heavier weights + tighter tracking
+     to preserve hierarchy. */
   h1, h2 {
-    font-family: var(--font-serif), "Iowan Old Style", "Apple Garamond",
-                 Georgia, "Hoefler Text", "DejaVu Serif", serif;
-    /* Fraunces ships with a SOFT axis; 50 gives the warm, wellness-y
-       edge without losing legibility. opsz auto-optimises for display
-       sizes. */
-    font-variation-settings: "opsz" 144, "SOFT" 50;
-    letter-spacing: -0.01em;
+    font-family: var(--font-serif);
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
 
   h1 {

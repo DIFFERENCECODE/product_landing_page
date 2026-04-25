@@ -1,52 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Fraunces, DM_Sans } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-// Body sans — DM Sans is a clean geometric sans with low contrast,
-// pairs well with Fraunces (high-contrast serif) and reads warmer than
-// Inter for marketing copy.
+// Cabinet Grotesk is the primary face for the whole site. It is
+// hosted on Fontshare (not Google Fonts), so we load it via an
+// @import inside globals.css rather than next/font/google.
 //
-// `style` MUST include 'italic' or any <em>/italic CSS will fall back
-// to the next font in the chain (and on some browsers that ends up
-// rendering as a synthetic serif italic that looks broken).
-const dmSans = DM_Sans({
-  variable: "--font-sans",
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-});
-
-// Display serif — Fraunces is a variable font with actual editorial
-// character; used by premium wellness brands (Athletic Greens, Levels,
-// etc.) for display headlines.
-//
-// `fallback` overrides next/font's default size-adjusted Times New
-// Roman fallback. If Fraunces fails to load (e.g. the browser still
-// has a stuck HTML cache referencing a deleted font hash), the page
-// degrades to Iowan Old Style / Georgia rather than Times New Roman.
-// `adjustFontFallback: false` disables Next.js's auto layout-shift
-// shim, which is what was injecting `Fraunces Fallback` -> Times New
-// Roman into the production CSS.
-const fraunces = Fraunces({
-  variable: "--font-serif",
-  subsets: ["latin"],
-  display: "swap",
-  axes: ["opsz", "SOFT"],
-  adjustFontFallback: false,
-  fallback: [
-    "Iowan Old Style",
-    "Apple Garamond",
-    "Georgia",
-    "Hoefler Text",
-    "DejaVu Serif",
-    "serif",
-  ],
-});
-
-// Keep Geist as a secondary fallback and Geist Mono for any numeric/
-// monospaced runs we may add later (e.g. in the Numbers-vs-Insights
-// table).
+// Geist stays loaded as a system fallback that next/font sets up
+// behind the scenes — used if Cabinet Grotesk fails to load and the
+// system fallback chain in globals.css's :root rule is still
+// crawling. Geist Mono is reserved for any future numeric/monospaced
+// runs.
 const geist = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -171,6 +135,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Cabinet Grotesk — hosted on Fontshare. Preconnect first so
+            the TLS handshake to api.fontshare.com is paid for once,
+            then the stylesheet load is fast. */}
+        <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800&display=swap"
+        />
+
         {/* Inject JSON-LD as inline scripts so Google can ingest at first paint. */}
         <script
           type="application/ld+json"
@@ -182,7 +156,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${dmSans.variable} ${fraunces.variable} ${geist.variable} ${geistMono.variable} antialiased`}
+        className={`${geist.variable} ${geistMono.variable} antialiased`}
       >
         {children}
       </body>
