@@ -3,7 +3,7 @@
 /* Cache-bust class — actually emitted to CSS, forces a new hash on
    each deploy by changing the content slug. Reference it from any
    element if you want; otherwise it just sits there. */
-.cache-bust-2026-04-25-4 { display: contents; }
+.cache-bust-2026-04-25-5 { display: contents; }
 
 /* ─── Base typography scale ────────────────────────────────── */
 /* Responsive via clamp(min, preferred, max).
