@@ -210,16 +210,24 @@ function Navbar() {
 //     bottom (radial fade on edges, drag-to-scroll on touch, hidden
 //     native scrollbar)
 function Hero() {
-  const features = [
+  // Two distinct lists so the two rows show different content while
+  // sliding in opposite directions — feels less repetitive than the
+  // same row mirrored.
+  const featuresRowA = [
     'Lab-grade lipid panel · 3 minutes',
     'AI on every reading',
     '30-day money-back',
     '1 month of Meo AI included',
     'Ships in 48 hours',
     'Trusted in 14 countries',
+  ];
+  const featuresRowB = [
     'Free UK shipping',
     'eBook + 6-week protocol',
     'No appointments needed',
+    'Biological Age Score',
+    'Track your trend, not just a snapshot',
+    'Plain-English insight, not jargon',
   ];
 
   return (
@@ -329,14 +337,13 @@ function Hero() {
         </p>
       </div>
 
-      {/* Auto-scrolling marquee feature strip.
-          The track is rendered with the feature list duplicated; CSS
-          translates it from 0 to -50% over 40s linearly, then loops.
-          Because both halves are identical, the loop is seamless.
-          Edge mask fades cards in/out at the left/right of the screen.
-          Pauses on hover (`.marquee:hover .marquee-track`). */}
+      {/* Cross marquee — two rows, opposite directions.
+          Top row slides left (default direction).
+          Bottom row slides right via .marquee-track-reverse.
+          Both pause when the user hovers the wrapper. Each track is
+          duplicated so the loop is seamless. */}
       <div
-        className="marquee relative mt-12 sm:mt-16 w-full overflow-hidden"
+        className="marquee relative mt-12 sm:mt-16 w-full overflow-hidden space-y-3 sm:space-y-4"
         style={{
           maskImage:
             'linear-gradient(90deg, transparent 0, black 8%, black 92%, transparent 100%)',
@@ -345,10 +352,29 @@ function Hero() {
         }}
         aria-label="Key Meo features"
       >
-        <div className="marquee-track gap-3 pb-2">
-          {[...features, ...features].map((label, i) => (
+        {/* Row A — slides left */}
+        <div className="marquee-track">
+          {[...featuresRowA, ...featuresRowA].map((label, i) => (
             <div
-              key={i}
+              key={`a-${i}`}
+              className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm mr-3"
+              style={{
+                background: C.bgCard,
+                border: `1px solid ${C.border}`,
+                color: C.fg,
+              }}
+            >
+              <Check className="h-4 w-4 shrink-0" style={{ color: C.primary }} />
+              <span className="whitespace-nowrap">{label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Row B — slides right (reversed) */}
+        <div className="marquee-track marquee-track-reverse">
+          {[...featuresRowB, ...featuresRowB].map((label, i) => (
+            <div
+              key={`b-${i}`}
               className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm mr-3"
               style={{
                 background: C.bgCard,
