@@ -199,91 +199,171 @@ function Navbar() {
 }
 
 // ─── Hero ────────────────────────────────────────────────────────────
+//
+// Centered hero based on the user-provided reference (SpineEdge-style):
+//   - eyebrow chip
+//   - giant headline with an inline pill-shaped product image
+//     embedded between two words
+//   - tightly-scoped subhead
+//   - single primary CTA + secondary text-link CTA
+//   - horizontally-scrolling feature strip with checkmarks at the
+//     bottom (radial fade on edges, drag-to-scroll on touch, hidden
+//     native scrollbar)
 function Hero() {
+  const features = [
+    'Lab-grade lipid panel · 3 minutes',
+    'AI on every reading',
+    '30-day money-back',
+    '1 month of Meo AI included',
+    'Ships in 48 hours',
+    'Trusted in 14 countries',
+    'Free UK shipping',
+    'eBook + 6-week protocol',
+    'No appointments needed',
+  ];
+
   return (
-    <section className="relative min-h-screen flex items-center pt-24 pb-12 sm:pb-16 px-5 sm:px-6" style={{ background: C.bg }}>
-      <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          <div
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium mb-6"
-            style={{ background: C.pill, color: C.pillFg }}
-          >
-            <Sparkles className="h-3.5 w-3.5" />
-            Metabolic Intelligence System
-          </div>
+    <section
+      className="relative min-h-screen flex flex-col justify-center pt-24 pb-12 sm:pb-16 px-5 sm:px-6 overflow-hidden"
+      style={{ background: C.bg }}
+    >
+      {/* Soft radial accent so the hero has depth — light source from
+          upper-left, fading out across the section. Matches the
+          reference's subtle gradient. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(ellipse 60% 50% at 30% 10%, rgba(164,214,94,0.10) 0%, rgba(164,214,94,0) 60%)',
+        }}
+      />
 
-          <h1
-            className="font-extrabold leading-[1.05] mb-6"
-            style={{ color: C.fg, fontFamily: 'var(--font-serif), "Iowan Old Style", Georgia, serif', fontSize: 'clamp(40px, 6vw, 68px)' }}
-          >
-            See what your<br />
-            cholesterol is<br />
-            <span style={{ color: C.primary }}>actually</span> telling you.
-          </h1>
-
-          <p className="text-base sm:text-lg mb-8 max-w-lg" style={{ color: C.muted }}>
-            Meo turns a 3-minute finger-prick into a complete metabolic picture — interpreted by AI,
-            framed for longevity, and actionable the same day.
-          </p>
-
-          <div className="flex flex-wrap items-center gap-2 text-xs mb-8" style={{ color: C.muted }}>
-            <span className="inline-flex items-center gap-1.5"><Shield className="h-3.5 w-3.5" style={{ color: C.primary }} /> 30-day money-back</span>
-            <span style={{ color: C.border }}>·</span>
-            <span className="inline-flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" style={{ color: C.primary }} /> Ships in 48h</span>
-            <span style={{ color: C.border }}>·</span>
-            <span className="inline-flex items-center gap-1.5"><TrendingUp className="h-3.5 w-3.5" style={{ color: C.primary }} /> Used in 14 countries</span>
-          </div>
-
-          <div
-            className="block sm:inline-block w-full sm:w-auto rounded-2xl p-5 sm:p-6"
-            style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
-          >
-            <p className="text-xs font-semibold tracking-wide mb-1" style={{ color: C.muted }}>
-              Launch price
-            </p>
-            <p
-              className="font-bold mb-1 flex items-baseline flex-wrap gap-x-3 gap-y-1"
-              style={{ color: C.fg, fontSize: 'clamp(28px, 5vw, 34px)' }}
-            >
-              {formatGBP(KIT_PRODUCT.price)}
-              <span className="text-base font-normal line-through" style={{ color: C.muted }}>£197</span>
-              <span className="text-xs font-medium px-2 py-0.5 rounded" style={{ background: C.pill, color: C.pillFg }}>
-                Save £48
-              </span>
-            </p>
-            <p className="text-sm mb-4" style={{ color: C.muted }}>
-              One-time. Includes 1 month of Meo AI.
-            </p>
-            <CTAButton>Get your Meo Starter System <ArrowRight className="h-4 w-4" /></CTAButton>
-          </div>
+      <div className="relative max-w-5xl mx-auto w-full text-center">
+        {/* Eyebrow */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium mb-6 sm:mb-8"
+          style={{ background: C.pill, color: C.pillFg }}
+        >
+          <Sparkles className="h-3.5 w-3.5" />
+          Metabolic Intelligence System
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-          className="relative flex items-center justify-center"
+        {/* Headline with inline pill image */}
+        <motion.h1
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.05 }}
+          className="font-bold leading-[1.05] mb-6 sm:mb-8"
+          style={{
+            color: C.fg,
+            fontSize: 'clamp(36px, 6.5vw, 76px)',
+            letterSpacing: '-0.02em',
+          }}
         >
-          <div
-            className="w-full max-w-lg rounded-3xl overflow-hidden"
-            style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${C.border}` }}
+          See what your{' '}
+          <span
+            className="inline-flex align-middle rounded-full overflow-hidden mx-1 sm:mx-2"
+            style={{
+              width: 'clamp(72px, 10vw, 120px)',
+              height: 'clamp(46px, 6.5vw, 76px)',
+              background: 'rgba(164,214,94,0.18)',
+              border: `1px solid ${C.border}`,
+              verticalAlign: '-0.18em',
+            }}
+            aria-hidden
           >
             <Image
               src="/sejoy_1.png"
-              alt="Meo lipid meter — Total Cholesterol, HDL, LDL, Triglycerides and TC/HDL readings"
-              width={600}
-              height={520}
-              className="w-full h-auto object-contain"
+              alt=""
+              width={240}
+              height={160}
+              className="w-full h-full object-cover"
               priority
             />
-          </div>
-          <div
-            className="absolute -bottom-3 -right-3 px-4 py-2 rounded-xl text-xs font-semibold"
-            style={{ background: C.primary, color: C.primaryFg, boxShadow: '0 10px 30px rgba(0,0,0,0.25)' }}
+          </span>{' '}
+          cholesterol
+          <br className="hidden sm:block" />
+          <span> is </span>
+          <span style={{ color: C.primary }}>actually</span> telling you.
+        </motion.h1>
+
+        {/* Subhead */}
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="text-base sm:text-lg mx-auto mb-8 sm:mb-10 max-w-xl"
+          style={{ color: C.muted }}
+        >
+          Meo turns a 3-minute finger-prick into a complete metabolic picture —
+          interpreted by AI, framed for longevity, and actionable the same day.
+        </motion.p>
+
+        {/* CTAs */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.25 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
+        >
+          <CTAButton size="lg">
+            Get your Meo · {formatGBP(KIT_PRODUCT.price)} <ArrowRight className="h-4 w-4" />
+          </CTAButton>
+          <a
+            href="#how-it-works"
+            className="text-sm hover:underline"
+            style={{ color: C.muted }}
           >
-            Meo AI included · 1 month free
-          </div>
+            See how it works ↓
+          </a>
         </motion.div>
+
+        {/* Price strikethrough hint */}
+        <p className="text-xs mt-3" style={{ color: C.muted }}>
+          Launch price · normally £197 ·{' '}
+          <span style={{ color: C.primary }}>30-day money-back</span>
+        </p>
+      </div>
+
+      {/* Scrolling feature strip — horizontal flex with edge fade.
+          On touch: drag to scroll. On desktop: subtle auto-marquee
+          (using a CSS keyframe via Tailwind's animate utilities is
+          overkill here; static + drag is clean). */}
+      <div
+        className="relative mt-12 sm:mt-16 w-full"
+        style={{
+          maskImage:
+            'linear-gradient(90deg, transparent 0, black 8%, black 92%, transparent 100%)',
+          WebkitMaskImage:
+            'linear-gradient(90deg, transparent 0, black 8%, black 92%, transparent 100%)',
+        }}
+      >
+        <div
+          className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide"
+          style={{ scrollbarWidth: 'none' }}
+        >
+          {/* Render the list twice to imply infinity if user is on a
+              wide screen and not scrolling — the second copy ensures
+              the row never feels under-filled. */}
+          {[...features, ...features].map((label, i) => (
+            <div
+              key={i}
+              className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm"
+              style={{
+                background: C.bgCard,
+                border: `1px solid ${C.border}`,
+                color: C.fg,
+              }}
+            >
+              <Check className="h-4 w-4 shrink-0" style={{ color: C.primary }} />
+              <span className="whitespace-nowrap">{label}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
