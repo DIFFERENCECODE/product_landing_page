@@ -329,30 +329,27 @@ function Hero() {
         </p>
       </div>
 
-      {/* Scrolling feature strip — horizontal flex with edge fade.
-          On touch: drag to scroll. On desktop: subtle auto-marquee
-          (using a CSS keyframe via Tailwind's animate utilities is
-          overkill here; static + drag is clean). */}
+      {/* Auto-scrolling marquee feature strip.
+          The track is rendered with the feature list duplicated; CSS
+          translates it from 0 to -50% over 40s linearly, then loops.
+          Because both halves are identical, the loop is seamless.
+          Edge mask fades cards in/out at the left/right of the screen.
+          Pauses on hover (`.marquee:hover .marquee-track`). */}
       <div
-        className="relative mt-12 sm:mt-16 w-full"
+        className="marquee relative mt-12 sm:mt-16 w-full overflow-hidden"
         style={{
           maskImage:
             'linear-gradient(90deg, transparent 0, black 8%, black 92%, transparent 100%)',
           WebkitMaskImage:
             'linear-gradient(90deg, transparent 0, black 8%, black 92%, transparent 100%)',
         }}
+        aria-label="Key Meo features"
       >
-        <div
-          className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide"
-          style={{ scrollbarWidth: 'none' }}
-        >
-          {/* Render the list twice to imply infinity if user is on a
-              wide screen and not scrolling — the second copy ensures
-              the row never feels under-filled. */}
+        <div className="marquee-track gap-3 pb-2">
           {[...features, ...features].map((label, i) => (
             <div
               key={i}
-              className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm"
+              className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm mr-3"
               style={{
                 background: C.bgCard,
                 border: `1px solid ${C.border}`,

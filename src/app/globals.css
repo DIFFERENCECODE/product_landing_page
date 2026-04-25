@@ -3,12 +3,38 @@
 /* Cache-bust class — actually emitted to CSS, forces a new hash on
    each deploy by changing the content slug. Reference it from any
    element if you want; otherwise it just sits there. */
-.cache-bust-2026-04-25-8-hero-redesign { display: contents; }
+.cache-bust-2026-04-25-9-marquee { display: contents; }
 
 /* Hide scrollbars on the hero feature strip while preserving
    horizontal scroll behaviour (drag on touch, wheel on trackpad). */
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
+
+/* Marquee — infinite left-scroll for the hero feature strip.
+   The inner row contains the items duplicated, so when the
+   animation reaches -50% (half the duplicated track) it loops
+   seamlessly back to 0% with the same visible content. */
+@keyframes marquee-x {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: inline-flex;
+  /* Use will-change so browsers GPU-composite the animation. */
+  will-change: transform;
+  animation: marquee-x 40s linear infinite;
+}
+/* Pause on hover so a reader can stop and read a card. */
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+/* Respect reduced-motion preferences — accessibility win, also a
+   browser default for some users. */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
 
 /* ─── Base typography scale ────────────────────────────────── */
 /* Responsive via clamp(min, preferred, max).
