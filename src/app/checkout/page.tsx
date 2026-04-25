@@ -101,11 +101,11 @@ function HeroProductCard() {
         style={{ background: 'rgba(255,255,255,0.04)' }}
       >
         <Image
-          src="/sejoy_1.png"
+          src="/sejoy_clean.png"
           alt="Meo Digital Lipid Meter"
-          width={420}
-          height={360}
-          className="w-full max-w-[260px] h-auto object-contain"
+          width={400}
+          height={655}
+          className="w-full max-w-[200px] h-auto object-contain"
           priority
         />
       </div>

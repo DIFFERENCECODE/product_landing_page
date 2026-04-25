@@ -3,7 +3,7 @@
 /* Cache-bust class — actually emitted to CSS, forces a new hash on
    each deploy by changing the content slug. Reference it from any
    element if you want; otherwise it just sits there. */
-.cache-bust-2026-04-25-10-cross-marquee { display: contents; }
+.cache-bust-2026-04-25-11-clean-image { display: contents; }
 
 /* Hide scrollbars on the hero feature strip while preserving
    horizontal scroll behaviour (drag on touch, wheel on trackpad). */

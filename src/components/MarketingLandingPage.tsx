@@ -32,7 +32,7 @@
  *  + StickyMobileCTA     — always-visible buy button on mobile
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
@@ -209,7 +209,38 @@ function Navbar() {
 //   - horizontally-scrolling feature strip with checkmarks at the
 //     bottom (radial fade on edges, drag-to-scroll on touch, hidden
 //     native scrollbar)
+// Hero pill — a random gradient picked on each pageload. Brand
+// palette only (greens, teals, the warm accent oranges) so it
+// always feels on-brand regardless of which one comes up.
+const PILL_GRADIENTS = [
+  'linear-gradient(135deg, #a4d65e 0%, #2d6a4f 100%)',
+  'linear-gradient(135deg, #cdf08a 0%, #1c4a40 100%)',
+  'linear-gradient(135deg, #2d6a4f 0%, #0a1f1a 100%)',
+  'linear-gradient(45deg, #a4d65e 0%, #f59e0b 100%)',
+  'linear-gradient(135deg, #f59e0b 0%, #1c4a40 100%)',
+  'linear-gradient(135deg, #1c4a40 0%, #5a8a4d 50%, #a4d65e 100%)',
+  'radial-gradient(circle at 30% 30%, #a4d65e 0%, #1c4a40 70%)',
+  'conic-gradient(from 200deg at 50% 50%, #a4d65e, #2d6a4f, #143730, #a4d65e)',
+];
+
 function Hero() {
+  // Pick a random pill gradient on mount. SSR renders a stable default
+  // (first item) — useEffect rolls the dice on the client so each
+  // pageload gets a different look without hydration mismatch.
+  const [pillGradient, setPillGradient] = useState(PILL_GRADIENTS[0]);
+  useEffect(() => {
+    const next = PILL_GRADIENTS[Math.floor(Math.random() * PILL_GRADIENTS.length)];
+    setPillGradient(next);
+  }, []);
+
+  // Same idea but for the soft background accent behind the section —
+  // gives the whole hero a subtly different mood per visit.
+  const sectionAccent = useMemo(() => {
+    const angles = [120, 160, 220, 300];
+    const ang = angles[Math.floor(Math.random() * angles.length)];
+    return `radial-gradient(ellipse 60% 50% at ${ang === 120 ? '30% 10%' : ang === 160 ? '70% 15%' : ang === 220 ? '20% 80%' : '80% 60%'}, rgba(164,214,94,0.10) 0%, rgba(164,214,94,0) 60%)`;
+  }, []);
+
   // Two distinct lists so the two rows show different content while
   // sliding in opposite directions — feels less repetitive than the
   // same row mirrored.
@@ -235,16 +266,13 @@ function Hero() {
       className="relative min-h-screen flex flex-col justify-center pt-24 pb-12 sm:pb-16 px-5 sm:px-6 overflow-hidden"
       style={{ background: C.bg }}
     >
-      {/* Soft radial accent so the hero has depth — light source from
-          upper-left, fading out across the section. Matches the
-          reference's subtle gradient. */}
+      {/* Soft radial accent — randomised per pageload so the hero
+          has a different mood each visit (light source position
+          shifts across upper-left / upper-right / lower-left). */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            'radial-gradient(ellipse 60% 50% at 30% 10%, rgba(164,214,94,0.10) 0%, rgba(164,214,94,0) 60%)',
-        }}
+        style={{ background: sectionAccent }}
       />
 
       <div className="relative max-w-5xl mx-auto w-full text-center">
@@ -274,22 +302,23 @@ function Hero() {
         >
           See what your{' '}
           <span
-            className="inline-flex align-middle rounded-full overflow-hidden mx-1 sm:mx-2"
+            className="inline-flex align-middle rounded-full overflow-hidden mx-1 sm:mx-2 items-center justify-center"
             style={{
-              width: 'clamp(72px, 10vw, 120px)',
-              height: 'clamp(46px, 6.5vw, 76px)',
-              background: 'rgba(164,214,94,0.18)',
+              width: 'clamp(80px, 11vw, 140px)',
+              height: 'clamp(50px, 7vw, 86px)',
+              background: pillGradient,
               border: `1px solid ${C.border}`,
               verticalAlign: '-0.18em',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.25)',
             }}
             aria-hidden
           >
             <Image
-              src="/sejoy_1.png"
+              src="/sejoy_clean.png"
               alt=""
-              width={240}
-              height={160}
-              className="w-full h-full object-cover"
+              width={183}
+              height={300}
+              className="h-[88%] w-auto object-contain"
               priority
             />
           </span>{' '}
@@ -590,11 +619,11 @@ function LipidTrackingSection() {
           style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
         >
           <Image
-            src="/sejoy_1.png"
+            src="/sejoy_clean.png"
             alt="Meo Digital Lipid Meter — finger-prick, strip, 3 minutes"
-            width={600}
-            height={520}
-            className="w-full h-auto object-contain"
+            width={400}
+            height={655}
+            className="w-full max-w-sm mx-auto h-auto object-contain"
           />
         </motion.div>
         <motion.div

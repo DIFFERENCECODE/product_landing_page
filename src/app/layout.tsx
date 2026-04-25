@@ -101,7 +101,7 @@ const PRODUCT_LD = {
   name: "Meo Starter System",
   description:
     "Digital lipid meter + 1 month of Meo AI + eBook. At-home cholesterol monitoring with AI-powered interpretation and a Biological Age Score.",
-  image: [`${SITE_URL}/sejoy_1.png`],
+  image: [`${SITE_URL}/sejoy_clean.png`],
   brand: { "@type": "Brand", name: "Meo" },
   category: "Health & Wellness Monitoring Tools",
   offers: {
