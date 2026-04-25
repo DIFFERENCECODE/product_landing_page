@@ -115,7 +115,7 @@ export default function CheckoutPage() {
         </Link>
       </nav>
 
-      <div className="max-w-6xl mx-auto px-5 sm:px-6 pt-20 sm:pt-24 pb-10">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 pt-20 sm:pt-24 pb-10">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-[var(--muted)] text-sm mb-6 sm:mb-8 hover:text-white transition-colors"
@@ -129,7 +129,11 @@ export default function CheckoutPage() {
           — you&apos;ll be first to know when your account is ready.
         </p>
 
-        <div className="grid lg:grid-cols-[1fr_minmax(280px,340px)] gap-6 sm:gap-8 items-start">
+        {/* Two-column from md+ (768px), not lg+ (1024px). The order
+            summary is narrow enough to fit alongside the cart from
+            tablet-landscape onward, which is the typical desktop
+            shopper at any window width. */}
+        <div className="grid md:grid-cols-[1fr_minmax(300px,360px)] gap-6 md:gap-8 items-start">
           {/* ── Left column ── */}
           <div className="space-y-6">
             {/* Section 1 — Your kit */}
@@ -207,7 +211,7 @@ export default function CheckoutPage() {
               on the right child so long item names ("Meo Test Strip
               Subscription") wrap inside the 280-340px column instead of
               overflowing and clipping the price. */}
-          <aside className="card lg:sticky lg:top-6 w-full overflow-hidden">
+          <aside className="card md:sticky md:top-24 w-full overflow-hidden">
             <h3 className="mb-4">Order summary</h3>
             <div className="flex justify-between gap-3 mb-2">
               <div className="min-w-0">
