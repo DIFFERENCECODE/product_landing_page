@@ -98,16 +98,16 @@ const ORG_LD = {
 const PRODUCT_LD = {
   "@context": "https://schema.org",
   "@type": "Product",
-  name: "Meo Starter System",
+  name: "Metabolic Health Cholesterol Tracker",
   description:
-    "Digital lipid meter + 1 month of Meo AI + eBook. At-home cholesterol monitoring with AI-powered interpretation and a Biological Age Score.",
+    "6 months of Meo AI + Digital Lipid Meter (bundled free) + The Thin Book in Fat by Marina Young. At-home cholesterol monitoring with AI-powered interpretation, a Biological Age Score, and a free retest at 6 months.",
   image: [`${SITE_URL}/sejoy_clean.png`],
   brand: { "@type": "Brand", name: "Meo" },
   category: "Health & Wellness Monitoring Tools",
   offers: {
     "@type": "Offer",
     priceCurrency: "GBP",
-    price: "149.00",
+    price: "197.00",
     availability: "https://schema.org/InStock",
     url: `${SITE_URL}/checkout`,
     shippingDetails: {

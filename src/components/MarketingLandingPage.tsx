@@ -108,7 +108,7 @@ const FEATURE_ICONS: Record<string, React.ReactNode> = {
 
 // ─── Shared CTA button ───────────────────────────────────────────────
 function CTAButton({
-  children = <>Get your Meo Starter System <ArrowRight className="h-4 w-4" /></>,
+  children = <>Get your Metabolic Health Tracker <ArrowRight className="h-4 w-4" /></>,
   variant = 'primary',
   size = 'md',
 }: {
@@ -246,19 +246,19 @@ function Hero() {
   // same row mirrored.
   const featuresRowA = [
     'Lab-grade lipid panel · 3 minutes',
-    'AI on every reading',
-    '30-day money-back',
-    '1 month of Meo AI included',
+    "World's only metabolic-health AI",
+    '6 months of Meo AI included',
+    '30-day money-back · plain brown paper',
+    '1 of only 3 EU-registered home lipid meters',
     'Ships in 48 hours',
-    'Trusted in 14 countries',
   ];
   const featuresRowB = [
     'Free UK shipping',
-    'eBook + 6-week protocol',
-    'No appointments needed',
-    'Biological Age Score',
-    'Track your trend, not just a snapshot',
-    'Plain-English insight, not jargon',
+    "eBook: The Thin Book in Fat — Marina Young",
+    'Q&A with the author via Meo',
+    'Biological Age Score + Target Score',
+    'Free retest at 6 months',
+    '10 years industrialising the Kraft Test',
   ];
 
   return (
@@ -348,7 +348,7 @@ function Hero() {
           className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
         >
           <CTAButton size="lg">
-            Get your Meo · {formatGBP(KIT_PRODUCT.price)} <ArrowRight className="h-4 w-4" />
+            Start with 6 months of Meo · {formatGBP(KIT_PRODUCT.price)} <ArrowRight className="h-4 w-4" />
           </CTAButton>
           <a
             href="#how-it-works"
@@ -359,10 +359,11 @@ function Hero() {
           </a>
         </motion.div>
 
-        {/* Price strikethrough hint */}
+        {/* Trust line under CTA — emphasises that the meter is bundled
+            free with the subscription and the box ships in plain paper. */}
         <p className="text-xs mt-3" style={{ color: C.muted }}>
-          Launch price · normally £197 ·{' '}
-          <span style={{ color: C.primary }}>30-day money-back</span>
+          Lipid meter included free · 30-day money-back ·{' '}
+          <span style={{ color: C.primary }}>plain brown paper</span>
         </p>
       </div>
 
@@ -900,10 +901,10 @@ function EbookSection() {
             Insight without action is just <span style={{ color: C.primary }}>anxiety</span>.
           </h2>
           <p className="text-base mb-3" style={{ color: C.muted }}>
-            <em>How to Improve Your Cholesterol &amp; Lower Your Biological Age Naturally</em> — the manual Meo AI references when it talks to you.
+            <em>The Thin Book in Fat</em> by <strong style={{ color: C.fg }}>Marina Young</strong> — the manual Meo AI references when it talks to you. Ask the author your questions directly through Meo; answers come back in chat.
           </p>
           <p className="text-sm mb-6" style={{ color: C.muted }}>
-            Included digitally with every Meo Starter System.
+            Included digitally with every Metabolic Health Tracker.
           </p>
           <ul className="space-y-3">
             {chapters.map((c, i) => (
@@ -1047,8 +1048,8 @@ function ObjectionsSection() {
       a: 'Meo AI doesn’t diagnose, prescribe, or replace your doctor. It reads your history, spots patterns, and tells you clearly what it sees — with its sources. When something is unusual, it recommends you see a healthcare professional. You always own the decision.',
     },
     {
-      q: '£149 feels like a lot.',
-      a: 'One private-clinic panel costs £80–£150, runs once, gives you paper. Meo costs £149 once, runs unlimited times, and ships with its action manual and AI interpretation layer. Most customers break even on testing cost within 24 months.',
+      q: '£197 feels like a lot.',
+      a: 'Read it as 6 months of Meo AI (£174 at the £29/mo rate) with the lipid meter, eBook, Q&A with the author and a 6-month retest bundled in free. One private-clinic panel costs £80–£150, runs once, gives you paper. Meo costs £197 once, runs unlimited times, and pairs each reading with AI interpretation and an action manual.',
     },
   ];
   return (

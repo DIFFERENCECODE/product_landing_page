@@ -34,111 +34,130 @@ export interface KitProduct {
   features: { icon: string; title: string; description: string }[];
 }
 
-// ─── Main bundle: Meo Starter System ────────────────────────────────
+// ─── Main bundle: Metabolic Health Cholesterol Tracker ─────────────
 //
-// The hero SKU. Device + 1 month Meo AI + eBook. Framed as a
-// "Metabolic Intelligence Starter System" everywhere in copy — never
-// as a device sale.
+// The hero SKU. Six months MeO AI is positioned as the headline
+// value (worth £174 at the £29/mo street rate); the lipid meter is
+// bundled in free as part of the subscription. The eBook + Q&A with
+// the author + 6-month retest + Biological Age Score complete the
+// package. Framed as a "Metabolic Health Cholesterol Tracker"
+// everywhere in copy — never as a device sale.
+//
+// Score brand: Biological Age Score (BAS) — same name used in the
+// MeO mobile app and admin dashboard. Score logo TBD (per the
+// April 2026 campaign brief).
 
 export const KIT_PRODUCT: KitProduct = {
-  name: 'Meo Starter System',
+  name: 'Metabolic Health Cholesterol Tracker',
   description:
-    'Digital lipid meter + 1 month of Meo AI + eBook. The full metabolic intelligence loop — measure, understand, act.',
-  price: 14900, // £149 (launch price; RRP £197 — see FUNNEL.md offer stack)
+    '6 months of Meo AI + Digital Lipid Meter (bundled free) + The Thin Book in Fat. Measure, understand, act — backed by a Biological Age Score that updates with every reading.',
+  price: 19700, // £197
   priceId: process.env.NEXT_PUBLIC_KIT_PRICE_ID || 'price_meo_starter_placeholder',
   features: [
     {
-      icon: 'activity',
-      title: 'Digital Lipid Meter',
+      icon: 'message',
+      title: 'Meo AI — 6 months full access',
       description:
-        'Measures Total Cholesterol, HDL, LDL, Triglycerides and TC/HDL ratio from a single finger-prick in under 3 minutes. Includes 10 test strips, lancets, and carrying case.',
+        'The world\'s only metabolic-health conversational AI. Plain-English interpretation of every reading, trend tracking, Kraft-style insulin pattern insight, and a Biological Age Score that updates as you go. This is the core of the system.',
     },
     {
-      icon: 'message',
-      title: 'Meo AI — 1 month access',
+      icon: 'activity',
+      title: 'Digital Lipid Meter — bundled free',
       description:
-        'Plain-English interpretation of every reading, trend tracking, Kraft-style insulin pattern insight, and a Biological Age Score that updates as you go. This is the core of the system.',
+        'One of only three lipid meters registered for Home Use in the EU. Measures Total Cholesterol, HDL, LDL, Triglycerides and TC/HDL ratio from a single finger-prick in under 3 minutes. Includes 10 test strips, lancets, and carrying case.',
     },
     {
       icon: 'book',
-      title: 'eBook: How to Improve Your Cholesterol & Lower Your Biological Age Naturally',
+      title: 'eBook: The Thin Book in Fat — Marina Young',
       description:
-        'A 120-page action manual with a 6-week protocol. Referenced by Meo AI every time it talks to you, so insight and action stay in one loop.',
+        'The action manual that pairs with Meo AI. Ask the author your questions directly through Meo — answers are returned in chat so insight and follow-up stay in one loop.',
     },
     {
       icon: 'bar-chart',
-      title: 'Biological Age Score',
+      title: 'Biological Age Score (BAS) + Target Score',
       description:
-        'One number. Observational, not predictive. Updates with every reading. Your baseline, not a population benchmark.',
+        'One number for where your metabolism is now, one for where it can be. Observational, not predictive. Built on ten years of industrialising the gold-standard Kraft Test.',
     },
     {
       icon: 'refresh',
-      title: 'Trend tracking, not snapshots',
+      title: 'Free retest at 6 months',
       description:
-        'Run a reading whenever you want. Meo stitches each one into a trend so you see the drift — not just the number.',
+        'A second fasting reading at month six to see whether you reached your Target Score. Personalised report sent with findings and lifestyle recommendations.',
     },
     {
       icon: 'heart',
       title: '30-day money-back guarantee',
       description:
-        'Use Meo for 30 days. If you don\'t feel clearer and in control, send the device back for a full refund. Keep the eBook either way.',
+        'Use Meo for 30 days. If you don\'t feel clearer and in control, send the device back for a full refund. Keep the eBook either way. Shipped discreetly in plain brown paper.',
     },
   ],
 };
 
-// ─── Upsells shown on the order-review screen ───────────────────────
+// ─── Optional measurement add-ons shown at checkout ─────────────────
 //
-// These appear as optional add-ons at checkout. The first is
-// recurring (subscription), the other two are one-time renewals of
-// Meo AI access. Order matters — first item gets top billing.
+// Per the April 2026 campaign brief: five optional measurement
+// devices and refills, ordered by what marketing wants pushed
+// hardest. Option 1 (the multimeter) is the recommended pick — it
+// measures ketones, which set the customer up for the next product
+// in the Metabolic Health series (the Insulin Tracker). The first
+// reading is "what is your cholesterol?", the second is "are you in
+// metabolic ketosis?" — same device.
+//
+// Customers can buy any quantity from 0 to 9 of each (cart-side
+// behaviour, not modelled here — checkout UI handles the qty step).
 
 export const KIT_ADDONS: KitAddon[] = [
   {
-    id: 'test-strip-sub',
-    name: 'Meo Test Strip Subscription',
+    id: 'multimeter',
+    name: 'Glucose + MultiMeter — measures glucose, ketones, cholesterol & uric acid',
     description:
-      '10 fresh strips delivered every month. Most customers run 2–4 readings a week in the first 60 days — the 10 strips in your starter kit run out fast. Cancel any time from your account.',
-    price: 1500, // £15/month
+      'Four metabolic markers in a single device. Free strips for glucose AND ketones bundled — the same drop of blood gives you two readings. Ketones unlock the picture of your metabolic flexibility, which is the basis of the next tracker in the series.',
+    price: 6000, // £60
     priceId:
-      process.env.NEXT_PUBLIC_ADDON_STRIP_SUB_PRICE_ID ||
-      'price_meo_strips_sub_placeholder',
-    recurring: 'month',
+      process.env.NEXT_PUBLIC_ADDON_MULTIMETER_PRICE_ID ||
+      'price_meo_multimeter_placeholder',
     recommended: true,
-    highlight: 'Cancel any time · Never run out mid-reading',
+    highlight: 'Recommended · Free glucose + ketone strips bundled',
   },
   {
-    id: 'meo-ai-3mo',
-    name: 'Extend Meo AI — 3 months',
+    id: 'glucose-meter',
+    name: 'Glucose Meter only',
     description:
-      'Continue with full Meo AI access for 3 months beyond the 1 month included in your Starter System. Most customers renew inside the first 2 weeks.',
-    price: 4900, // £49 (vs. 3 × £29 = £87)
+      'Standalone glucose meter for spot readings. No ketone or uric acid measurement — pick the MultiMeter above if you want the full metabolic picture.',
+    price: 3000, // £30
     priceId:
-      process.env.NEXT_PUBLIC_ADDON_AI_3MO_PRICE_ID ||
-      'price_meo_ai_3mo_placeholder',
-    highlight: 'Save £38 vs. monthly',
+      process.env.NEXT_PUBLIC_ADDON_GLUCOSE_METER_PRICE_ID ||
+      'price_meo_glucose_meter_placeholder',
   },
   {
-    id: 'meo-ai-12mo',
-    name: 'Extend Meo AI — 12 months',
+    id: 'syai-cgm',
+    name: 'SyAI Continuous Glucose Monitor',
     description:
-      'Annual access to Meo AI — interpretation, trends, Biological Age Score, and unlimited Q&A. Locks in the launch price.',
-    price: 14900, // £149 (vs. 12 × £29 = £348)
+      'Continuous glucose monitoring across 14 days. Streams readings into Meo so the AI can correlate spikes with your meals, sleep and stress. For users who want a full week-by-week picture, not just spot readings.',
+    price: 7000, // £70
     priceId:
-      process.env.NEXT_PUBLIC_ADDON_AI_12MO_PRICE_ID ||
-      'price_meo_ai_12mo_placeholder',
-    highlight: 'Save £199 vs. monthly',
+      process.env.NEXT_PUBLIC_ADDON_SYAI_CGM_PRICE_ID ||
+      'price_meo_syai_cgm_placeholder',
   },
   {
-    id: 'meo-premium',
-    name: 'Meo Premium Insights — monthly',
+    id: 'glucose-strips',
+    name: 'Additional glucose strips',
     description:
-      'Deeper pattern analysis across your lipids plus any connected device (Oura, Whoop, Apple Health, Garmin). Monthly 1:1 async coaching check-in with a Meo specialist, priority Q&A, quarterly Biological Age Score deep-dive.',
-    price: 2900, // £29/month
+      'Top-up pack of glucose strips. Order any quantity — most regular trackers go through 1–2 packs a month.',
+    price: 1500, // £15
     priceId:
-      process.env.NEXT_PUBLIC_ADDON_PREMIUM_PRICE_ID ||
-      'price_meo_premium_placeholder',
-    recurring: 'month',
-    highlight: 'Specialist coaching · Priority AI · Device integrations',
+      process.env.NEXT_PUBLIC_ADDON_GLUCOSE_STRIPS_PRICE_ID ||
+      'price_meo_glucose_strips_placeholder',
+  },
+  {
+    id: 'ketone-strips',
+    name: 'Additional ketone strips',
+    description:
+      'Top-up pack of ketone strips for the MultiMeter. Useful when you\'re training metabolic flexibility or doing a structured fast.',
+    price: 2500, // £25
+    priceId:
+      process.env.NEXT_PUBLIC_ADDON_KETONE_STRIPS_PRICE_ID ||
+      'price_meo_ketone_strips_placeholder',
   },
 ];
 
@@ -174,27 +193,32 @@ export const FAQ_ITEMS = [
   {
     question: 'Is this a medical device?',
     answer:
-      'The lipid meter is a CE-marked clinical-grade instrument for at-home lipid measurement. Meo as a whole is a wellness and monitoring system — it is not intended to diagnose, treat, cure, or prevent any disease. Always consult a qualified healthcare professional for medical advice.',
+      'The lipid meter is a CE-marked clinical-grade instrument and one of only three lipid meters registered for Home Use in the EU. Meo as a whole is a wellness and monitoring system — it is not intended to diagnose, treat, cure, or prevent any disease. Always consult a qualified healthcare professional for medical advice.',
   },
   {
     question: 'How accurate is the meter?',
     answer:
-      'The Sejoy BF-101b meter we ship reads within ±10% of reference-lab panels for Total Cholesterol, HDL, LDL and Triglycerides. More importantly, the real value of Meo is in the trend across many readings — small per-reading variance washes out in the pattern.',
+      'The meter reads within ±10% of reference-lab panels for Total Cholesterol, HDL, LDL and Triglycerides. More importantly, the real value of Meo is in the trend across many readings — small per-reading variance washes out in the pattern.',
   },
   {
     question: 'What can Meo AI actually do?',
     answer:
-      'Meo AI interprets each reading in plain English, compares it against your own baseline, connects lipid trends with anything else you share (sleep, steps, diet, stress, travel), and surfaces patterns before they become trends. It does not diagnose, prescribe, or replace your doctor — when a reading is outside expected bounds, it will recommend you see a healthcare professional.',
+      'Meo AI is the world\'s only conversational AI dedicated to metabolic health. It interprets each reading in plain English against your own baseline, connects lipid trends with anything else you share (sleep, steps, diet, stress, travel), and surfaces patterns before they become trends. Built on ten years of industrialising the gold-standard Kraft Test. It does not diagnose, prescribe, or replace your doctor — when a reading is outside expected bounds, it will recommend you see a healthcare professional.',
   },
   {
-    question: 'What happens after my 1 month of Meo AI ends?',
+    question: 'What happens after my 6 months of Meo AI ends?',
     answer:
-      'You can continue on a monthly plan or pick up one of the extension options at checkout (3 months or 12 months — both with meaningful savings vs. monthly). Your readings stay in your account either way.',
+      'You\'ll be reminded ahead of the renewal — and given the option to extend, downgrade, or cancel. Subscription auto-renews unless you cancel (per consumer-protection regulation we\'ll remind you in writing before billing). Your readings stay in your account either way.',
   },
   {
     question: 'What if it doesn\'t work for me?',
     answer:
-      '30-day money-back guarantee on the device. Send it back for a full refund — no questions, no upsell calls. You keep the eBook either way.',
+      '30-day money-back guarantee on the device. Send it back for a full refund — no questions, no upsell calls. You keep the eBook either way. Shipped discreetly in plain brown paper.',
+  },
+  {
+    question: 'Why does the bundle include a 6-month retest?',
+    answer:
+      'Single readings are noisy — six months gives your metabolism time to actually move. The retest is a fasting reading at month six so we can compare against your baseline and tell you whether you reached your Target Biological Age Score. A personalised report is included with findings and lifestyle recommendations.',
   },
   {
     question: 'How long does shipping take?',

@@ -146,7 +146,7 @@ export default async function OGImage() {
               fontSize: 22,
             }}
           >
-            Get Meo · £149
+            Get Meo · £197
           </div>
         </div>
       </div>

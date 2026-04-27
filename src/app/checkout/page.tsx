@@ -87,9 +87,9 @@ function TrustStrip() {
 // ─── Hero product card — what they're buying, front and centre ──────
 function HeroProductCard() {
   const features = [
-    { icon: <Activity className="h-4 w-4" />, text: 'Digital lipid meter' },
-    { icon: <Brain className="h-4 w-4" />, text: '1 month of Meo AI' },
-    { icon: <BookOpen className="h-4 w-4" />, text: 'eBook + 6-week protocol' },
+    { icon: <Brain className="h-4 w-4" />, text: '6 months of Meo AI' },
+    { icon: <Activity className="h-4 w-4" />, text: 'Lipid meter — bundled free' },
+    { icon: <BookOpen className="h-4 w-4" />, text: 'The Thin Book in Fat — Marina Young' },
   ];
   return (
     <div
