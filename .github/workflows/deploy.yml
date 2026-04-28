@@ -1,0 +1,170 @@
+# ───────────────────────────────────────────────────────────────────
+# deploy.yml — auto-deploy main → domus EC2 (shop.meterbolic.com)
+#
+# How it works:
+#   1. Triggers on every push to main (and manually via the Actions tab).
+#   2. Builds the Next.js app on the runner.
+#   3. SSH-tars-and-scps the build to /srv/meo-landing on domus.
+#   4. systemd restart meo-landing.
+#   5. Smoke-tests the live URL.
+#
+# Required GitHub repository secret (one-time setup):
+#   DEPLOY_SSH_KEY  — private SSH key (ed25519) whose public half is in
+#                     ~ubuntu/.ssh/authorized_keys on domus. NO passphrase.
+#                     Generate with:
+#                       ssh-keygen -t ed25519 -f ~/.ssh/meo-deploy -N ""
+#                     Copy public key to server:
+#                       ssh-copy-id -i ~/.ssh/meo-deploy.pub \
+#                                   ubuntu@domus.meterbolic.com
+#                     Then paste the contents of ~/.ssh/meo-deploy
+#                     (the PRIVATE key) into:
+#                       Settings → Secrets and variables → Actions →
+#                       New repository secret → DEPLOY_SSH_KEY
+#
+# Optional secrets (skip if you'd rather hardcode):
+#   DEPLOY_HOST     — defaults to domus.meterbolic.com
+#   DEPLOY_USER     — defaults to ubuntu
+#   DEPLOY_PATH     — defaults to /srv/meo-landing
+#   DEPLOY_SERVICE  — defaults to meo-landing
+#   LIVE_URL        — defaults to https://shop.meterbolic.com
+#
+# Escape hatches:
+#   - [skip-deploy] in the commit message → workflow exits early
+#   - workflow_dispatch button in the Actions tab → manual re-run
+# ───────────────────────────────────────────────────────────────────
+name: Deploy to domus (shop.meterbolic.com)
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'README.md'
+      - 'RUNBOOK.md'
+      - 'FUNNEL.md'
+      - 'STRIPE_SETUP.md'
+      - '.gitignore'
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Why are you deploying manually? (optional)'
+        required: false
+        default: ''
+
+# Cancel any in-flight deploy when a new push arrives — prevents two
+# scp+systemd-restart pairs from colliding mid-flight.
+concurrency:
+  group: deploy-domus-main
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build + ship to domus
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.head_commit.message, '[skip-deploy]') }}
+
+    env:
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST || 'domus.meterbolic.com' }}
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER || 'ubuntu' }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH || '/srv/meo-landing' }}
+      DEPLOY_SERVICE: ${{ secrets.DEPLOY_SERVICE || 'meo-landing' }}
+      LIVE_URL: ${{ secrets.LIVE_URL || 'https://shop.meterbolic.com' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js
+        run: npm run build
+
+      - name: Set up SSH agent
+        # Loads the private key into an in-memory agent so subsequent
+        # ssh / scp invocations pick it up without writing the key
+        # to disk. The agent is automatically torn down when the job
+        # ends — the key never persists on the runner.
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+
+      - name: Trust domus host fingerprint
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -t ed25519,rsa,ecdsa "${{ env.DEPLOY_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Package build artifact
+        run: |
+          tar -czf /tmp/meo-landing.tgz \
+            --exclude=node_modules \
+            --exclude=.git \
+            --exclude=.github \
+            --exclude=.env.local \
+            --exclude=.env \
+            --exclude=.next/cache \
+            .
+          ls -lh /tmp/meo-landing.tgz
+
+      - name: Upload to server
+        run: |
+          scp -o StrictHostKeyChecking=yes /tmp/meo-landing.tgz \
+            "${{ env.DEPLOY_USER }}@${{ env.DEPLOY_HOST }}:/tmp/meo-landing.tgz"
+
+      - name: Extract + install + restart on server
+        run: |
+          ssh -o StrictHostKeyChecking=yes \
+            "${{ env.DEPLOY_USER }}@${{ env.DEPLOY_HOST }}" bash <<'REMOTE'
+            set -euo pipefail
+            DEPLOY_PATH="${{ env.DEPLOY_PATH }}"
+            SERVICE="${{ env.DEPLOY_SERVICE }}"
+
+            echo "→ ensuring ${DEPLOY_PATH} exists"
+            sudo mkdir -p "${DEPLOY_PATH}"
+
+            echo "→ extracting new build (preserving .env.local)"
+            sudo tar -xzf /tmp/meo-landing.tgz -C "${DEPLOY_PATH}" \
+              --exclude='.env.local'
+            sudo chown -R ubuntu:ubuntu "${DEPLOY_PATH}"
+
+            echo "→ npm ci --omit=dev"
+            cd "${DEPLOY_PATH}"
+            npm ci --omit=dev
+
+            echo "→ systemctl restart ${SERVICE}"
+            sudo systemctl restart "${SERVICE}"
+            sleep 2
+            sudo systemctl status "${SERVICE}" --no-pager | head -12
+
+            rm -f /tmp/meo-landing.tgz
+          REMOTE
+
+      - name: Smoke test
+        run: |
+          set +e
+          for i in 1 2 3 4 5; do
+            sleep 3
+            CODE=$(curl -s -o /dev/null -w '%{http_code}' "${{ env.LIVE_URL }}/")
+            echo "attempt $i → ${{ env.LIVE_URL }}/ returned $CODE"
+            if [ "$CODE" = "200" ]; then
+              echo "✅ Live"
+              exit 0
+            fi
+          done
+          echo "::error::Smoke test failed — ${{ env.LIVE_URL }} did not return 200 after 5 attempts. Check the Caddy + meo-landing systemd logs on ${{ env.DEPLOY_HOST }}."
+          exit 1
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "### Deploy result" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: ${GITHUB_REF#refs/heads/}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: \`${GITHUB_SHA::8}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Live**: ${{ env.LIVE_URL }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggered by**: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
