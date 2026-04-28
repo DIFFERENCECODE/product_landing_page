@@ -425,9 +425,9 @@ function Hero() {
 // ─── Problem / Agitation ─────────────────────────────────────────────
 function ProblemSection() {
   const items = [
-    "You don't know if yesterday's meal moved your lipids.",
-    "You don't know if last week's sleep collapse nudged your ratios.",
-    "You don't know whether the supplement you've taken for six months is helping.",
+    "You don't know if yesterday's meal moved your lipids — until 12 months from now.",
+    "You don't know if last week's sleep collapse nudged your insulin response.",
+    "You don't know whether the supplement you've taken for six months is doing anything.",
     "And nobody tells you whether a 42-year-old's TC/HDL ratio should really be where yours is.",
   ];
   return (
@@ -435,8 +435,8 @@ function ProblemSection() {
       <div className="max-w-4xl mx-auto">
         <SectionHeader
           eyebrow="The visibility problem"
-          title={<>You&apos;re not lazy. Your data is just too sparse to act on.</>}
-          subtitle="Most people over 35 get one cholesterol reading per year — a single snapshot, a set of numbers, a 90-second conversation. By the time a number 'trends up', the process behind it has been quietly accelerating for years."
+          title={<>You&apos;re not undisciplined. Your data is too sparse to act on.</>}
+          subtitle="One cholesterol reading a year. A 90-second conversation. By the time a number 'trends up', the process behind it has been quietly accelerating for half a decade. We've spent ten years industrialising the gold-standard Kraft Test so you don't have to wait for the next annual blood draw to see what your metabolism is doing."
         />
 
         <div className="mt-10 grid sm:grid-cols-2 gap-4">
@@ -457,7 +457,7 @@ function ProblemSection() {
         </div>
 
         <p className="mt-10 text-center text-lg font-medium" style={{ color: C.primary, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif' }}>
-          That isn&apos;t a willpower problem. That&apos;s a visibility problem.
+          That isn&apos;t a willpower problem. That&apos;s a visibility problem — and £197 of Meo fixes it.
         </p>
       </div>
     </section>
@@ -466,16 +466,44 @@ function ProblemSection() {
 
 // ─── Why Standard Tests Fail ─────────────────────────────────────────
 function WhyTestsFailSection() {
-  const rows = [
-    ['Only measures fasting values', 'Your body is metabolic 23 hours a day, not just in the morning'],
-    ['Gives you one snapshot', 'You need the trend to see anything real'],
-    ['Reports Total Cholesterol', 'The ratios and patterns are what predict outcomes'],
-    ['Treats you like the median 50-year-old', 'You are not the median 50-year-old'],
-    ['Arrives as raw numbers', 'You need to know: is this getting better, worse, or staying put?'],
+  // Three columns: standard test → what's missing → what Meo does.
+  // Closes the loop from problem statement to product positioning
+  // without repeating the campaign-brief differentiators verbatim.
+  const rows: [string, string, string][] = [
+    [
+      'Only measures fasting values',
+      'Your body is metabolic 23 hours a day, not just first thing in the morning',
+      'Tests whenever you want — at home, in 3 minutes, from one finger-prick',
+    ],
+    [
+      'Gives you one snapshot',
+      'You need the trend to see what is actually happening',
+      'Stitches every reading into your personal trend so drift is visible early',
+    ],
+    [
+      'Reports Total Cholesterol',
+      'The ratios (TC/HDL, LDL/HDL) and the insulin pattern predict outcomes',
+      'Reads HDL, LDL, TG, ratios + a Kraft-style insulin response on every test',
+    ],
+    [
+      'Treats you like the median 50-year-old',
+      'You are not the median 50-year-old',
+      'Benchmarks you against your own readings — your baseline, not a population',
+    ],
+    [
+      'Arrives as raw numbers',
+      'You need to know: getting better, worse, or holding?',
+      'The world’s only metabolic-health AI explains every reading in plain English',
+    ],
+    [
+      'Sits in a clinic / a queue / a fasting morning',
+      'Convenience determines whether you actually do it consistently',
+      'One of only three lipid meters registered for Home Use in the EU',
+    ],
   ];
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <SectionHeader
           eyebrow="Why the standard blood test fails"
           title={<>One number. Once a year. In a language you weren&apos;t taught.</>}
@@ -487,16 +515,17 @@ function WhyTestsFailSection() {
           {/* Header row — visible only on sm+ since the stacked mobile
               layout has inline labels on each cell. */}
           <div
-            className="hidden sm:grid grid-cols-2 text-xs font-semibold tracking-wide px-6 py-4"
+            className="hidden sm:grid grid-cols-3 text-xs font-semibold tracking-wide px-6 py-4"
             style={{ background: 'rgba(255,255,255,0.04)', color: C.muted }}
           >
             <div>Standard blood test</div>
             <div>What&apos;s missing</div>
+            <div style={{ color: C.primary }}>What Meo does</div>
           </div>
-          {rows.map(([l, r], i) => (
+          {rows.map(([l, m, r], i) => (
             <div
               key={i}
-              className="px-5 sm:px-6 py-5 text-sm grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6"
+              className="px-5 sm:px-6 py-5 text-sm grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6"
               style={{ borderTop: `1px solid ${C.border}` }}
             >
               <div style={{ color: C.muted }}>
@@ -515,13 +544,22 @@ function WhyTestsFailSection() {
                 >
                   What&apos;s missing
                 </span>
+                {m}
+              </div>
+              <div style={{ color: C.fg }}>
+                <span
+                  className="sm:hidden block text-[10px] font-semibold tracking-wide mb-1"
+                  style={{ color: C.primary }}
+                >
+                  What Meo does
+                </span>
                 {r}
               </div>
             </div>
           ))}
         </div>
         <p className="mt-10 text-center font-medium text-lg max-w-2xl mx-auto" style={{ color: C.fg }}>
-          The core problem isn&apos;t the test. It&apos;s the gap between <span style={{ color: C.primary }}>data</span> and <span style={{ color: C.primary }}>decision</span>.
+          The core problem isn&apos;t the test. It&apos;s the gap between <span style={{ color: C.primary }}>data</span> and <span style={{ color: C.primary }}>decision</span> — and that gap is what £197 of Meo closes.
         </p>
       </div>
     </section>
