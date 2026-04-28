@@ -684,6 +684,106 @@ function MeetMeoSection() {
   );
 }
 
+// ─── Offer Stack ─────────────────────────────────────────────────────
+//
+// High-leverage conversion section: itemises everything in the £197
+// bundle with individual market values, sums to a much larger number,
+// strikethroughs it, and lands on £197 as the "you actually pay".
+// Why this format works for the 40+ scare-driven buyer:
+//   - anchors them on £362 of perceived value before they see £197
+//   - itemising forces them to mentally accept each component as
+//     genuinely valuable, which makes the bundle feel undervalued
+//   - the math is simple and explicit (no hand-wavy "best deal" claims)
+//   - the strikethrough is a visual heuristic the brain processes
+//     instantly without reading the line items
+function OfferStackSection() {
+  const items = [
+    { label: '6 months of Meo AI access',          value: 17400, note: '£29/mo at the standard rate' },
+    { label: 'Digital Lipid Meter',                value: 8000,  note: '1 of only 3 EU-registered home meters' },
+    { label: 'The Thin Book in Fat — Marina Young', value: 1900,  note: 'eBook · digital edition' },
+    { label: 'Q&A with the author via Meo',        value: 4900,  note: 'unlimited written questions' },
+    { label: 'Biological Age Score + Target',      value: 4000,  note: 'baseline + 6-month goal' },
+    { label: 'Free retest at month 6',             value: 4000,  note: 'fasting reading + personalised report' },
+  ] as const;
+  const total = items.reduce((s, x) => s + x.value, 0);
+  const price = KIT_PRODUCT.price;
+  const savings = total - price;
+
+  return (
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
+      <div className="max-w-3xl mx-auto">
+        <SectionHeader
+          eyebrow="What's actually in the £197"
+          title={<>You&apos;re buying <span style={{ color: C.primary }}>{formatGBP(total)}</span> of value for {formatGBP(price)}.</>}
+          subtitle="No promo, no countdown, no flash sale. The bundle is priced this way on purpose: so you say yes today and start the trend tomorrow."
+        />
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mt-10 rounded-2xl overflow-hidden"
+          style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+        >
+          {items.map((it, i) => (
+            <div
+              key={i}
+              className="flex items-baseline justify-between gap-4 px-5 sm:px-6 py-4"
+              style={{ borderBottom: i < items.length - 1 ? `1px solid ${C.border}` : 'none' }}
+            >
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-medium" style={{ color: C.fg }}>{it.label}</div>
+                <div className="text-xs mt-0.5" style={{ color: C.muted }}>{it.note}</div>
+              </div>
+              <div className="text-sm font-semibold tabular-nums" style={{ color: C.muted }}>
+                {formatGBP(it.value)}
+              </div>
+            </div>
+          ))}
+
+          {/* Total + price + savings — visually heavy so the eye lands here */}
+          <div
+            className="px-5 sm:px-6 py-5 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 items-baseline"
+            style={{ background: 'rgba(164,214,94,0.06)', borderTop: `1px solid ${C.border}` }}
+          >
+            <div className="text-xs" style={{ color: C.muted }}>
+              Total individual value
+              <div className="mt-1 text-base font-semibold line-through tabular-nums" style={{ color: C.muted }}>
+                {formatGBP(total)}
+              </div>
+            </div>
+            <div className="text-xs" style={{ color: C.muted }}>
+              You pay
+              <div
+                className="mt-1 text-3xl font-extrabold tabular-nums"
+                style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif' }}
+              >
+                {formatGBP(price)}
+              </div>
+            </div>
+            <div className="text-xs" style={{ color: C.muted }}>
+              You save
+              <div className="mt-1 text-base font-semibold tabular-nums" style={{ color: C.primary }}>
+                {formatGBP(savings)}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+          <CTAButton size="lg">
+            Start with 6 months of Meo · {formatGBP(price)} <ArrowRight className="h-4 w-4" />
+          </CTAButton>
+          <span className="text-xs" style={{ color: C.muted }}>
+            30-day money-back · Free UK shipping · Plain brown paper
+          </span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─── Biomarkers ──────────────────────────────────────────────────────
 function BiomarkersSection() {
   return (
@@ -1465,6 +1565,11 @@ export default function MarketingLandingPage() {
       <ProblemSection />
       <WhyTestsFailSection />
       <MeetMeoSection />
+      {/* Conversion-priming: itemised value-stack right after they
+          first understand what Meo IS, before they go deep into how
+          each component works. Surfaces the £362-of-value-for-£197
+          math early so deeper engagement happens with that anchor. */}
+      <OfferStackSection />
       <BiomarkersSection />
       <LipidTrackingSection />
       <InsulinPatternSection />
