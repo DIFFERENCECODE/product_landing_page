@@ -79,7 +79,7 @@ jobs:
           target: ${{ secrets.APP_PATH }}
           rm: false
 
-      - name: Install deps + restart service on EC2
+      - name: Install deps + rebuild + reload PM2 on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -87,21 +87,20 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             set -euo pipefail
+            export PATH=/home/ubuntu/.nvm/versions/node/v20.20.2/bin:$PATH
             cd ${{ secrets.APP_PATH }}
 
-            echo "→ npm ci --omit=dev"
-            npm ci --omit=dev
+            echo "→ npm ci"
+            # Full install (not --omit=dev) because next build step needs
+            # devDeps like typescript, eslint configs etc.
+            npm ci
 
-            echo "→ restarting service"
-            # Try meo-landing systemd unit first (per RUNBOOK section 4.4).
-            # Fallback to 'sudo bt reload' if the system is managed by
-            # BT-Panel / aaPanel — same pattern chatbot-rag uses.
-            if systemctl list-unit-files | grep -q '^meo-landing.service'; then
-              sudo systemctl restart meo-landing
-              sudo systemctl status meo-landing --no-pager | head -10
-            else
-              sudo bt reload
-            fi
+            echo "→ npm run build (NEXT_PUBLIC_* vars are baked in at build time)"
+            npm run build
+
+            echo "→ pm2 reload meo-landing --update-env"
+            pm2 reload meo-landing --update-env
+            pm2 save
 
       - name: Smoke test
         run: |
