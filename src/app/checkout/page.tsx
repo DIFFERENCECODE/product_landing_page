@@ -205,26 +205,44 @@ function AddonRow({
         {addon.description}
       </p>
       <div className="flex items-center gap-3">
+        {/* Quantity buttons — bigger hit area (40×40 px from 36),
+            stronger borders, brighter hover state, scale animation
+            on press. The increment button is tinted lime to draw
+            the eye since "buy more" is the conversion intent. */}
         <button
           onClick={onDec}
           disabled={qty === 0}
           aria-label={`Decrease ${addon.name}`}
-          className="w-9 h-9 rounded-full flex items-center justify-center transition-all disabled:opacity-30 hover:bg-white/5 active:scale-95"
-          style={{ border: `1px solid ${C.border}`, color: C.fg }}
+          className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-150
+                     disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer
+                     hover:scale-110 hover:bg-white/15 hover:border-white/40
+                     active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+          style={{
+            border: `1px solid ${C.border}`,
+            color: C.fg,
+            background: qty === 0 ? 'transparent' : 'rgba(255,255,255,0.06)',
+          }}
         >
-          <Minus size={14} />
+          <Minus size={16} strokeWidth={2.5} />
         </button>
-        <span className="w-7 text-center text-sm font-semibold" style={{ color: C.fg }}>
+        <span className="w-8 text-center text-base font-bold tabular-nums" style={{ color: C.fg }}>
           {qty}
         </span>
         <button
           onClick={onInc}
           disabled={qty === 9}
           aria-label={`Increase ${addon.name}`}
-          className="w-9 h-9 rounded-full flex items-center justify-center transition-all disabled:opacity-30 hover:bg-white/5 active:scale-95"
-          style={{ border: `1px solid ${C.border}`, color: C.fg }}
+          className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-150
+                     disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer
+                     hover:scale-110 hover:brightness-125
+                     active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a4d65e]/60"
+          style={{
+            border: `1px solid ${qty === 9 ? C.border : 'rgba(164,214,94,0.55)'}`,
+            color: qty === 9 ? C.fg : '#a4d65e',
+            background: qty === 9 ? 'transparent' : 'rgba(164,214,94,0.12)',
+          }}
         >
-          <Plus size={14} />
+          <Plus size={16} strokeWidth={2.5} />
         </button>
         {selected && (
           <span className="ml-auto text-sm font-semibold" style={{ color: C.primary }}>

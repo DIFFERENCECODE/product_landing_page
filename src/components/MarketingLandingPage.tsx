@@ -647,7 +647,7 @@ function MeetMeoSection() {
     { icon: <BookOpen className="h-6 w-6" style={{ color: C.primary }} />, title: 'The eBook', sub: 'turns meaning into action' },
   ];
   return (
-    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
+    <section id="how-it-works" className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
       <div className="max-w-5xl mx-auto">
         <SectionHeader
           eyebrow="Meet Meo"
