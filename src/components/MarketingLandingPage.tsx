@@ -173,9 +173,20 @@ function Navbar() {
       className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4"
       style={{ background: 'rgba(28,74,64,0.92)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.border}` }}
     >
-      <Link href="/" className="flex items-center gap-1.5">
-        <span className="text-xl font-bold" style={{ color: C.fg }}>Me</span>
-        <DropletIcon size={20} />
+      <Link href="/" className="flex items-center gap-1.5" aria-label="Meo home">
+        {/* Wordmark: literal "Meo" letters + droplet icon. The droplet
+            sits inline at slightly larger size so it visually anchors
+            the brand glyph alongside the wordmark. */}
+        <span
+          className="text-xl font-bold tracking-tight"
+          style={{
+            color: C.fg,
+            fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif',
+          }}
+        >
+          Meo
+        </span>
+        <DropletIcon size={22} />
         <span className="hidden sm:inline text-xs ml-2 tracking-wide" style={{ color: C.muted }}>
           Metabolic Intelligence
         </span>
@@ -359,13 +370,75 @@ function Hero() {
           </a>
         </motion.div>
 
-        {/* Trust line under CTA — emphasises that the meter is bundled
-            free with the subscription and the box ships in plain paper. */}
+        {/* Trust line under CTA — single-line summary kept short so it
+            doesn't compete with the CTA visually. The richer trust
+            grid lives below as separate cards. */}
         <p className="text-xs mt-3" style={{ color: C.muted }}>
           Lipid meter included free · 30-day money-back ·{' '}
           <span style={{ color: C.primary }}>plain brown paper</span>
         </p>
+
+        {/* Credential pill — the campaign brief's strongest single
+            differentiator, surfaced near the CTA so it's visible
+            without scrolling on most screens. Targets the 40+
+            audience signal-checking before they commit. */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.35 }}
+          className="inline-flex items-center gap-2 mt-6 sm:mt-8 px-4 py-2 rounded-full text-xs font-medium"
+          style={{
+            background: 'rgba(164,214,94,0.08)',
+            border: `1px solid ${C.primary}40`,
+            color: C.fg,
+          }}
+        >
+          <Sparkles className="h-3.5 w-3.5" style={{ color: C.primary }} />
+          Built on ten years of industrialising the gold-standard Kraft Test
+        </motion.div>
+
+        {/* Trust badge grid — 4 visible signals tuned for the 40+
+            scare-driven buyer. Each badge is a single icon + one
+            short line; they're side-by-side on desktop, 2x2 on
+            mobile. Order picked deliberately:
+              1. Money-back  (risk reversal first — biggest objection killer)
+              2. EU registered (clinical credibility)
+              3. Plain brown paper (privacy / discretion — campaign brief)
+              4. Free retest (concrete deliverable that's not just a refund)
+            Position: outside the hero `text-center` block so it spans
+            full width on mobile but still sits above the marquee. */}
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.45 }}
+        className="relative max-w-3xl mx-auto w-full mt-8 sm:mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3"
+      >
+        {[
+          { icon: <Heart className="h-4 w-4" />, label: '30-day', sub: 'money-back' },
+          { icon: <Activity className="h-4 w-4" />, label: 'EU-registered', sub: '1 of only 3 lipid meters' },
+          { icon: <BookOpen className="h-4 w-4" />, label: 'Brown paper', sub: 'discreet shipping' },
+          { icon: <RefreshCw className="h-4 w-4" />, label: 'Free retest', sub: 'at month 6' },
+        ].map((b, i) => (
+          <div
+            key={i}
+            className="flex items-center gap-2.5 rounded-xl px-3 py-2.5"
+            style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+          >
+            <div
+              className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
+              style={{ background: 'rgba(164,214,94,0.12)', color: C.primary }}
+            >
+              {b.icon}
+            </div>
+            <div className="min-w-0 leading-tight">
+              <div className="text-xs font-semibold" style={{ color: C.fg }}>{b.label}</div>
+              <div className="text-[11px]" style={{ color: C.muted }}>{b.sub}</div>
+            </div>
+          </div>
+        ))}
+      </motion.div>
 
       {/* Cross marquee — two rows, opposite directions.
           Top row slides left (default direction).

@@ -414,9 +414,17 @@ export default function CheckoutPage() {
           borderBottom: `1px solid ${C.border}`,
         }}
       >
-        <Link href="/" className="flex items-center gap-1.5">
-          <span className="text-xl font-bold" style={{ color: C.fg }}>Me</span>
-          <DropletIcon size={20} />
+        <Link href="/" className="flex items-center gap-1.5" aria-label="Meo home">
+          <span
+            className="text-xl font-bold tracking-tight"
+            style={{
+              color: C.fg,
+              fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif',
+            }}
+          >
+            Meo
+          </span>
+          <DropletIcon size={22} />
           <span className="hidden sm:inline text-xs ml-2 tracking-wide" style={{ color: C.muted }}>
             Metabolic Intelligence
           </span>
