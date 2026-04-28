@@ -132,9 +132,49 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Analytics — env-var driven so the same code supports either
+  // Plausible (privacy-friendly, GDPR-compliant by default, no
+  // cookie banner needed) or GA4. Set ONE of:
+  //   NEXT_PUBLIC_PLAUSIBLE_DOMAIN  e.g. shop.meterbolic.com
+  //   NEXT_PUBLIC_GA_ID             e.g. G-XXXXXXXXXX
+  // and the corresponding script tag lights up at next build.
+  // Leaving both unset = no analytics tags, no third-party
+  // requests = no cookie banner needed.
+  const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
   return (
     <html lang="en">
       <head>
+        {/* Privacy-friendly analytics. Defer + async means it never
+            blocks LCP. Plausible is the recommended choice for an
+            EU-customer audience because it doesn't drop any tracking
+            cookies and exempts the site from cookie-banner law. */}
+        {plausibleDomain && (
+          <script
+            defer
+            data-domain={plausibleDomain}
+            src="https://plausible.io/js/script.js"
+          />
+        )}
+        {gaId && (
+          <>
+            <script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+            />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${gaId}', { anonymize_ip: true });
+                `,
+              }}
+            />
+          </>
+        )}
         {/* Typography — two faces, two CDNs:
               - Cabinet Grotesk (Fontshare) for body
               - Bricolage Grotesque (Google Fonts) for headings

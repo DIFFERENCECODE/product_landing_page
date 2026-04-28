@@ -1516,19 +1516,36 @@ function Footer() {
     <footer className="pt-10 pb-28 sm:pb-10 px-6" style={{ background: C.bg, borderTop: `1px solid ${C.border}` }}>
       <div className="max-w-5xl mx-auto">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-8">
-          <Link href="/" className="flex items-center gap-1.5">
-            <span className="font-bold" style={{ color: C.fg }}>Me</span>
+          <Link href="/" className="flex items-center gap-1.5" aria-label="Meo home">
+            <span className="font-bold tracking-tight" style={{ color: C.fg }}>Meo</span>
             <DropletIcon size={16} />
             <span className="text-sm ml-2" style={{ color: C.muted }}>Metabolic Intelligence · by Meterbolic</span>
           </Link>
-          <p className="text-sm" style={{ color: C.muted }}>© 2026 Meterbolic. All rights reserved.</p>
+          {/* Legal + contact links — required for Stripe Checkout policy
+              compliance and UK consumer-law disclosure obligations. */}
+          <nav className="flex items-center gap-5 text-sm" aria-label="Footer navigation">
+            <Link href="/privacy" className="hover:underline" style={{ color: C.muted }}>
+              Privacy
+            </Link>
+            <Link href="/terms" className="hover:underline" style={{ color: C.muted }}>
+              Terms
+            </Link>
+            <a
+              href="mailto:hello@meterbolic.com"
+              className="hover:underline"
+              style={{ color: C.muted }}
+            >
+              Contact
+            </a>
+          </nav>
         </div>
-        <p className="text-xs leading-relaxed" style={{ color: C.muted }}>
+        <p className="text-xs leading-relaxed mb-3" style={{ color: C.muted }}>
           Meo is a wellness and monitoring tool. It is not intended to diagnose, treat, cure, or prevent any disease.
           Always consult your GP or a qualified healthcare professional for medical advice. Readings are informational
           and are not a substitute for professional testing. Meo AI provides pattern-based insights, not medical advice;
           if something concerns you, speak to a healthcare professional.
         </p>
+        <p className="text-xs" style={{ color: C.muted }}>© 2026 Meterbolic Ltd. All rights reserved.</p>
       </div>
     </footer>
   );
