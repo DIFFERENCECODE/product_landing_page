@@ -69,15 +69,20 @@
     text-size-adjust: 100%;
   }
 
-  /* Cabinet Grotesk for everything. Both --font-sans and --font-serif
-     point at the same family — the JSX uses both variables in inline
-     styles, this keeps existing call sites working without touching
-     any component. */
+  /* Two faces, semantic split:
+       - --font-sans  = Cabinet Grotesk (Fontshare) — body, UI, links
+       - --font-serif = Bricolage Grotesque (Google Fonts) — headings
+     The variable name '--font-serif' is kept so existing inline
+     styles in JSX resolve correctly without rename churn; Bricolage
+     Grotesque is a sans-serif display face, not literally a serif.
+     The fallback chain ends in 'sans-serif' to match its actual
+     style if both CDNs fail. */
   :root {
     --font-sans: "Cabinet Grotesk", -apple-system, BlinkMacSystemFont,
                  "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --font-serif: "Cabinet Grotesk", -apple-system, BlinkMacSystemFont,
-                  "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-serif: "Bricolage Grotesque", "Cabinet Grotesk",
+                  -apple-system, BlinkMacSystemFont, "Segoe UI",
+                  Roboto, Helvetica, Arial, sans-serif;
   }
 
   body {
@@ -91,10 +96,10 @@
     font-family: var(--font-sans);
   }
 
-  /* All headings use Cabinet Grotesk — same face as body for a
-     single-typeface look. Just heavier weights + tighter tracking
-     to preserve hierarchy. */
-  h1, h2 {
+  /* All headings use Bricolage Grotesque (--font-serif). Body keeps
+     Cabinet Grotesk (--font-sans). Heavier weights + tight tracking
+     preserve hierarchy across the size scale. */
+  h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-serif);
     font-weight: 700;
     letter-spacing: -0.02em;
@@ -112,9 +117,8 @@
     font-weight: 600;
   }
 
-  h3, h4, h5 {
-    font-family: var(--font-sans), sans-serif;
-  }
+  /* h3-h5 inherit font-family from the h1..h6 rule above (Bricolage).
+     Just adjust the per-size weight + tracking here. */
 
   h3 {
     font-size: clamp(18px, 2.2vw, 20px);

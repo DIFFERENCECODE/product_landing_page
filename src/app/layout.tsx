@@ -135,14 +135,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Cabinet Grotesk — hosted on Fontshare. Preconnect first so
-            the TLS handshake to api.fontshare.com is paid for once,
-            then the stylesheet load is fast. */}
+        {/* Typography — two faces, two CDNs:
+              - Cabinet Grotesk (Fontshare) for body
+              - Bricolage Grotesque (Google Fonts) for headings
+            Preconnect first so each TLS handshake is paid once. */}
         <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           rel="stylesheet"
           href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800&display=swap"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap"
         />
 
         {/* Inject JSON-LD as inline scripts so Google can ingest at first paint. */}
