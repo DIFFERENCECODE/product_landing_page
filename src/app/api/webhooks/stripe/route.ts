@@ -23,6 +23,8 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
+import { sendEmail } from "@/lib/ses";
+import { purchaseConfirmationHtml, purchaseConfirmationText } from "@/lib/emails/purchase-confirmation";
 import type Stripe from "stripe";
 
 // Required on Vercel: lets us read the raw body for signature verification
@@ -95,6 +97,16 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
     );
     return;
   }
+
+  // Purchase confirmation email — fire & forget.
+  sendEmail({
+    to: email,
+    subject: "Your Meo Starter System is confirmed",
+    html: purchaseConfirmationHtml({ name: name ?? "", email, orderId: session.id }),
+    text: purchaseConfirmationText({ name: name ?? "", email, orderId: session.id }),
+  }).catch((err) => {
+    console.error("[stripe-webhook] Purchase confirmation email failed:", err);
+  });
 
   // Enrol in waitlist — fire & forget. Failure is logged but does not
   // surface to Stripe (which would cause a retry and potential duplicate).
