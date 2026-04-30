@@ -325,7 +325,7 @@ function Hero() {
             aria-hidden
           >
             <Image
-              src="/sejoy_clean.png"
+              src="/lipid-meter.png"
               alt=""
               width={183}
               height={300}
@@ -831,7 +831,7 @@ function LipidTrackingSection() {
           style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
         >
           <Image
-            src="/sejoy_clean.png"
+            src="/lipid-meter.png"
             alt="Meo Digital Lipid Meter — finger-prick, strip, 3 minutes"
             width={400}
             height={655}

@@ -101,7 +101,7 @@ const PRODUCT_LD = {
   name: "Metabolic Health Cholesterol Tracker",
   description:
     "6 months of Meo AI + Digital Lipid Meter (bundled free) + The Thin Book in Fat by Marina Young. At-home cholesterol monitoring with AI-powered interpretation, a Biological Age Score, and a free retest at 6 months.",
-  image: [`${SITE_URL}/sejoy_clean.png`],
+  image: [`${SITE_URL}/lipid-meter.png`],
   brand: { "@type": "Brand", name: "Meo" },
   category: "Health & Wellness Monitoring Tools",
   offers: {
