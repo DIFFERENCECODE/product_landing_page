@@ -1243,7 +1243,7 @@ function TestimonialsSection() {
   );
 }
 
-// ─── Partners / Advisors ─────────────────────────────────────────────
+// ─── Partners / Advisors carousel ────────────────────────────────────
 const PARTNERS = [
   {
     photo: '/team-spencer.png',
@@ -1251,9 +1251,20 @@ const PARTNERS = [
     title: 'Sales Manager',
     bio: 'Over 25 years in pharmaceutical sales, specialising in diabetes therapies and coaching. Driving Meterbolic\'s commercial outreach and partner growth.',
   },
+  {
+    photo: '/team-andy.png',
+    name: 'Andy Taylor',
+    title: 'Clinic Lead',
+    bio: 'Former professional footballer turned metabolic health expert and UKSCA-accredited coach.',
+  },
 ];
 
 function PartnersSection() {
+  const [idx, setIdx] = useState(0);
+  const total = PARTNERS.length;
+  const prev = () => setIdx((i) => (i - 1 + total) % total);
+  const next = () => setIdx((i) => (i + 1) % total);
+
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
       <div className="max-w-5xl mx-auto">
@@ -1262,37 +1273,75 @@ function PartnersSection() {
           title={<>Built by people who <span style={{ color: C.primary }}>live</span> this.</>}
           subtitle="Decades of clinical, commercial, and metabolic expertise — all pointed at one goal: making your cholesterol data actually useful."
         />
-        <div className={`mt-12 flex flex-wrap justify-center gap-6`}>
-          {PARTNERS.map((p, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.45, delay: i * 0.08 }}
-              className="rounded-2xl overflow-hidden flex flex-col"
-              style={{
-                background: C.bgCard,
-                border: `1px solid ${C.border}`,
-                width: 'clamp(240px, 28%, 300px)',
-              }}
+
+        <div className="mt-12 relative flex flex-col items-center">
+          {/* Card */}
+          <div className="w-full max-w-sm">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                transition={{ duration: 0.35 }}
+                className="rounded-2xl overflow-hidden flex flex-col"
+                style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+              >
+                <div className="relative w-full" style={{ aspectRatio: '1/1', overflow: 'hidden' }}>
+                  <Image
+                    src={PARTNERS[idx].photo}
+                    alt={PARTNERS[idx].name}
+                    fill
+                    className="object-cover object-top"
+                    sizes="384px"
+                  />
+                </div>
+                <div className="p-6 flex flex-col gap-1">
+                  <p className="font-bold text-lg" style={{ color: C.fg }}>{PARTNERS[idx].name}</p>
+                  <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.primary }}>{PARTNERS[idx].title}</p>
+                  <p className="text-sm leading-relaxed" style={{ color: C.muted }}>{PARTNERS[idx].bio}</p>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Controls */}
+          <div className="flex items-center gap-6 mt-8">
+            <button
+              onClick={prev}
+              className="w-10 h-10 rounded-full flex items-center justify-center transition-opacity hover:opacity-80"
+              style={{ background: C.bgCard, border: `1px solid ${C.border}`, color: C.fg }}
+              aria-label="Previous"
             >
-              <div className="relative w-full" style={{ aspectRatio: '3/3.5', overflow: 'hidden' }}>
-                <Image
-                  src={p.photo}
-                  alt={p.name}
-                  fill
-                  className="object-cover object-top"
-                  sizes="300px"
+              <ChevronDown className="h-5 w-5 rotate-90" />
+            </button>
+
+            {/* Dots */}
+            <div className="flex gap-2">
+              {PARTNERS.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setIdx(i)}
+                  className="rounded-full transition-all"
+                  style={{
+                    width: i === idx ? 20 : 8,
+                    height: 8,
+                    background: i === idx ? C.primary : C.border,
+                  }}
+                  aria-label={`Go to ${PARTNERS[i].name}`}
                 />
-              </div>
-              <div className="p-5 flex flex-col gap-1 flex-1">
-                <p className="font-bold text-base" style={{ color: C.fg }}>{p.name}</p>
-                <p className="text-xs font-semibold tracking-wide mb-2" style={{ color: C.primary }}>{p.title}</p>
-                <p className="text-sm leading-relaxed" style={{ color: C.muted }}>{p.bio}</p>
-              </div>
-            </motion.div>
-          ))}
+              ))}
+            </div>
+
+            <button
+              onClick={next}
+              className="w-10 h-10 rounded-full flex items-center justify-center transition-opacity hover:opacity-80"
+              style={{ background: C.bgCard, border: `1px solid ${C.border}`, color: C.fg }}
+              aria-label="Next"
+            >
+              <ChevronDown className="h-5 w-5 -rotate-90" />
+            </button>
+          </div>
         </div>
       </div>
     </section>
