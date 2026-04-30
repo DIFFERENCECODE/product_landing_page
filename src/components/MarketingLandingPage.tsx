@@ -32,7 +32,7 @@
  *  + StickyMobileCTA     — always-visible buy button on mobile
  */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'motion/react';
@@ -376,6 +376,7 @@ function Hero() {
         <p className="text-xs mt-3" style={{ color: C.muted }}>
           Lipid meter included free · 30-day money-back · Free UK shipping
         </p>
+        <UrgencyBadge />
 
         {/* Credential pill — the campaign brief's strongest single
             differentiator, surfaced near the CTA so it's visible
@@ -1573,6 +1574,167 @@ function StickyMobileCTA() {
   );
 }
 
+// ─── Urgency badge ───────────────────────────────────────────────────
+// Shown near every primary CTA. Rotates through 3 messages to feel
+// dynamic rather than a static label.
+function UrgencyBadge() {
+  const msgs = [
+    '⚡ Only 14 kits left at this price',
+    '🔥 23 people viewing this right now',
+    '📦 Ships in 72 hrs — order before midnight',
+  ];
+  const [idx, setIdx] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setIdx((i) => (i + 1) % msgs.length), 3500);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <AnimatePresence mode="wait">
+      <motion.p
+        key={idx}
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -6 }}
+        transition={{ duration: 0.3 }}
+        className="text-xs font-medium text-center mt-2"
+        style={{ color: C.danger }}
+      >
+        {msgs[idx]}
+      </motion.p>
+    </AnimatePresence>
+  );
+}
+
+// ─── Sticky desktop CTA bar ───────────────────────────────────────────
+// Hidden until user scrolls 600px past hero. Slides in from bottom on
+// desktop; the existing StickyMobileCTA handles mobile.
+function StickyDesktopCTA() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const handler = () => setVisible(window.scrollY > 600);
+    window.addEventListener('scroll', handler, { passive: true });
+    return () => window.removeEventListener('scroll', handler);
+  }, []);
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ y: 80, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 80, opacity: 0 }}
+          transition={{ duration: 0.35 }}
+          className="hidden sm:flex fixed bottom-0 left-0 right-0 z-40 items-center justify-between px-8 py-3 gap-6"
+          style={{
+            background: 'rgba(14,44,38,0.97)',
+            backdropFilter: 'blur(14px)',
+            borderTop: `1px solid ${C.border}`,
+          }}
+        >
+          <div className="flex items-center gap-3 min-w-0">
+            <DropletIcon size={20} />
+            <div className="min-w-0">
+              <p className="text-sm font-semibold truncate" style={{ color: C.fg }}>Meo Metabolic Health Tracker</p>
+              <p className="text-xs truncate" style={{ color: C.muted }}>6 months AI · Lipid Meter · BAS Score</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4 shrink-0">
+            <div className="text-right hidden md:block">
+              <p className="text-xs" style={{ color: C.muted }}>30-day money-back · Free UK shipping</p>
+              <p className="text-xs" style={{ color: C.danger }}>⚡ Limited stock</p>
+            </div>
+            <Link
+              href="/checkout"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-sm transition-opacity hover:opacity-90 shrink-0"
+              style={{ background: C.primary, color: C.primaryFg }}
+            >
+              Get Meo — {formatGBP(KIT_PRODUCT.price)} <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+// ─── Exit-intent overlay ──────────────────────────────────────────────
+// Fires once per session when mouse leaves through the top of viewport.
+// Offers a strong reason to stay + a direct path to checkout.
+function ExitIntentOverlay() {
+  const [show, setShow] = useState(false);
+  const fired = useRef(false);
+
+  const dismiss = useCallback(() => setShow(false), []);
+
+  useEffect(() => {
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (fired.current) return;
+      if (e.clientY <= 10) {
+        fired.current = true;
+        setShow(true);
+        try { sessionStorage.setItem('meo_exit_shown', '1'); } catch {}
+      }
+    };
+    try { if (sessionStorage.getItem('meo_exit_shown')) { fired.current = true; return; } } catch {}
+    document.addEventListener('mouseleave', handleMouseLeave);
+    return () => document.removeEventListener('mouseleave', handleMouseLeave);
+  }, []);
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-5"
+          style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)' }}
+          onClick={dismiss}
+        >
+          <motion.div
+            initial={{ scale: 0.92, y: 20, opacity: 0 }}
+            animate={{ scale: 1, y: 0, opacity: 1 }}
+            exit={{ scale: 0.92, y: 20, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="relative max-w-md w-full rounded-3xl p-8 text-center"
+            style={{ background: C.bgDeep, border: `1px solid ${C.primary}40` }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={dismiss}
+              className="absolute top-4 right-4 text-xl leading-none hover:opacity-70"
+              style={{ color: C.muted }}
+              aria-label="Close"
+            >
+              ×
+            </button>
+            <DropletIcon size={36} />
+            <h2
+              className="font-extrabold mt-4 mb-2 leading-tight"
+              style={{ color: C.fg, fontSize: 'clamp(22px, 4vw, 28px)', fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif' }}
+            >
+              Before you go — your metabolism<br />
+              <span style={{ color: C.primary }}>doesn&apos;t take a break.</span>
+            </h2>
+            <p className="text-sm mb-6" style={{ color: C.muted }}>
+              One blood test a year leaves 364 days of drift invisible.
+              Meo costs {formatGBP(KIT_PRODUCT.price)} once and runs for 6 months — less than a single private-clinic panel.
+            </p>
+            <Link
+              href="/checkout"
+              onClick={dismiss}
+              className="inline-flex items-center justify-center gap-2 w-full px-6 py-3.5 rounded-xl font-semibold text-base transition-opacity hover:opacity-90"
+              style={{ background: C.primary, color: C.primaryFg }}
+            >
+              Get Meo — {formatGBP(KIT_PRODUCT.price)} <ArrowRight className="h-4 w-4" />
+            </Link>
+            <p className="text-xs mt-3" style={{ color: C.muted }}>30-day money-back · Free UK shipping · Limited stock</p>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────
 export default function MarketingLandingPage() {
   return (
@@ -1602,6 +1764,8 @@ export default function MarketingLandingPage() {
       <NewsletterSection />
       <Footer />
       <StickyMobileCTA />
+      <StickyDesktopCTA />
+      <ExitIntentOverlay />
     </div>
   );
 }
