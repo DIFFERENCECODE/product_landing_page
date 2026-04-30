@@ -1243,6 +1243,62 @@ function TestimonialsSection() {
   );
 }
 
+// ─── Partners / Advisors ─────────────────────────────────────────────
+const PARTNERS = [
+  {
+    photo: '/team-spencer.png',
+    name: 'Spencer Martin',
+    title: 'Sales Manager',
+    bio: 'Over 25 years in pharmaceutical sales, specialising in diabetes therapies and coaching. Driving Meterbolic\'s commercial outreach and partner growth.',
+  },
+];
+
+function PartnersSection() {
+  return (
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
+      <div className="max-w-5xl mx-auto">
+        <SectionHeader
+          eyebrow="The team behind Meo"
+          title={<>Built by people who <span style={{ color: C.primary }}>live</span> this.</>}
+          subtitle="Decades of clinical, commercial, and metabolic expertise — all pointed at one goal: making your cholesterol data actually useful."
+        />
+        <div className={`mt-12 flex flex-wrap justify-center gap-6`}>
+          {PARTNERS.map((p, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45, delay: i * 0.08 }}
+              className="rounded-2xl overflow-hidden flex flex-col"
+              style={{
+                background: C.bgCard,
+                border: `1px solid ${C.border}`,
+                width: 'clamp(240px, 28%, 300px)',
+              }}
+            >
+              <div className="relative w-full" style={{ aspectRatio: '3/3.5', overflow: 'hidden' }}>
+                <Image
+                  src={p.photo}
+                  alt={p.name}
+                  fill
+                  className="object-cover object-top"
+                  sizes="300px"
+                />
+              </div>
+              <div className="p-5 flex flex-col gap-1 flex-1">
+                <p className="font-bold text-base" style={{ color: C.fg }}>{p.name}</p>
+                <p className="text-xs font-semibold tracking-wide mb-2" style={{ color: C.primary }}>{p.title}</p>
+                <p className="text-sm leading-relaxed" style={{ color: C.muted }}>{p.bio}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─── Objections ──────────────────────────────────────────────────────
 function ObjectionsSection() {
   const items = [
@@ -1757,6 +1813,7 @@ export default function MarketingLandingPage() {
       <BenefitsSection />
       <NumbersVsInsightsSection />
       <TestimonialsSection />
+      <PartnersSection />
       <ObjectionsSection />
       <GuaranteeSection />
       <AddonsSection />
