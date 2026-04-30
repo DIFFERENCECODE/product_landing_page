@@ -361,13 +361,13 @@ function Hero() {
           <CTAButton size="lg">
             Start with 6 months of Meo · {formatGBP(KIT_PRODUCT.price)} <ArrowRight className="h-4 w-4" />
           </CTAButton>
-          <a
-            href="#how-it-works"
-            className="text-sm hover:underline"
+          <button
+            onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+            className="text-sm hover:underline cursor-pointer bg-transparent border-0 p-0"
             style={{ color: C.muted }}
           >
             See how it works ↓
-          </a>
+          </button>
         </motion.div>
 
         {/* Trust line under CTA — single-line summary kept short so it
@@ -1512,40 +1512,41 @@ function NewsletterSection() {
 // ─── Footer (with compliance disclaimer) ────────────────────────────
 function Footer() {
   return (
-    <footer className="pt-10 pb-28 sm:pb-10 px-6" style={{ background: C.bg, borderTop: `1px solid ${C.border}` }}>
-      <div className="max-w-5xl mx-auto">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-8">
-          <Link href="/" className="flex items-center gap-1.5" aria-label="Meo home">
-            <span className="font-bold tracking-tight" style={{ color: C.fg }}>Meo</span>
-            <DropletIcon size={16} />
-            <span className="text-sm ml-2" style={{ color: C.muted }}>Metabolic Intelligence · by Meterbolic</span>
-          </Link>
-          {/* Legal + contact links — required for Stripe Checkout policy
-              compliance and UK consumer-law disclosure obligations. */}
-          <nav className="flex items-center gap-5 text-sm" aria-label="Footer navigation">
-            <Link href="/privacy" className="hover:underline" style={{ color: C.muted }}>
-              Privacy
-            </Link>
-            <Link href="/terms" className="hover:underline" style={{ color: C.muted }}>
-              Terms
-            </Link>
-            <a
-              href="mailto:hello@meterbolic.com"
-              className="hover:underline"
-              style={{ color: C.muted }}
-            >
-              Contact
-            </a>
-          </nav>
-        </div>
-        <p className="text-xs leading-relaxed mb-3" style={{ color: C.muted }}>
-          Meo is a wellness and monitoring tool. It is not intended to diagnose, treat, cure, or prevent any disease.
-          Always consult your GP or a qualified healthcare professional for medical advice. Readings are informational
-          and are not a substitute for professional testing. Meo AI provides pattern-based insights, not medical advice;
-          if something concerns you, speak to a healthcare professional.
-        </p>
-        <p className="text-xs" style={{ color: C.muted }}>© 2026 Meterbolic Ltd. All rights reserved.</p>
+    <footer
+      className="px-6 pt-8 pb-28 sm:pb-10"
+      style={{ background: 'rgba(28,74,64,0.92)', backdropFilter: 'blur(12px)', borderTop: `1px solid ${C.border}` }}
+    >
+      {/* Top bar — mirrors navbar layout: logo left, nav links right */}
+      <div className="flex items-center justify-between py-4 mb-6" style={{ borderBottom: `1px solid ${C.border}` }}>
+        <Link href="/" className="flex items-center gap-1.5" aria-label="Meo home">
+          <span
+            className="text-xl font-bold tracking-tight"
+            style={{
+              color: C.fg,
+              fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif',
+            }}
+          >
+            Meo
+          </span>
+          <DropletIcon size={22} />
+          <span className="hidden sm:inline text-xs ml-2 tracking-wide" style={{ color: C.muted }}>
+            Metabolic Intelligence
+          </span>
+        </Link>
+        {/* Legal + contact links */}
+        <nav className="flex items-center gap-5 text-sm" aria-label="Footer navigation">
+          <Link href="/privacy" className="hover:underline" style={{ color: C.muted }}>Privacy</Link>
+          <Link href="/terms" className="hover:underline" style={{ color: C.muted }}>Terms</Link>
+          <a href="mailto:hello@meterbolic.com" className="hover:underline" style={{ color: C.muted }}>Contact</a>
+        </nav>
       </div>
+      <p className="text-xs leading-relaxed mb-3 max-w-3xl" style={{ color: C.muted }}>
+        Meo is a wellness and monitoring tool. It is not intended to diagnose, treat, cure, or prevent any disease.
+        Always consult your GP or a qualified healthcare professional for medical advice. Readings are informational
+        and are not a substitute for professional testing. Meo AI provides pattern-based insights, not medical advice;
+        if something concerns you, speak to a healthcare professional.
+      </p>
+      <p className="text-xs" style={{ color: C.muted }}>© 2026 Meterbolic Ltd. All rights reserved.</p>
     </footer>
   );
 }
