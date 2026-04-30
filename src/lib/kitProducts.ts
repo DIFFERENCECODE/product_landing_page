@@ -51,7 +51,7 @@ export const KIT_PRODUCT: KitProduct = {
   name: 'Metabolic Health Cholesterol Tracker',
   description:
     '6 months of Meo AI + Digital Lipid Meter (bundled free) + The Thin Book in Fat. Measure, understand, act — backed by a Biological Age Score that updates with every reading.',
-  price: 19700, // £197
+  price: 14900, // £149
   priceId: process.env.NEXT_PUBLIC_KIT_PRICE_ID || 'price_meo_starter_placeholder',
   features: [
     {

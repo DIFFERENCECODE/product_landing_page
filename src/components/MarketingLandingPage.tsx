@@ -631,7 +631,7 @@ function WhyTestsFailSection() {
           ))}
         </div>
         <p className="mt-10 text-center font-medium text-lg max-w-2xl mx-auto" style={{ color: C.fg }}>
-          The core problem isn&apos;t the test. It&apos;s the gap between <span style={{ color: C.primary }}>data</span> and <span style={{ color: C.primary }}>decision</span> — and that gap is what £197 of Meo closes.
+          The core problem isn&apos;t the test. It&apos;s the gap between <span style={{ color: C.primary }}>data</span> and <span style={{ color: C.primary }}>decision</span> — and that gap is what £149 of Meo closes.
         </p>
       </div>
     </section>
@@ -685,11 +685,11 @@ function MeetMeoSection() {
 
 // ─── Offer Stack ─────────────────────────────────────────────────────
 //
-// High-leverage conversion section: itemises everything in the £197
+// High-leverage conversion section: itemises everything in the £149
 // bundle with individual market values, sums to a much larger number,
-// strikethroughs it, and lands on £197 as the "you actually pay".
+// strikethroughs it, and lands on £149 as the "you actually pay".
 // Why this format works for the 40+ scare-driven buyer:
-//   - anchors them on £362 of perceived value before they see £197
+//   - anchors them on £362 of perceived value before they see £149
 //   - itemising forces them to mentally accept each component as
 //     genuinely valuable, which makes the bundle feel undervalued
 //   - the math is simple and explicit (no hand-wavy "best deal" claims)
@@ -712,7 +712,7 @@ function OfferStackSection() {
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
       <div className="max-w-3xl mx-auto">
         <SectionHeader
-          eyebrow="What's actually in the £197"
+          eyebrow="What's actually in the £149"
           title={<>You&apos;re buying <span style={{ color: C.primary }}>{formatGBP(total)}</span> of value for {formatGBP(price)}.</>}
           subtitle="No promo, no countdown, no flash sale. Every item is listed so you can see exactly what you are getting — and what it costs outside the bundle."
         />
@@ -1258,8 +1258,8 @@ function ObjectionsSection() {
       a: 'Meo AI doesn’t diagnose, prescribe, or replace your doctor. It reads your history, spots patterns, and tells you clearly what it sees — with its sources. When something is unusual, it recommends you see a healthcare professional. You always own the decision.',
     },
     {
-      q: '£197 feels like a lot.',
-      a: 'Read it as 6 months of Meo AI (£174 at the £29/mo rate) with the lipid meter, 10 test strips, lancets, carry case, and a Biological Age Score all bundled in. One private-clinic panel costs £80–£150, runs once, gives you paper. Meo costs £197 once, runs unlimited times, and pairs each reading with AI interpretation you can actually act on.',
+      q: '£149 — what does that actually get me?',
+      a: 'Read it as 6 months of Meo AI with the lipid meter, 10 test strips, lancets, carry case, and a Biological Age Score all bundled in. One private-clinic panel costs £80–£150, runs once, gives you paper. Meo costs £149 once, runs unlimited times, and pairs each reading with AI interpretation you can actually act on.',
     },
   ];
   return (
@@ -1583,7 +1583,7 @@ export default function MarketingLandingPage() {
       <MeetMeoSection />
       {/* Conversion-priming: itemised value-stack right after they
           first understand what Meo IS, before they go deep into how
-          each component works. Surfaces the £362-of-value-for-£197
+          each component works. Surfaces the £362-of-value-for-£149
           math early so deeper engagement happens with that anchor. */}
       <OfferStackSection />
       <BiomarkersSection />

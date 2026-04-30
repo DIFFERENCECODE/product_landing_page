@@ -107,7 +107,7 @@ const PRODUCT_LD = {
   offers: {
     "@type": "Offer",
     priceCurrency: "GBP",
-    price: "197.00",
+    price: "149.00",
     availability: "https://schema.org/InStock",
     url: `${SITE_URL}/checkout`,
     shippingDetails: {
