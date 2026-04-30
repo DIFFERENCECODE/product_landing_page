@@ -1259,6 +1259,30 @@ const PARTNERS = [
   },
 ];
 
+function PartnerCard({ partner }: { partner: typeof PARTNERS[number] }) {
+  return (
+    <div
+      className="rounded-2xl overflow-hidden flex flex-col"
+      style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+    >
+      <div className="relative w-full" style={{ aspectRatio: '1/1', overflow: 'hidden' }}>
+        <Image
+          src={partner.photo}
+          alt={partner.name}
+          fill
+          className="object-cover object-top"
+          sizes="(min-width: 640px) 25vw, 384px"
+        />
+      </div>
+      <div className="p-6 flex flex-col gap-1">
+        <p className="font-bold text-lg" style={{ color: C.fg }}>{partner.name}</p>
+        <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.primary }}>{partner.title}</p>
+        <p className="text-sm leading-relaxed" style={{ color: C.muted }}>{partner.bio}</p>
+      </div>
+    </div>
+  );
+}
+
 function PartnersSection() {
   const [idx, setIdx] = useState(0);
   const total = PARTNERS.length;
@@ -1267,15 +1291,24 @@ function PartnersSection() {
 
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <SectionHeader
           eyebrow="The team behind Meo"
           title={<>Built by people who <span style={{ color: C.primary }}>live</span> this.</>}
           subtitle="Decades of clinical, commercial, and metabolic expertise — all pointed at one goal: making your cholesterol data actually useful."
         />
 
-        <div className="mt-12 relative flex flex-col items-center">
-          {/* Card */}
+        {/* Desktop: up to 4 cards per row */}
+        <div className="hidden sm:grid mt-12 gap-6"
+          style={{ gridTemplateColumns: `repeat(${Math.min(PARTNERS.length, 4)}, minmax(0, 1fr))` }}
+        >
+          {PARTNERS.map((p) => (
+            <PartnerCard key={p.name} partner={p} />
+          ))}
+        </div>
+
+        {/* Mobile: carousel */}
+        <div className="sm:hidden mt-12 flex flex-col items-center">
           <div className="w-full max-w-sm">
             <AnimatePresence mode="wait">
               <motion.div
@@ -1284,28 +1317,12 @@ function PartnersSection() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -40 }}
                 transition={{ duration: 0.35 }}
-                className="rounded-2xl overflow-hidden flex flex-col"
-                style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
               >
-                <div className="relative w-full" style={{ aspectRatio: '1/1', overflow: 'hidden' }}>
-                  <Image
-                    src={PARTNERS[idx].photo}
-                    alt={PARTNERS[idx].name}
-                    fill
-                    className="object-cover object-top"
-                    sizes="384px"
-                  />
-                </div>
-                <div className="p-6 flex flex-col gap-1">
-                  <p className="font-bold text-lg" style={{ color: C.fg }}>{PARTNERS[idx].name}</p>
-                  <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.primary }}>{PARTNERS[idx].title}</p>
-                  <p className="text-sm leading-relaxed" style={{ color: C.muted }}>{PARTNERS[idx].bio}</p>
-                </div>
+                <PartnerCard partner={PARTNERS[idx]} />
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Controls */}
           <div className="flex items-center gap-6 mt-8">
             <button
               onClick={prev}
@@ -1316,7 +1333,6 @@ function PartnersSection() {
               <ChevronDown className="h-5 w-5 rotate-90" />
             </button>
 
-            {/* Dots */}
             <div className="flex gap-2">
               {PARTNERS.map((_, i) => (
                 <button
