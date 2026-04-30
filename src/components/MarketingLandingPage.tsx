@@ -259,16 +259,16 @@ function Hero() {
     'Lab-grade lipid panel · 3 minutes',
     "World's only metabolic-health AI",
     '6 months of Meo AI included',
-    '30-day money-back · plain brown paper',
-    '1 of only 3 EU-registered home lipid meters',
-    'Ships in 48 hours',
+    '30-day money-back guarantee',
+    '1 of only 3 UK & EU registered home lipid meters',
+    'Ships in 72 hours · limited quantities',
   ];
   const featuresRowB = [
     'Free UK shipping',
-    "eBook: The Thin Book in Fat — Marina Young",
+    '10 test strips + lancets + carry case included',
     'Q&A with the author via Meo',
     'Biological Age Score + Target Score',
-    'Free retest at 6 months',
+    'Discreet shipping',
     '10 years industrialising the Kraft Test',
   ];
 
@@ -374,8 +374,7 @@ function Hero() {
             doesn't compete with the CTA visually. The richer trust
             grid lives below as separate cards. */}
         <p className="text-xs mt-3" style={{ color: C.muted }}>
-          Lipid meter included free · 30-day money-back ·{' '}
-          <span style={{ color: C.primary }}>plain brown paper</span>
+          Lipid meter included free · 30-day money-back · Free UK shipping
         </p>
 
         {/* Credential pill — the campaign brief's strongest single
@@ -416,10 +415,10 @@ function Hero() {
         className="relative max-w-3xl mx-auto w-full mt-8 sm:mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3"
       >
         {[
-          { icon: <Heart className="h-4 w-4" />, label: '30-day', sub: 'money-back' },
-          { icon: <Activity className="h-4 w-4" />, label: 'EU-registered', sub: '1 of only 3 lipid meters' },
-          { icon: <BookOpen className="h-4 w-4" />, label: 'Brown paper', sub: 'discreet shipping' },
-          { icon: <RefreshCw className="h-4 w-4" />, label: 'Free retest', sub: 'at month 6' },
+          { icon: <Heart className="h-4 w-4" />, label: '30-day', sub: 'money-back guarantee' },
+          { icon: <Activity className="h-4 w-4" />, label: 'UK & EU Registered', sub: '1 of only 3 lipid meters' },
+          { icon: <Shield className="h-4 w-4" />, label: 'Discreet shipping', sub: 'secure packaging' },
+          { icon: <Clock className="h-4 w-4" />, label: 'Ships in 72 hrs', sub: 'limited quantities' },
         ].map((b, i) => (
           <div
             key={i}
@@ -508,8 +507,8 @@ function ProblemSection() {
       <div className="max-w-4xl mx-auto">
         <SectionHeader
           eyebrow="The visibility problem"
-          title={<>You&apos;re not undisciplined. Your data is too sparse to act on.</>}
-          subtitle="One cholesterol reading a year. A 90-second conversation. By the time a number 'trends up', the process behind it has been quietly accelerating for half a decade. We've spent ten years industrialising the gold-standard Kraft Test so you don't have to wait for the next annual blood draw to see what your metabolism is doing."
+          title={<>Cholesterol changes daily. Most people check it once a year.</>}
+          subtitle="One reading a year. A 90-second conversation. By the time a number 'trends up', the process behind it has been quietly accelerating for half a decade. We've spent ten years industrialising the gold-standard Kraft Test so you don't have to wait for the next annual blood draw to see what your metabolism is doing."
         />
 
         <div className="mt-10 grid sm:grid-cols-2 gap-4">
@@ -530,7 +529,7 @@ function ProblemSection() {
         </div>
 
         <p className="mt-10 text-center text-lg font-medium" style={{ color: C.primary, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif' }}>
-          That isn&apos;t a willpower problem. That&apos;s a visibility problem — and £197 of Meo fixes it.
+          That isn&apos;t a willpower problem. That&apos;s a visibility problem — and Meo fixes it.
         </p>
       </div>
     </section>
@@ -571,7 +570,7 @@ function WhyTestsFailSection() {
     [
       'Sits in a clinic / a queue / a fasting morning',
       'Convenience determines whether you actually do it consistently',
-      'One of only three lipid meters registered for Home Use in the EU',
+      'One of only three lipid meters registered for Home Use in the UK & EU',
     ],
   ];
   return (
@@ -642,9 +641,9 @@ function WhyTestsFailSection() {
 // ─── Meet Meo (system intro) ─────────────────────────────────────────
 function MeetMeoSection() {
   const pieces = [
-    { icon: <Activity className="h-6 w-6" style={{ color: C.primary }} />, title: 'The Digital Lipid Meter', sub: 'draws data' },
+    { icon: <Activity className="h-6 w-6" style={{ color: C.primary }} />, title: 'The Digital Lipid Meter', sub: 'draws the data' },
     { icon: <Brain className="h-6 w-6" style={{ color: C.primary }} />, title: 'The Meo AI App', sub: 'turns data into meaning' },
-    { icon: <BookOpen className="h-6 w-6" style={{ color: C.primary }} />, title: 'The eBook', sub: 'turns meaning into action' },
+    { icon: <BarChart2 className="h-6 w-6" style={{ color: C.primary }} />, title: 'Your Biological Age Score', sub: 'tracks your progress over time' },
   ];
   return (
     <section id="how-it-works" className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
@@ -699,11 +698,11 @@ function MeetMeoSection() {
 function OfferStackSection() {
   const items = [
     { label: '6 months of Meo AI access',          value: 17400, note: '£29/mo at the standard rate' },
-    { label: 'Digital Lipid Meter',                value: 8000,  note: '1 of only 3 EU-registered home meters' },
-    { label: 'The Thin Book in Fat — Marina Young', value: 1900,  note: 'eBook · digital edition' },
-    { label: 'Q&A with the author via Meo',        value: 4900,  note: 'unlimited written questions' },
-    { label: 'Biological Age Score + Target',      value: 4000,  note: 'baseline + 6-month goal' },
-    { label: 'Free retest at month 6',             value: 4000,  note: 'fasting reading + personalised report' },
+    { label: 'Digital Lipid Meter',                value: 8000,  note: 'UK & EU Registered · Bundled' },
+    { label: '10 Lipid Test Strips',               value: 2200,  note: 'enough for 10 readings included' },
+    { label: 'Lancets',                            value: 800,   note: 'included in the kit' },
+    { label: 'Carry Case',                         value: 1200,  note: 'included in the kit' },
+    { label: 'Biological Age Score + Target',      value: 4000,  note: 'baseline + ongoing goal' },
   ] as const;
   const total = items.reduce((s, x) => s + x.value, 0);
   const price = KIT_PRODUCT.price;
@@ -715,7 +714,7 @@ function OfferStackSection() {
         <SectionHeader
           eyebrow="What's actually in the £197"
           title={<>You&apos;re buying <span style={{ color: C.primary }}>{formatGBP(total)}</span> of value for {formatGBP(price)}.</>}
-          subtitle="No promo, no countdown, no flash sale. The bundle is priced this way on purpose: so you say yes today and start the trend tomorrow."
+          subtitle="No promo, no countdown, no flash sale. Every item is listed so you can see exactly what you are getting — and what it costs outside the bundle."
         />
 
         <motion.div
@@ -791,7 +790,7 @@ function BiomarkersSection() {
       <div className="max-w-5xl mx-auto text-center">
         <SectionHeader
           eyebrow="What Meo measures"
-          title={<>Six markers. One drop of blood.</>}
+          title={<>Six markers — Life Changing Visualisations — One drop of Blood</>}
           subtitle="A lab-grade cholesterol panel — right on your kitchen table."
         />
         <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -1009,7 +1008,7 @@ function MeoAISection() {
             <span style={{ color: C.primary }}>biology</span> back to you.
           </h2>
           <p className="max-w-2xl mx-auto text-base sm:text-lg" style={{ color: C.muted }}>
-            This is what you&apos;re actually buying. The meter collects. The eBook teaches.
+            This is what you&apos;re actually buying. The meter collects. Your BAS tracks.
             <strong style={{ color: C.fg }}> Meo AI is where Meo becomes Meo.</strong>
           </p>
         </div>
@@ -1260,7 +1259,7 @@ function ObjectionsSection() {
     },
     {
       q: '£197 feels like a lot.',
-      a: 'Read it as 6 months of Meo AI (£174 at the £29/mo rate) with the lipid meter, eBook, Q&A with the author and a 6-month retest bundled in free. One private-clinic panel costs £80–£150, runs once, gives you paper. Meo costs £197 once, runs unlimited times, and pairs each reading with AI interpretation and an action manual.',
+      a: 'Read it as 6 months of Meo AI (£174 at the £29/mo rate) with the lipid meter, 10 test strips, lancets, carry case, and a Biological Age Score all bundled in. One private-clinic panel costs £80–£150, runs once, gives you paper. Meo costs £197 once, runs unlimited times, and pairs each reading with AI interpretation you can actually act on.',
     },
   ];
   return (
@@ -1315,7 +1314,7 @@ function GuaranteeSection() {
           &ldquo;Start seeing, or send it back.&rdquo;
         </h2>
         <p className="text-base mb-8 max-w-xl mx-auto" style={{ color: C.muted }}>
-          Use Meo for 30 days. Take your readings. Watch your Biological Age Score update. If you don&apos;t feel clearer, in control, and like you finally understand what your body&apos;s been trying to tell you — return the device. Full refund. Keep the eBook.
+          Use Meo for 30 days. Take your readings. Watch your Biological Age Score update. If you don&apos;t feel clearer, in control, and like you finally understand what your body&apos;s been trying to tell you — return the device. Full refund. No questions asked.
         </p>
         <CTAButton size="lg">Claim your risk-free 30 days <ArrowRight className="h-4 w-4" /></CTAButton>
       </div>
@@ -1592,7 +1591,6 @@ export default function MarketingLandingPage() {
       <InsulinPatternSection />
       <BioAgeSection />
       <MeoAISection />
-      <EbookSection />
       <BenefitsSection />
       <NumbersVsInsightsSection />
       <TestimonialsSection />

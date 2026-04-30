@@ -62,9 +62,9 @@ export const KIT_PRODUCT: KitProduct = {
     },
     {
       icon: 'activity',
-      title: 'Digital Lipid Meter — bundled free',
+      title: 'Digital Lipid Meter — Bundled',
       description:
-        'One of only three lipid meters registered for Home Use in the EU. Measures Total Cholesterol, HDL, LDL, Triglycerides and TC/HDL ratio from a single finger-prick in under 3 minutes. Includes 10 test strips, lancets, and carrying case.',
+        'One of only three lipid meters registered for Home Use in the UK & EU. Measures Total Cholesterol, HDL, LDL, Triglycerides and TC/HDL ratio from a single finger-prick in under 3 minutes. Includes 10 test strips, lancets, and carry case.',
     },
     {
       icon: 'book',
@@ -88,7 +88,7 @@ export const KIT_PRODUCT: KitProduct = {
       icon: 'heart',
       title: '30-day money-back guarantee',
       description:
-        'Use Meo for 30 days. If you don\'t feel clearer and in control, send the device back for a full refund. Keep the eBook either way. Shipped discreetly in plain brown paper.',
+        'Use Meo for 30 days. If you don\'t feel clearer and in control, send the device back for a full refund. No questions asked. Shipped discreetly in secure packaging.',
     },
   ],
 };
@@ -193,7 +193,7 @@ export const FAQ_ITEMS = [
   {
     question: 'Is this a medical device?',
     answer:
-      'The lipid meter is a CE-marked clinical-grade instrument and one of only three lipid meters registered for Home Use in the EU. Meo as a whole is a wellness and monitoring system — it is not intended to diagnose, treat, cure, or prevent any disease. Always consult a qualified healthcare professional for medical advice.',
+      'The lipid meter is a CE-marked clinical-grade instrument and one of only three lipid meters registered for Home Use in the UK & EU. Meo as a whole is a wellness and monitoring system — it is not intended to diagnose, treat, cure, or prevent any disease. Always consult a qualified healthcare professional for medical advice.',
   },
   {
     question: 'How accurate is the meter?',
@@ -213,7 +213,7 @@ export const FAQ_ITEMS = [
   {
     question: 'What if it doesn\'t work for me?',
     answer:
-      '30-day money-back guarantee on the device. Send it back for a full refund — no questions, no upsell calls. You keep the eBook either way. Shipped discreetly in plain brown paper.',
+      '30-day money-back guarantee on the device. Send it back for a full refund — no questions, no upsell calls. Shipped discreetly in secure packaging.',
   },
   {
     question: 'Why does the bundle include a 6-month retest?',
@@ -223,7 +223,7 @@ export const FAQ_ITEMS = [
   {
     question: 'How long does shipping take?',
     answer:
-      'Orders ship within 48 hours to the UK, EU, US, Canada, Australia, and Ireland. Typical delivery is 2–5 business days depending on destination.',
+      'Orders ship within 72 hours to the UK, EU, US, Canada, Australia, and Ireland. Quantities are limited — if stock is low you will be added to the waiting list and notified as soon as your order ships. Typical delivery is 2–5 business days depending on destination.',
   },
 ] as const;
 
