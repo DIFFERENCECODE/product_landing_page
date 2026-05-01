@@ -1102,38 +1102,72 @@ function EbookSection() {
   ];
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
-      <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-[auto_1fr] gap-10 lg:gap-14 items-center">
-        <motion.div
-          initial={{ opacity: 0, x: -16 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="flex justify-center"
-        >
-          <EbookCover width={260} />
-        </motion.div>
-        <div>
-          <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>
-            The action manual
-          </p>
-          <h2 className="font-extrabold mb-5" style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(28px, 4vw, 36px)' }}>
-            Insight without action is just <span style={{ color: C.primary }}>anxiety</span>.
-          </h2>
-          <p className="text-base mb-3" style={{ color: C.muted }}>
-            <em>The Thin Book of Fat</em> by <strong style={{ color: C.fg }}>Marina Young</strong> — the manual Meo AI references when it talks to you. Ask the author your questions directly through Meo; answers come back in chat.
-          </p>
-          <p className="text-sm mb-6" style={{ color: C.muted }}>
-            Included digitally with every Metabolic Health Tracker.
-          </p>
-          <ul className="space-y-3">
-            {chapters.map((c, i) => (
-              <li key={i} className="flex items-start gap-3 text-sm" style={{ color: C.fg }}>
-                <BookOpen className="h-4 w-4 mt-0.5 shrink-0" style={{ color: C.primary }} />
-                {c}
-              </li>
-            ))}
-          </ul>
+      <div className="max-w-5xl mx-auto">
+        {/* Book + copy row */}
+        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-10 lg:gap-14 items-center mb-14">
+          <motion.div
+            initial={{ opacity: 0, x: -16 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="flex justify-center"
+          >
+            <EbookCover width={260} />
+          </motion.div>
+          <div>
+            <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>
+              The action manual
+            </p>
+            <h2 className="font-extrabold mb-5" style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(28px, 4vw, 36px)' }}>
+              Insight without action is just <span style={{ color: C.primary }}>anxiety</span>.
+            </h2>
+            <p className="text-base mb-3" style={{ color: C.muted }}>
+              <em>The Thin Book of Fat</em> by <strong style={{ color: C.fg }}>Marina Young</strong> — the manual Meo AI references when it talks to you. Ask the author your questions directly through Meo; answers come back in chat.
+            </p>
+            <p className="text-sm mb-6" style={{ color: C.muted }}>
+              Included digitally with every Metabolic Health Tracker.
+            </p>
+            <ul className="space-y-3">
+              {chapters.map((c, i) => (
+                <li key={i} className="flex items-start gap-3 text-sm" style={{ color: C.fg }}>
+                  <BookOpen className="h-4 w-4 mt-0.5 shrink-0" style={{ color: C.primary }} />
+                  {c}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
+
+        {/* Author card */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.55 }}
+          className="rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center sm:items-start gap-6"
+          style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+        >
+          <div
+            className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shrink-0"
+            style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${C.border}` }}
+          >
+            <Image
+              src="/marina-young.jpg"
+              alt="Marina Young — author of The Thin Book of Fat"
+              fill
+              className="object-cover"
+            />
+          </div>
+          <div className="text-center sm:text-left">
+            <p className="text-xs font-semibold tracking-wide mb-1" style={{ color: C.pillFg }}>The Author</p>
+            <p className="font-bold text-lg mb-2" style={{ color: C.fg }}>Marina Young</p>
+            <p className="text-sm" style={{ color: C.muted }}>
+              Marina Young has spent a decade translating the science of metabolic health into plain English.
+              <em> The Thin Book of Fat</em> is the action manual Meo AI draws on — and through Meo you can
+              ask Marina your questions directly. Answers come back in chat.
+            </p>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

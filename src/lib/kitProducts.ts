@@ -120,16 +120,6 @@ export const KIT_ADDONS: KitAddon[] = [
     highlight: 'Recommended · 50 glucose + 25 ketone strips free',
   },
   {
-    id: 'glucose-meter',
-    name: 'Glucose Meter only',
-    description:
-      'Standalone glucose meter for spot readings. No ketone or uric acid measurement — pick the MultiMeter above if you want the full metabolic picture.',
-    price: 3000, // £30
-    priceId:
-      process.env.NEXT_PUBLIC_ADDON_GLUCOSE_METER_PRICE_ID ||
-      'price_meo_glucose_meter_placeholder',
-  },
-  {
     id: 'syai-cgm',
     name: 'SyAI Continuous Glucose Monitor',
     description:
@@ -138,26 +128,6 @@ export const KIT_ADDONS: KitAddon[] = [
     priceId:
       process.env.NEXT_PUBLIC_ADDON_SYAI_CGM_PRICE_ID ||
       'price_meo_syai_cgm_placeholder',
-  },
-  {
-    id: 'glucose-strips',
-    name: 'Additional glucose strips',
-    description:
-      'Top-up pack of glucose strips. Order any quantity — most regular trackers go through 1–2 packs a month.',
-    price: 1500, // £15
-    priceId:
-      process.env.NEXT_PUBLIC_ADDON_GLUCOSE_STRIPS_PRICE_ID ||
-      'price_meo_glucose_strips_placeholder',
-  },
-  {
-    id: 'ketone-strips',
-    name: 'Additional ketone strips',
-    description:
-      'Top-up pack of ketone strips for the MultiMeter. Useful when you\'re training metabolic flexibility or doing a structured fast.',
-    price: 2500, // £25
-    priceId:
-      process.env.NEXT_PUBLIC_ADDON_KETONE_STRIPS_PRICE_ID ||
-      'price_meo_ketone_strips_placeholder',
   },
 ];
 

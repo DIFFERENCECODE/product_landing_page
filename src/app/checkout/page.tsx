@@ -1,13 +1,10 @@
 'use client';
 
 /**
- * /checkout — Meo order page.
+ * /checkout — Meo order page (single-step).
  *
- * Flow:
- *   Step 0 — Glucose gate: user MUST select a glucose option before
- *             proceeding. No glucose = no BAS. Selecting an option
- *             pre-adds the corresponding addon to their cart.
- *   Step 1 — Addons + order summary → Stripe checkout
+ * Glucose selection and add-ons live on the same page.
+ * Glucose is required before the Pay button activates.
  */
 
 import Image from 'next/image';
@@ -56,7 +53,7 @@ function DropletIcon({ size = 20 }: { size?: number }) {
   );
 }
 
-// ─── Glucose gate options ─────────────────────────────────────────────
+// ─── Glucose options (no standalone Glucose Meter) ────────────────────
 const GLUCOSE_OPTIONS = [
   {
     id: 'own',
@@ -77,15 +74,6 @@ const GLUCOSE_OPTIONS = [
     badge: 'Recommended',
   },
   {
-    id: 'glucose-meter',
-    addonId: 'glucose-meter',
-    icon: <Droplets className="h-6 w-6" />,
-    label: 'Glucose Meter',
-    sub: 'Standalone spot-reading glucose meter',
-    price: '£30',
-    badge: null,
-  },
-  {
     id: 'syai-cgm',
     addonId: 'syai-cgm',
     icon: <Wifi className="h-6 w-6" />,
@@ -95,123 +83,6 @@ const GLUCOSE_OPTIONS = [
     badge: null,
   },
 ] as const;
-
-// ─── Step 0: Glucose gate ─────────────────────────────────────────────
-function GlucoseGate({
-  onContinue,
-}: {
-  onContinue: (addonId: string | null) => void;
-}) {
-  const [selected, setSelected] = useState<string | null>(null);
-
-  return (
-    <div className="max-w-2xl mx-auto">
-      {/* Header */}
-      <div className="mb-8 sm:mb-10">
-        <span
-          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold mb-4"
-          style={{ background: C.pill, color: C.pillFg }}
-        >
-          Step 1 of 2 — Required
-        </span>
-        <h1 style={{ color: C.fg, fontFamily: 'var(--font-serif)' }}>
-          How will you track your glucose?
-        </h1>
-        <p className="mt-2 text-base" style={{ color: C.muted }}>
-          Your Biological Age Score (BAS) requires a glucose reading alongside your lipid panel.
-          Select how you&apos;ll provide it — or add a meter to your order now.
-        </p>
-      </div>
-
-      {/* Options */}
-      <div className="space-y-3 mb-8">
-        {GLUCOSE_OPTIONS.map((opt) => {
-          const isSelected = selected === opt.id;
-          return (
-            <button
-              key={opt.id}
-              onClick={() => setSelected(opt.id)}
-              className="w-full text-left rounded-2xl p-5 transition-all"
-              style={{
-                background: isSelected ? 'rgba(164,214,94,0.08)' : C.bgCard,
-                border: `1px solid ${isSelected ? C.primary : C.border}`,
-              }}
-            >
-              <div className="flex items-start gap-4">
-                {/* Icon */}
-                <div
-                  className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
-                  style={{
-                    background: isSelected ? C.pill : 'rgba(255,255,255,0.06)',
-                    color: isSelected ? C.primary : C.muted,
-                  }}
-                >
-                  {opt.icon}
-                </div>
-
-                {/* Text */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap mb-1">
-                    <span className="font-semibold text-base" style={{ color: C.fg }}>
-                      {opt.label}
-                    </span>
-                    {opt.badge && (
-                      <span
-                        className="text-[10px] font-semibold px-2 py-0.5 rounded"
-                        style={{ background: C.pill, color: C.pillFg }}
-                      >
-                        {opt.badge}
-                      </span>
-                    )}
-                    {opt.price && (
-                      <span className="font-semibold text-sm ml-auto shrink-0" style={{ color: C.fg }}>
-                        +{opt.price}
-                      </span>
-                    )}
-                    {!opt.price && (
-                      <span className="text-sm ml-auto shrink-0" style={{ color: C.primary }}>
-                        No extra cost
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-sm" style={{ color: C.muted }}>{opt.sub}</p>
-                </div>
-
-                {/* Radio indicator */}
-                <div
-                  className="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-1"
-                  style={{
-                    borderColor: isSelected ? C.primary : C.border,
-                    background: isSelected ? C.primary : 'transparent',
-                  }}
-                >
-                  {isSelected && <Check className="h-3 w-3" style={{ color: C.primaryFg }} />}
-                </div>
-              </div>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Continue */}
-      <button
-        disabled={!selected}
-        onClick={() => {
-          const opt = GLUCOSE_OPTIONS.find((o) => o.id === selected);
-          onContinue(opt?.addonId ?? null);
-        }}
-        className="w-full inline-flex items-center justify-center gap-2 rounded-xl font-semibold text-base py-4 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90"
-        style={{ background: C.primary, color: C.primaryFg }}
-      >
-        Continue to order <ArrowRight className="h-4 w-4" />
-      </button>
-
-      <p className="mt-4 text-xs text-center" style={{ color: C.muted }}>
-        You can adjust quantities on the next step before paying.
-      </p>
-    </div>
-  );
-}
 
 // ─── Trust strip ──────────────────────────────────────────────────────
 function TrustStrip() {
@@ -410,12 +281,14 @@ function OrderSummary({
   onPay,
   isPending,
   error,
+  glucoseSelected,
 }: {
   selectedAddons: { addon: AddonProduct; qty: number }[];
   total: number;
   onPay: () => void;
   isPending: boolean;
   error: string | null;
+  glucoseSelected: boolean;
 }) {
   return (
     <div
@@ -461,10 +334,16 @@ function OrderSummary({
         <span className="text-2xl font-bold" style={{ color: C.fg }}>£{total}</span>
       </div>
 
+      {!glucoseSelected && (
+        <p className="text-xs text-center mb-3" style={{ color: C.muted }}>
+          Select a glucose option above to continue
+        </p>
+      )}
+
       <button
         onClick={onPay}
-        disabled={isPending}
-        className="w-full inline-flex items-center justify-center gap-2 rounded-xl font-semibold text-base py-3.5 transition-opacity hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
+        disabled={isPending || !glucoseSelected}
+        className="w-full inline-flex items-center justify-center gap-2 rounded-xl font-semibold text-base py-3.5 transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
         style={{ background: C.primary, color: C.primaryFg }}
       >
         {isPending ? 'Redirecting…' : (
@@ -485,7 +364,7 @@ function OrderSummary({
 }
 
 // ─── Mobile Pay bar ───────────────────────────────────────────────────
-function MobilePayBar({ total, onPay, isPending }: { total: number; onPay: () => void; isPending: boolean }) {
+function MobilePayBar({ total, onPay, isPending, glucoseSelected }: { total: number; onPay: () => void; isPending: boolean; glucoseSelected: boolean }) {
   return (
     <div
       className="md:hidden fixed bottom-0 left-0 right-0 z-40 p-3 flex items-center gap-3"
@@ -501,8 +380,8 @@ function MobilePayBar({ total, onPay, isPending }: { total: number; onPay: () =>
       </div>
       <button
         onClick={onPay}
-        disabled={isPending}
-        className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl font-semibold text-sm py-3 transition-opacity disabled:opacity-60"
+        disabled={isPending || !glucoseSelected}
+        className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl font-semibold text-sm py-3 transition-opacity disabled:opacity-40"
         style={{ background: C.primary, color: C.primaryFg }}
       >
         {isPending ? 'Redirecting…' : <>Pay <ArrowRight className="h-4 w-4" /></>}
@@ -513,21 +392,30 @@ function MobilePayBar({ total, onPay, isPending }: { total: number; onPay: () =>
 
 // ─── Page ─────────────────────────────────────────────────────────────
 export default function CheckoutPage() {
-  const [step, setStep] = useState<0 | 1>(0);
+  const [glucoseSelection, setGlucoseSelection] = useState<string | null>(null);
   const [quantities, setQuantities] = useState<Record<string, number>>(
     Object.fromEntries(KIT_PRODUCTS.addons.map((a) => [a.id, 0])),
   );
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  // Called when user completes the glucose gate.
-  // If they chose an addon meter, pre-set its qty to 1.
-  const handleGlucoseContinue = (addonId: string | null) => {
-    if (addonId) {
-      setQuantities((prev) => ({ ...prev, [addonId]: Math.max(prev[addonId] ?? 0, 1) }));
+  const handleGlucoseSelect = (optionId: string, addonId: string | null) => {
+    // Remove previous glucose addon if switching
+    const prev = GLUCOSE_OPTIONS.find((o) => o.id === glucoseSelection);
+    if (prev?.addonId) {
+      setQuantities((q) => ({ ...q, [prev.addonId!]: 0 }));
     }
-    setStep(1);
+    setGlucoseSelection(optionId);
+    if (addonId) {
+      setQuantities((q) => ({ ...q, [addonId]: 1 }));
+    }
   };
+
+  const glucoseSelected = glucoseSelection !== null;
+
+  // Addons not controlled by the glucose radio (i.e. not multimeter / syai-cgm when shown in glucose section)
+  const glucoseAddonIds = GLUCOSE_OPTIONS.map((o) => o.addonId).filter(Boolean) as string[];
+  const extraAddons = KIT_PRODUCTS.addons.filter((a) => !glucoseAddonIds.includes(a.id));
 
   const addonsTotal = useMemo(
     () =>
@@ -619,127 +507,200 @@ export default function CheckoutPage() {
       {/* Body */}
       <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 pt-20 sm:pt-24 pb-32 md:pb-16">
         <Link
-          href={step === 1 ? '#' : '/'}
-          onClick={step === 1 ? (e) => { e.preventDefault(); setStep(0); } : undefined}
+          href="/"
           className="inline-flex items-center gap-2 text-sm mb-6 hover:text-white transition-colors"
           style={{ color: C.muted }}
         >
-          <ArrowLeft size={14} /> {step === 1 ? 'Back to glucose selection' : 'Continue browsing'}
+          <ArrowLeft size={14} /> Continue browsing
         </Link>
 
-        {/* ── Step 0: Glucose gate ── */}
-        {step === 0 && (
-          <GlucoseGate onContinue={handleGlucoseContinue} />
-        )}
+        <h1
+          className="mb-2"
+          style={{ color: C.fg, fontFamily: 'var(--font-serif)' }}
+        >
+          Complete your order
+        </h1>
+        <p className="text-base mb-8 sm:mb-10 max-w-2xl" style={{ color: C.muted }}>
+          Pay with card. We&apos;ll automatically add you to the Meo AI waitlist —
+          you&apos;ll be first to know when your account is ready.
+        </p>
 
-        {/* ── Step 1: Addons + order ── */}
-        {step === 1 && (
-          <>
-            <h1
-              className="mb-2"
-              style={{ color: C.fg, fontFamily: 'var(--font-serif)' }}
-            >
-              Complete your order
-            </h1>
-            <p className="text-base mb-8 sm:mb-10 max-w-2xl" style={{ color: C.muted }}>
-              Pay with card. We&apos;ll automatically add you to the Meo AI waitlist —
-              you&apos;ll be first to know when your account is ready.
-            </p>
+        <div className="mb-6 sm:mb-8">
+          <HeroProductCard />
+        </div>
 
-            <div className="mb-6 sm:mb-8">
-              <HeroProductCard />
-            </div>
+        <div className="mb-8 sm:mb-10">
+          <TrustStrip />
+        </div>
 
-            <div className="mb-8 sm:mb-10">
-              <TrustStrip />
-            </div>
+        <div className="grid md:grid-cols-[1fr_minmax(320px,380px)] gap-6 md:gap-10 items-start">
+          <div className="space-y-8">
 
-            <div className="grid md:grid-cols-[1fr_minmax(320px,380px)] gap-6 md:gap-10 items-start">
-              <div className="space-y-8">
-                <section>
-                  <div className="flex items-baseline justify-between mb-1">
-                    <h2
-                      className="m-0"
-                      style={{ color: C.fg, fontFamily: 'var(--font-serif)', fontSize: 'clamp(22px, 2.5vw, 26px)' }}
-                    >
-                      Add to your kit
-                    </h2>
-                    <span className="text-xs" style={{ color: C.muted }}>Optional · up to 9 each</span>
-                  </div>
-                  <p className="text-sm mb-5" style={{ color: C.muted }}>
-                    Most customers extend their Meo AI access within 2 weeks. The test-strip subscription
-                    keeps you stocked when readings ramp up.
-                  </p>
-                  <div className="grid sm:grid-cols-2 gap-3">
-                    {KIT_PRODUCTS.addons.map((addon: AddonProduct) => (
-                      <AddonRow
-                        key={addon.id}
-                        addon={addon}
-                        qty={quantities[addon.id] ?? 0}
-                        onDec={() => setQty(addon.id, -1)}
-                        onInc={() => setQty(addon.id, +1)}
-                      />
-                    ))}
-                  </div>
-                </section>
-
-                {/* Shipping note */}
-                <section
-                  className="rounded-2xl p-5 sm:p-6"
-                  style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+            {/* ── Glucose selection (required) ── */}
+            <section>
+              <div className="flex items-baseline gap-3 mb-1">
+                <h2
+                  className="m-0"
+                  style={{ color: C.fg, fontFamily: 'var(--font-serif)', fontSize: 'clamp(22px, 2.5vw, 26px)' }}
                 >
-                  <h3 className="mb-1.5" style={{ color: C.fg }}>Shipping &amp; payment</h3>
-                  <p className="text-sm" style={{ color: C.muted }}>
-                    Your email and shipping address are collected on the next step (Stripe Checkout).
-                    We ship from London within 72 hours · free UK shipping · tracked delivery.
-                  </p>
-                </section>
-
-                {/* 30-day guarantee */}
-                <section
-                  className="rounded-2xl p-5 sm:p-6 flex items-start gap-4"
-                  style={{
-                    background: `linear-gradient(140deg, ${C.bgCard}, rgba(164,214,94,0.10))`,
-                    border: `1px solid ${C.primary}`,
-                  }}
+                  How will you track your glucose?
+                </h2>
+                <span
+                  className="text-xs font-semibold px-2 py-0.5 rounded-full shrink-0"
+                  style={{ background: glucoseSelected ? C.pill : 'rgba(245,158,11,0.18)', color: glucoseSelected ? C.pillFg : '#f59e0b' }}
                 >
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ background: C.pill }}
-                  >
-                    <Shield className="h-6 w-6" style={{ color: C.primary }} />
-                  </div>
-                  <div>
-                    <p className="font-semibold mb-1" style={{ color: C.fg }}>
-                      30-day &ldquo;start seeing, or send it back&rdquo; guarantee
-                    </p>
-                    <p className="text-sm" style={{ color: C.muted }}>
-                      Use Meo for 30 days. If you don&apos;t feel clearer and in control, return the device.
-                      Full refund. No questions asked.
-                    </p>
-                  </div>
-                </section>
+                  {glucoseSelected ? '✓ Selected' : 'Required'}
+                </span>
               </div>
+              <p className="text-sm mb-5" style={{ color: C.muted }}>
+                Your Biological Age Score requires a glucose reading alongside your lipid panel.
+              </p>
+              <div className="space-y-3">
+                {GLUCOSE_OPTIONS.map((opt) => {
+                  const isSelected = glucoseSelection === opt.id;
+                  return (
+                    <button
+                      key={opt.id}
+                      onClick={() => handleGlucoseSelect(opt.id, opt.addonId ?? null)}
+                      className="w-full text-left rounded-2xl p-5 transition-all"
+                      style={{
+                        background: isSelected ? 'rgba(164,214,94,0.08)' : C.bgCard,
+                        border: `1px solid ${isSelected ? C.primary : C.border}`,
+                      }}
+                    >
+                      <div className="flex items-start gap-4">
+                        <div
+                          className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
+                          style={{
+                            background: isSelected ? C.pill : 'rgba(255,255,255,0.06)',
+                            color: isSelected ? C.primary : C.muted,
+                          }}
+                        >
+                          {opt.icon}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap mb-1">
+                            <span className="font-semibold text-base" style={{ color: C.fg }}>
+                              {opt.label}
+                            </span>
+                            {opt.badge && (
+                              <span
+                                className="text-[10px] font-semibold px-2 py-0.5 rounded"
+                                style={{ background: C.pill, color: C.pillFg }}
+                              >
+                                {opt.badge}
+                              </span>
+                            )}
+                            {opt.price ? (
+                              <span className="font-semibold text-sm ml-auto shrink-0" style={{ color: C.fg }}>
+                                +{opt.price}
+                              </span>
+                            ) : (
+                              <span className="text-sm ml-auto shrink-0" style={{ color: C.primary }}>
+                                No extra cost
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm" style={{ color: C.muted }}>{opt.sub}</p>
+                        </div>
+                        <div
+                          className="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-1"
+                          style={{
+                            borderColor: isSelected ? C.primary : C.border,
+                            background: isSelected ? C.primary : 'transparent',
+                          }}
+                        >
+                          {isSelected && <Check className="h-3 w-3" style={{ color: C.primaryFg }} />}
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
 
-              {/* Right — sticky order summary */}
-              <aside className="md:sticky md:top-24 md:max-h-[calc(100vh-7rem)] md:overflow-y-auto">
-                <OrderSummary
-                  selectedAddons={selectedAddons}
-                  total={total}
-                  onPay={handleCheckout}
-                  isPending={isPending}
-                  error={error}
-                />
-              </aside>
-            </div>
-          </>
-        )}
+            {/* ── Additional add-ons (non-glucose) ── */}
+            {extraAddons.length > 0 && (
+              <section>
+                <div className="flex items-baseline justify-between mb-1">
+                  <h2
+                    className="m-0"
+                    style={{ color: C.fg, fontFamily: 'var(--font-serif)', fontSize: 'clamp(22px, 2.5vw, 26px)' }}
+                  >
+                    Add to your kit
+                  </h2>
+                  <span className="text-xs" style={{ color: C.muted }}>Optional · up to 9 each</span>
+                </div>
+                <p className="text-sm mb-5" style={{ color: C.muted }}>
+                  Most customers extend their Meo AI access within 2 weeks.
+                </p>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {extraAddons.map((addon: AddonProduct) => (
+                    <AddonRow
+                      key={addon.id}
+                      addon={addon}
+                      qty={quantities[addon.id] ?? 0}
+                      onDec={() => setQty(addon.id, -1)}
+                      onInc={() => setQty(addon.id, +1)}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Shipping note */}
+            <section
+              className="rounded-2xl p-5 sm:p-6"
+              style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+            >
+              <h3 className="mb-1.5" style={{ color: C.fg }}>Shipping &amp; payment</h3>
+              <p className="text-sm" style={{ color: C.muted }}>
+                Your email and shipping address are collected on the next step (Stripe Checkout).
+                We ship from London within 72 hours · free UK shipping · tracked delivery.
+              </p>
+            </section>
+
+            {/* 30-day guarantee */}
+            <section
+              className="rounded-2xl p-5 sm:p-6 flex items-start gap-4"
+              style={{
+                background: `linear-gradient(140deg, ${C.bgCard}, rgba(164,214,94,0.10))`,
+                border: `1px solid ${C.primary}`,
+              }}
+            >
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                style={{ background: C.pill }}
+              >
+                <Shield className="h-6 w-6" style={{ color: C.primary }} />
+              </div>
+              <div>
+                <p className="font-semibold mb-1" style={{ color: C.fg }}>
+                  30-day &ldquo;start seeing, or send it back&rdquo; guarantee
+                </p>
+                <p className="text-sm" style={{ color: C.muted }}>
+                  Use Meo for 30 days. If you don&apos;t feel clearer and in control, return the device.
+                  Full refund. No questions asked.
+                </p>
+              </div>
+            </section>
+          </div>
+
+          {/* Right — sticky order summary */}
+          <aside className="md:sticky md:top-24 md:max-h-[calc(100vh-7rem)] md:overflow-y-auto">
+            <OrderSummary
+              selectedAddons={selectedAddons}
+              total={total}
+              onPay={handleCheckout}
+              isPending={isPending}
+              error={error}
+              glucoseSelected={glucoseSelected}
+            />
+          </aside>
+        </div>
       </div>
 
-      {/* Mobile Pay bar — only on step 1 */}
-      {step === 1 && (
-        <MobilePayBar total={total} onPay={handleCheckout} isPending={isPending} />
-      )}
+      <MobilePayBar total={total} onPay={handleCheckout} isPending={isPending} glucoseSelected={glucoseSelected} />
     </div>
   );
 }

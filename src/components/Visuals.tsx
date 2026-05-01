@@ -376,49 +376,49 @@ export function EbookCover({ width = 240 }: { width?: number }) {
         {/* Title */}
         <text
           x="144"
-          y="500"
+          y="460"
           fill={FG}
           fontFamily="var(--font-serif), Georgia, serif"
-          fontSize="92"
+          fontSize="88"
           fontWeight={600}
           textRendering="geometricPrecision"
         >
-          Lower
+          The Thin
         </text>
         <text
           x="144"
-          y="592"
+          y="558"
           fill={FG}
           fontFamily="var(--font-serif), Georgia, serif"
-          fontSize="92"
+          fontSize="88"
           fontWeight={600}
           textRendering="geometricPrecision"
         >
-          your
+          Book of
         </text>
         <text
           x="144"
-          y="684"
+          y="656"
           fill={PRIMARY}
           fontFamily="var(--font-serif), Georgia, serif"
-          fontSize="92"
+          fontSize="88"
           fontWeight={600}
           textRendering="geometricPrecision"
         >
-          biology.
+          Fat
         </text>
 
         {/* Subtitle */}
         <text
           x="144"
-          y="816"
+          y="780"
           fill={MUTED}
           fontFamily="var(--font-sans), sans-serif"
           fontSize="28"
-          letterSpacing="0.2em"
+          letterSpacing="0.12em"
           textRendering="geometricPrecision"
         >
-          A 6-WEEK PROTOCOL
+          THE ACTION MANUAL
         </text>
 
         {/* Author block at the bottom */}
@@ -430,7 +430,7 @@ export function EbookCover({ width = 240 }: { width?: number }) {
           fontSize="26"
           textRendering="geometricPrecision"
         >
-          by the Meo team
+          by Marina Young
         </text>
       </svg>
     </div>
