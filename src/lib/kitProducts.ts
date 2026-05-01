@@ -50,7 +50,7 @@ export interface KitProduct {
 export const KIT_PRODUCT: KitProduct = {
   name: 'Metabolic Health Cholesterol Tracker',
   description:
-    '6 months of Meo AI + Digital Lipid Meter (bundled free) + The Thin Book in Fat. Measure, understand, act — backed by a Biological Age Score that updates with every reading.',
+    '6 months of Meo AI + Digital Lipid Meter (bundled free) + The Thin Book of Fat. Measure, understand, act — backed by a Biological Age Score that updates with every reading.',
   price: 14900, // £149
   priceId: process.env.NEXT_PUBLIC_KIT_PRICE_ID || 'price_meo_starter_placeholder',
   features: [
@@ -68,7 +68,7 @@ export const KIT_PRODUCT: KitProduct = {
     },
     {
       icon: 'book',
-      title: 'eBook: The Thin Book in Fat — Marina Young',
+      title: 'eBook: The Thin Book of Fat — Marina Young',
       description:
         'The action manual that pairs with Meo AI. Ask the author your questions directly through Meo — answers are returned in chat so insight and follow-up stay in one loop.',
     },

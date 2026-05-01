@@ -65,7 +65,7 @@ export default function TermsPage() {
                 &ldquo;Subscription&rdquo;).
               </li>
               <li>
-                One (1) digital copy of <em>The Thin Book in Fat</em> by Marina
+                One (1) digital copy of <em>The Thin Book of Fat</em> by Marina
                 Young (the &ldquo;eBook&rdquo;).
               </li>
               <li>

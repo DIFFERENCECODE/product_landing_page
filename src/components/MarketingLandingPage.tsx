@@ -1112,7 +1112,7 @@ function EbookSection() {
             Insight without action is just <span style={{ color: C.primary }}>anxiety</span>.
           </h2>
           <p className="text-base mb-3" style={{ color: C.muted }}>
-            <em>The Thin Book in Fat</em> by <strong style={{ color: C.fg }}>Marina Young</strong> — the manual Meo AI references when it talks to you. Ask the author your questions directly through Meo; answers come back in chat.
+            <em>The Thin Book of Fat</em> by <strong style={{ color: C.fg }}>Marina Young</strong> — the manual Meo AI references when it talks to you. Ask the author your questions directly through Meo; answers come back in chat.
           </p>
           <p className="text-sm mb-6" style={{ color: C.muted }}>
             Included digitally with every Metabolic Health Tracker.
@@ -1256,6 +1256,12 @@ const PARTNERS = [
     name: 'Andy Taylor',
     title: 'Clinic Lead',
     bio: 'Former professional footballer turned metabolic health expert and UKSCA-accredited coach.',
+  },
+  {
+    photo: '/team-saad.jpg',
+    name: 'Saad',
+    title: 'AI Specialist · CTO',
+    bio: 'Building the intelligence layer behind Meo — AI architecture, backend systems, and the data pipeline that turns a finger-prick into a metabolic picture.',
   },
 ];
 
