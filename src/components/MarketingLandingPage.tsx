@@ -1112,7 +1112,15 @@ function EbookSection() {
             transition={{ duration: 0.6 }}
             className="flex justify-center"
           >
-            <EbookCover width={260} />
+            <div className="rounded-xl overflow-hidden shadow-2xl" style={{ width: 200 }}>
+              <Image
+                src="/ebook-cover.jpg"
+                alt="The Thin Book of Fat — Marina Young"
+                width={200}
+                height={267}
+                className="w-full h-auto object-cover"
+              />
+            </div>
           </motion.div>
           <div>
             <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>
@@ -1148,14 +1156,15 @@ function EbookSection() {
           style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
         >
           <div
-            className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shrink-0"
-            style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${C.border}` }}
+            className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden shrink-0"
+            style={{ border: `1px solid ${C.border}` }}
           >
             <Image
               src="/marina-young.jpg"
-              alt="Marina Young — author of The Thin Book of Fat"
-              fill
-              className="object-cover"
+              alt="Marina Young — Author"
+              width={112}
+              height={112}
+              className="w-full h-full object-cover"
             />
           </div>
           <div className="text-center sm:text-left">

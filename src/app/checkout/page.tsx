@@ -121,7 +121,7 @@ function HeroProductCard() {
       style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
     >
       <div
-        className="flex items-center justify-center p-5 sm:p-6"
+        className="flex items-end justify-center gap-4 p-5 sm:p-6"
         style={{ background: 'rgba(255,255,255,0.04)' }}
       >
         <Image
@@ -129,9 +129,21 @@ function HeroProductCard() {
           alt="Meo Digital Lipid Meter"
           width={400}
           height={655}
-          className="w-full max-w-[200px] h-auto object-contain"
+          className="w-full max-w-[130px] h-auto object-contain"
           priority
         />
+        <div className="flex flex-col items-center gap-1.5 pb-1">
+          <Image
+            src="/ebook-cover.jpg"
+            alt="The Thin Book of Fat — Marina Young"
+            width={200}
+            height={280}
+            className="w-full max-w-[90px] h-auto object-contain rounded-md shadow-lg"
+          />
+          <span className="text-[9px] text-center leading-tight max-w-[90px]" style={{ color: 'rgba(255,255,255,0.45)' }}>
+            The Thin Book of Fat
+          </span>
+        </div>
       </div>
       <div className="p-5 sm:p-7 flex flex-col justify-between gap-5">
         <div>
