@@ -1263,6 +1263,12 @@ const PARTNERS = [
     title: 'AI Specialist · CTO',
     bio: 'Building the intelligence layer behind Meo — AI architecture, backend systems, and the data pipeline that turns a finger-prick into a metabolic picture.',
   },
+  {
+    photo: '/team-leonard.png',
+    name: 'Leonard Lin',
+    title: 'Product Supervisor',
+    bio: 'Overseeing product direction and ensuring every feature of Meo delivers real metabolic insight — from hardware integration to the AI conversation layer.',
+  },
 ];
 
 function PartnerCard({ partner }: { partner: typeof PARTNERS[number] }) {
