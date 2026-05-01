@@ -742,31 +742,39 @@ function OfferStackSection() {
             </div>
           ))}
 
-          {/* Total + price + savings — visually heavy so the eye lands here */}
+          {/* Totals row */}
           <div
-            className="px-5 sm:px-6 py-5 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 items-baseline"
-            style={{ background: 'rgba(164,214,94,0.06)', borderTop: `1px solid ${C.border}` }}
+            className="px-5 sm:px-6 py-4 flex items-baseline justify-between gap-4"
+            style={{ borderTop: `1px solid ${C.border}` }}
           >
-            <div className="text-xs" style={{ color: C.muted }}>
-              Total individual value
-              <div className="mt-1 text-base font-semibold line-through tabular-nums" style={{ color: C.muted }}>
-                {formatGBP(total)}
-              </div>
+            <div className="text-sm font-medium" style={{ color: C.muted }}>Total individual value</div>
+            <div className="text-sm font-semibold line-through tabular-nums" style={{ color: C.muted }}>
+              {formatGBP(total)}
             </div>
-            <div className="text-xs" style={{ color: C.muted }}>
-              You pay
-              <div
-                className="mt-1 text-3xl font-extrabold tabular-nums"
-                style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif' }}
-              >
-                {formatGBP(price)}
-              </div>
+          </div>
+
+          {/* You pay row */}
+          <div
+            className="px-5 sm:px-6 py-4 flex items-baseline justify-between gap-4"
+            style={{ borderTop: `1px solid ${C.border}` }}
+          >
+            <div className="text-sm font-medium" style={{ color: C.fg }}>You pay</div>
+            <div
+              className="text-3xl font-extrabold tabular-nums"
+              style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif' }}
+            >
+              {formatGBP(price)}
             </div>
-            <div className="text-xs" style={{ color: C.muted }}>
-              You save
-              <div className="mt-1 text-base font-semibold tabular-nums" style={{ color: C.primary }}>
-                {formatGBP(savings)}
-              </div>
+          </div>
+
+          {/* You save row — most prominent */}
+          <div
+            className="px-5 sm:px-6 py-4 flex items-center justify-between gap-4"
+            style={{ background: 'rgba(164,214,94,0.12)', borderTop: `1px solid rgba(164,214,94,0.4)` }}
+          >
+            <div className="text-sm font-bold" style={{ color: C.primary }}>You save</div>
+            <div className="text-2xl font-extrabold tabular-nums" style={{ color: C.primary }}>
+              {formatGBP(savings)}
             </div>
           </div>
         </motion.div>
@@ -776,7 +784,7 @@ function OfferStackSection() {
             Start with 6 months of Meo · {formatGBP(price)} <ArrowRight className="h-4 w-4" />
           </CTAButton>
           <span className="text-xs" style={{ color: C.muted }}>
-            30-day money-back · Free UK shipping · Plain brown paper
+            30-day money-back · Free UK shipping · Discreet packaging
           </span>
         </div>
       </div>
