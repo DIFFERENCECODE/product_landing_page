@@ -835,7 +835,7 @@ function LipidTrackingSection() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="rounded-3xl overflow-hidden"
+          className="rounded-3xl overflow-hidden flex items-end justify-center gap-5 p-6"
           style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
         >
           <Image
@@ -843,8 +843,20 @@ function LipidTrackingSection() {
             alt="Meo Digital Lipid Meter — finger-prick, strip, 3 minutes"
             width={400}
             height={655}
-            className="w-full max-w-sm mx-auto h-auto object-contain"
+            className="h-[280px] w-auto object-contain"
           />
+          <div className="flex flex-col items-center gap-2 pb-2">
+            <Image
+              src="/ebook-cover.jpg"
+              alt="The Thin Book of Fat — Marina Young"
+              width={200}
+              height={267}
+              className="w-[110px] h-auto object-cover rounded-lg shadow-xl"
+            />
+            <span className="text-[9px] text-center leading-tight max-w-[100px]" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              The Thin Book of Fat
+            </span>
+          </div>
         </motion.div>
         <motion.div
           initial={{ opacity: 0, x: 24 }}
@@ -1320,6 +1332,12 @@ const PARTNERS = [
     title: 'Product Supervisor',
     bio: 'Overseeing product direction and ensuring every feature of Meo delivers real metabolic insight — from hardware integration to the AI conversation layer.',
   },
+  {
+    photo: '/marina-young.jpg',
+    name: 'Marina Young',
+    title: 'Author · The Thin Book of Fat',
+    bio: 'A decade translating the science of metabolic health into plain English. The Thin Book of Fat is the action manual Meo AI draws on — ask Marina your questions directly through Meo.',
+  },
 ];
 
 function PartnerCard({ partner }: { partner: typeof PARTNERS[number] }) {
@@ -1363,7 +1381,7 @@ function PartnersSection() {
 
         {/* Desktop: up to 4 cards per row */}
         <div className="hidden sm:grid mt-12 gap-6"
-          style={{ gridTemplateColumns: `repeat(${Math.min(PARTNERS.length, 4)}, minmax(0, 1fr))` }}
+          style={{ gridTemplateColumns: `repeat(${Math.min(PARTNERS.length, 5)}, minmax(0, 1fr))` }}
         >
           {PARTNERS.map((p) => (
             <PartnerCard key={p.name} partner={p} />
