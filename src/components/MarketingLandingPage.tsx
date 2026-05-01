@@ -265,7 +265,7 @@ function Hero() {
   ];
   const featuresRowB = [
     'Free UK shipping',
-    '10 test strips + lancets + carry case included',
+    '20 lipid test strips + lancets + carry case included',
     'Q&A with the author via Meo',
     'Biological Age Score + Target Score',
     'Discreet shipping',
@@ -700,7 +700,7 @@ function OfferStackSection() {
   const items = [
     { label: '6 months of Meo AI access',          value: 17400, note: '£29/mo at the standard rate' },
     { label: 'Digital Lipid Meter',                value: 8000,  note: 'UK & EU Registered · Bundled' },
-    { label: '10 Lipid Test Strips',               value: 2200,  note: 'enough for 10 readings included' },
+    { label: '20 Lipid Test Strips',               value: 4400,  note: 'enough for 20 readings included' },
     { label: 'Lancets',                            value: 800,   note: 'included in the kit' },
     { label: 'Carry Case',                         value: 1200,  note: 'included in the kit' },
     { label: 'Biological Age Score + Target',      value: 4000,  note: 'baseline + ongoing goal' },
@@ -1393,7 +1393,7 @@ function ObjectionsSection() {
     },
     {
       q: '£149 — what does that actually get me?',
-      a: 'Read it as 6 months of Meo AI with the lipid meter, 10 test strips, lancets, carry case, and a Biological Age Score all bundled in. One private-clinic panel costs £80–£150, runs once, gives you paper. Meo costs £149 once, runs unlimited times, and pairs each reading with AI interpretation you can actually act on.',
+      a: 'Read it as 6 months of Meo AI with the lipid meter, 20 test strips, lancets, carry case, and a Biological Age Score all bundled in. One private-clinic panel costs £80–£150, runs once, gives you paper. Meo costs £149 once, runs unlimited times, and pairs each reading with AI interpretation you can actually act on.',
     },
   ];
   return (

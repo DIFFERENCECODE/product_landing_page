@@ -64,7 +64,7 @@ export const KIT_PRODUCT: KitProduct = {
       icon: 'activity',
       title: 'Digital Lipid Meter — Bundled',
       description:
-        'One of only three lipid meters registered for Home Use in the UK & EU. Measures Total Cholesterol, HDL, LDL, Triglycerides and TC/HDL ratio from a single finger-prick in under 3 minutes. Includes 10 test strips, lancets, and carry case.',
+        'One of only three lipid meters registered for Home Use in the UK & EU. Measures Total Cholesterol, HDL, LDL, Triglycerides and TC/HDL ratio from a single finger-prick in under 3 minutes. Includes 20 test strips, lancets, and carry case.',
     },
     {
       icon: 'book',
@@ -111,13 +111,13 @@ export const KIT_ADDONS: KitAddon[] = [
     id: 'multimeter',
     name: 'Glucose + MultiMeter — measures glucose, ketones, cholesterol & uric acid',
     description:
-      'Four metabolic markers in a single device. Free strips for glucose AND ketones bundled — the same drop of blood gives you two readings. Ketones unlock the picture of your metabolic flexibility, which is the basis of the next tracker in the series.',
+      'Four metabolic markers in a single device. Comes with 50 free glucose strips + 25 free ketone strips — the same drop of blood gives you two readings. Ketones unlock the picture of your metabolic flexibility, which is the basis of the next tracker in the series.',
     price: 6000, // £60
     priceId:
       process.env.NEXT_PUBLIC_ADDON_MULTIMETER_PRICE_ID ||
       'price_meo_multimeter_placeholder',
     recommended: true,
-    highlight: 'Recommended · Free glucose + ketone strips bundled',
+    highlight: 'Recommended · 50 glucose + 25 ketone strips free',
   },
   {
     id: 'glucose-meter',
