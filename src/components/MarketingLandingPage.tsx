@@ -257,19 +257,18 @@ function Hero() {
   // same row mirrored.
   const featuresRowA = [
     'Lab-grade lipid panel · 3 minutes',
-    "World's only metabolic-health AI",
+    "World's first and only Metabolic Health AI!",
     '6 months of Meo AI included',
     '30-day money-back guarantee',
-    '1 of only 3 UK & EU registered home lipid meters',
+    '1 of only 3 lipid meters registered for home use in UK & EU',
     'Ships in 72 hours · limited quantities',
   ];
   const featuresRowB = [
     'Free UK shipping',
-    '20 lipid test strips + lancets + carry case included',
-    'Q&A with the author via Meo',
-    'Biological Age Score + Target Score',
-    'Discreet shipping',
-    '10 years industrialising the Kraft Test',
+    '10 lipid test strips + lancets + carry case included',
+    'Q&A with the book author, Marina Young via Meo',
+    'Biological Age Score + your Target Score',
+    '10 years of leadership industrialising the Kraft Test',
   ];
 
   return (
@@ -348,7 +347,7 @@ function Hero() {
           style={{ color: C.muted }}
         >
           Meo turns a 3-minute finger-prick into a complete metabolic picture —
-          interpreted by AI, framed for longevity, and actionable the same day.
+          interpreted by AI, framed for your longevity, and actionable the same day.
         </motion.p>
 
         {/* CTAs */}
@@ -403,7 +402,6 @@ function Hero() {
             mobile. Order picked deliberately:
               1. Money-back  (risk reversal first — biggest objection killer)
               2. EU registered (clinical credibility)
-              3. Plain brown paper (privacy / discretion — campaign brief)
               4. Free retest (concrete deliverable that's not just a refund)
             Position: outside the hero `text-center` block so it spans
             full width on mobile but still sits above the marquee. */}
@@ -417,8 +415,7 @@ function Hero() {
       >
         {[
           { icon: <Heart className="h-4 w-4" />, label: '30-day', sub: 'money-back guarantee' },
-          { icon: <Activity className="h-4 w-4" />, label: 'UK & EU Registered', sub: '1 of only 3 lipid meters' },
-          { icon: <Shield className="h-4 w-4" />, label: 'Discreet shipping', sub: 'secure packaging' },
+          { icon: <Activity className="h-4 w-4" />, label: 'UK & EU IVDR Registered', sub: '1 of only 3 lipid meters' },
           { icon: <Clock className="h-4 w-4" />, label: 'Ships in 72 hrs', sub: 'limited quantities' },
         ].map((b, i) => (
           <div
@@ -703,7 +700,7 @@ function OfferStackSection() {
     { label: '20 Lipid Test Strips',               value: 4400,  note: 'enough for 20 readings included' },
     { label: 'Lancets',                            value: 800,   note: 'included in the kit' },
     { label: 'Carry Case',                         value: 1200,  note: 'included in the kit' },
-    { label: 'Biological Age Score + Target',      value: 4000,  note: 'baseline + ongoing goal' },
+    { label: 'Biological Age Score + Your Target',      value: 4000,  note: 'baseline + ongoing goal' },
   ] as const;
   const total = items.reduce((s, x) => s + x.value, 0);
   const price = KIT_PRODUCT.price;
@@ -784,8 +781,7 @@ function OfferStackSection() {
             Start with 6 months of Meo · {formatGBP(price)} <ArrowRight className="h-4 w-4" />
           </CTAButton>
           <span className="text-xs" style={{ color: C.muted }}>
-            30-day money-back · Free UK shipping · Discreet packaging
-          </span>
+            30-day money-back · Free UK shipping  </span>
         </div>
       </div>
     </section>
@@ -1517,7 +1513,7 @@ function GuaranteeSection() {
           &ldquo;Start seeing, or send it back.&rdquo;
         </h2>
         <p className="text-base mb-8 max-w-xl mx-auto" style={{ color: C.muted }}>
-          Use Meo for 30 days. Take your readings. Watch your Biological Age Score update. If you don&apos;t feel clearer, in control, and like you finally understand what your body&apos;s been trying to tell you — return the device. Full refund. No questions asked.
+          Use Meo for 30 days. Take your readings. Watch your Biological Age Score update. If you don&apos;t feel clearer, in control, and like you finally understand what your body&apos;s been trying to tell you — return the device. Full refund less post & packaging. No questions asked.
         </p>
         <CTAButton size="lg">Claim your risk-free 30 days <ArrowRight className="h-4 w-4" /></CTAButton>
       </div>
@@ -1783,7 +1779,7 @@ function UrgencyBadge() {
   const msgs = [
     '⚡ Only 14 kits left at this price',
     '🔥 23 people viewing this right now',
-    '📦 Ships in 72 hrs — order before midnight',
+    '📦 Ships in 72 hrs — order before5PM',
   ];
   const [idx, setIdx] = useState(0);
   useEffect(() => {

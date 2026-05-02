@@ -692,7 +692,7 @@ export default function CheckoutPage() {
                 </p>
                 <p className="text-sm" style={{ color: C.muted }}>
                   Use Meo for 30 days. If you don&apos;t feel clearer and in control, return the device.
-                  Full refund. No questions asked.
+                  Full refund less post & packaging. No questions asked.
                 </p>
               </div>
             </section>
