@@ -78,8 +78,8 @@ export default function TermsPage() {
           <section>
             <h2 className="font-semibold mb-3">3. Wellness, not medical advice</h2>
             <p>
-              The Hardware is a CE-marked at-home lipid meter and one of three
-              such meters registered for Home Use in the EU. The Meo AI service
+              The Meter is a CE-marked at-home lipid meter and one of three
+              such meters IVDR registered for Home Use in the UK & EU. The Meo AI service
               interprets your readings in plain language and surfaces patterns.
               Neither the Hardware nor the AI service is a medical device for
               the purpose of diagnosis, treatment, cure, or prevention of

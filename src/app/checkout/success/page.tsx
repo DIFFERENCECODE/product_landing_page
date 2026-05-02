@@ -136,7 +136,7 @@ function SuccessContent() {
           <h1 className="text-3xl mb-2">Order confirmed!</h1>
           <p className="text-[var(--muted)] mb-6">
             Thank you{session?.customerName ? `, ${session.customerName}` : ""}
-            . Your Metabolic Health Tracker is on its way — discreetly packaged in plain brown paper.
+            . Your Metabolic Health Tracker is on its way
           </p>
 
           <div className="rounded-xl bg-[var(--bg)] border border-[var(--border)] p-4 text-left space-y-2 mb-6">

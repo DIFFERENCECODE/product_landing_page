@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     template: "%s · Meo",
   },
   description:
-    "See what your cholesterol is actually telling you. Meo turns a 3-minute finger-prick into a complete metabolic picture — interpreted by AI, framed for longevity, actionable the same day.",
+    "See what your cholesterol is actually telling you. Meo turns a 3-minute finger-prick into a complete metabolic picture — interpreted by AI, framed for your longevity, actionable the same day.",
   keywords: [
     "at-home cholesterol test",
     "lipid meter",
@@ -41,6 +41,10 @@ export const metadata: Metadata = {
     "Meo AI",
     "cholesterol monitoring",
     "longevity",
+    "heart disease",
+    "heart attack",
+    "cardiac",
+    "healthy ageing",
     "HDL LDL TG",
   ],
   authors: [{ name: "Meterbolic" }],
