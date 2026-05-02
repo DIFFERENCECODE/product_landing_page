@@ -112,7 +112,7 @@ function HeroProductCard() {
   const features = [
     { icon: <Brain className="h-4 w-4" />, text: '6 months of Meo AI' },
     { icon: <Activity className="h-4 w-4" />, text: 'Lipid meter — bundled' },
-    { icon: <Droplets className="h-4 w-4" />, text: '20 lipid test strips + lancets + carry case' },
+    { icon: <Droplets className="h-4 w-4" />, text: '10 lipid test strips + lancets + carry case' },
     { icon: <Zap className="h-4 w-4" />, text: 'Biological Age Score included' },
   ];
   return (

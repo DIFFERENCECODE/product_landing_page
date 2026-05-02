@@ -64,7 +64,7 @@ export const KIT_PRODUCT: KitProduct = {
       icon: 'activity',
       title: 'Digital Lipid Meter — Bundled',
       description:
-        'One of only three lipid meters registered for Home Use in the UK & EU. Measures Total Cholesterol, HDL, LDL, Triglycerides and TC/HDL ratio from a single finger-prick in under 3 minutes. Includes 20 test strips, lancets, and carry case.',
+        'One of only three lipid meters registered for Home Use in the UK & EU. Measures Total Cholesterol, HDL, LDL, Triglycerides and TC/HDL ratio from a single finger-prick in under 3 minutes. Includes 10 test strips, lancets, and carry case.',
     },
     {
       icon: 'book',
