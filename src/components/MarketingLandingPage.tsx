@@ -264,7 +264,7 @@ function Hero() {
     'Ships in 72 hours · limited quantities',
   ];
   const featuresRowB = [
-    '£9.99 UK shipping · tracked delivery',
+    'Tracked delivery',
     '10 lipid test strips + lancets + carry case included',
     'Q&A with the book author, Marina Young via Meo',
     'Biological Age Score + your Target Score',
@@ -373,7 +373,7 @@ function Hero() {
             doesn't compete with the CTA visually. The richer trust
             grid lives below as separate cards. */}
         <p className="text-xs mt-3" style={{ color: C.muted }}>
-          Lipid meter included free · 30-day money-back · £9.99 UK shipping
+          Lipid meter included free · 30-day money-back guarantee
         </p>
         <UrgencyBadge />
 
@@ -781,7 +781,7 @@ function OfferStackSection() {
             Start with 6 months of Meo · {formatGBP(price)} <ArrowRight className="h-4 w-4" />
           </CTAButton>
           <span className="text-xs" style={{ color: C.muted }}>
-            30-day money-back · £9.99 UK shipping  </span>
+            30-day money-back guarantee  </span>
         </div>
       </div>
     </section>
@@ -1867,7 +1867,7 @@ function StickyDesktopCTA() {
           </div>
           <div className="flex items-center gap-4 shrink-0">
             <div className="text-right hidden md:block">
-              <p className="text-xs" style={{ color: C.muted }}>30-day money-back · £9.99 UK shipping</p>
+              <p className="text-xs" style={{ color: C.muted }}>30-day money-back guarantee</p>
               <p className="text-xs" style={{ color: C.danger }}>⚡ Limited stock</p>
             </div>
             <Link
@@ -1955,7 +1955,7 @@ function ExitIntentOverlay() {
             >
               Get Meo — {formatGBP(KIT_PRODUCT.price)} <ArrowRight className="h-4 w-4" />
             </Link>
-            <p className="text-xs mt-3" style={{ color: C.muted }}>30-day money-back · £9.99 UK shipping · Limited stock</p>
+            <p className="text-xs mt-3" style={{ color: C.muted }}>30-day money-back guarantee · Limited stock</p>
           </motion.div>
         </motion.div>
       )}
