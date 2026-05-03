@@ -1,6 +1,6 @@
 <svg viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,-apple-system,sans-serif">
   <!-- Background -->
-  <rect width="500" height="240" fill="#111827" rx="10"/>
+  <rect width="500" height="240" fill="#1c4a40" rx="10"/>
 
   <!-- Plot area clip -->
   <defs>

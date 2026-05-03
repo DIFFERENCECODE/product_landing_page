@@ -1,6 +1,6 @@
 <svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,-apple-system,sans-serif">
   <!-- Background -->
-  <rect width="320" height="260" fill="#111827" rx="10"/>
+  <rect width="320" height="260" fill="#1c4a40" rx="10"/>
 
   <!-- Title row -->
   <circle cx="16" cy="18" r="5" fill="#f87171"/>
