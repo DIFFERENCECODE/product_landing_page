@@ -9,7 +9,7 @@ Adding Post & Packaging gives us the option to advertise a lower headline price?
 
 - What about money back guarantee less post & packaging costs.
 
-# what about when we do no  have stock
+# what about when we do not have stock
 - should we cahnge ships in 72 hours while stocks last
 - then we informa them that they go on a wiating list
 
@@ -196,7 +196,15 @@ In the terms/page.tsx, you write:
     '📦 Ships in 72 hrs — order before5PM',
   ];
 ```
-- the first two make no sense as constants. Looks entirely wrongwhen it is constant for the UX
+- the first two make no sense as constants. Looks entirely wrong when it is constant for the UX
+
+## subscribe
+Not ready to buy? Get the first chapter free.
+Subscribe and we'll send you a free extract from The Thin Book of Fat by Marina Young — plus early access to new products in the Metabolic Health Tracker Series. No spam, ever.
+
+- we need spam filters here. The current website has 50% plus spam
+
+
 
 ---
 
