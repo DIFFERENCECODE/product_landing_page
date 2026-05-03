@@ -1220,8 +1220,22 @@ function AppPreviewSection() {
 }
 
 // ─── Grafana gauges preview ───────────────────────────────────────────
+const GAUGES = [
+  { file: 'bmi',               label: 'BMI' },
+  { file: 'glucose',           label: 'Glucose' },
+  { file: 'hdl',               label: 'HDL' },
+  { file: 'homa-ir',           label: 'HOMA-IR' },
+  { file: 'lap',               label: 'LAP' },
+  { file: 'ldl',               label: 'LDL' },
+  { file: 'tg-hdl',            label: 'TG/HDL' },
+  { file: 'total-cholesterol', label: 'Total Cholesterol' },
+  { file: 'triglyceride',      label: 'Triglyceride' },
+  { file: 'tyg',               label: 'TyG' },
+  { file: 'wwi',               label: 'WWI' },
+  { file: 'waist-height',      label: 'Waist/Height' },
+];
+
 function GaugesPreviewSection() {
-  const metrics = ['BMI', 'Glucose', 'HDL', 'HOMA-IR', 'LAP', 'LDL', 'TG/HDL', 'Total Cholesterol', 'Triglyceride', 'TyG', 'WWI', 'Waist/Height'];
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
       <div className="max-w-5xl mx-auto">
@@ -1237,42 +1251,34 @@ function GaugesPreviewSection() {
             <span style={{ color: C.primary }}>Colour-coded to your range.</span>
           </h2>
           <p className="max-w-xl mx-auto text-base" style={{ color: C.muted }}>
-            Your Meo dashboard tracks {metrics.length} metabolic markers simultaneously — each gauge calibrated to your personal baseline, not a population average.
+            {GAUGES.length} metabolic markers tracked simultaneously — each gauge calibrated to your personal baseline, not a population average.
           </p>
         </div>
 
-        {/* Gauge grid image */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.65 }}
-          className="rounded-3xl overflow-hidden"
-          style={{
-            background: '#161b22',
-            border: `1px solid ${C.border}`,
-            boxShadow: '0 30px 70px rgba(0,0,0,0.4)',
-          }}
-        >
-          <Image
-            src="/grafana-gauges.png"
-            alt="Meo metabolic dashboard — 12 biomarker gauges colour-coded to your range"
-            width={3163}
-            height={1873}
-            className="w-full h-auto block"
-          />
-        </motion.div>
-
-        {/* Metric tags */}
-        <div className="flex flex-wrap justify-center gap-2 mt-8">
-          {metrics.map((m) => (
-            <span
-              key={m}
-              className="px-3 py-1 rounded-full text-xs font-medium"
-              style={{ background: C.bgCard, color: C.muted, border: `1px solid ${C.border}` }}
+        {/* Individual gauge grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+          {GAUGES.map((g, i) => (
+            <motion.div
+              key={g.file}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.05 }}
+              className="rounded-2xl overflow-hidden"
+              style={{
+                background: '#161b22',
+                border: `1px solid ${C.border}`,
+                boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
+              }}
             >
-              {m}
-            </span>
+              <Image
+                src={`/gauges/gauge-${g.file}.png`}
+                alt={`${g.label} gauge`}
+                width={360}
+                height={300}
+                className="w-full h-auto block"
+              />
+            </motion.div>
           ))}
         </div>
       </div>
