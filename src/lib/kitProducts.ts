@@ -110,7 +110,7 @@ export const THERAPY_ADDON: KitAddon = {
   id: 'therapy-spencer',
   name: 'Metabolic Coach — Spencer Martin',
   description:
-    '3-month coaching subscription with Spencer Martin, UK National Swimmer. 40-minute initial consultation + two 30-minute follow-ups + two written metabolic health reports + written Q&A access for 3 months.',
+    '3-month subscription upgrade with private health coaching. Includes initial 40-minute and two 30-minute follow-up consultations.',
   price: 29500, // £295
   priceId: process.env.NEXT_PUBLIC_ADDON_THERAPY_PRICE_ID || 'price_meo_therapy_placeholder',
 };

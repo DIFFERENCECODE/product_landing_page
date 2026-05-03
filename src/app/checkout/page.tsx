@@ -779,10 +779,10 @@ export default function CheckoutPage() {
                       )}
                     </div>
                     <p className="text-sm mb-2" style={{ color: C.muted }}>
-                      3-month subscription · 40 min initial + 2 × 30 min follow-ups
+                      3-month subscription upgrade with private health coaching
                     </p>
                     <ul className="space-y-0.5">
-                      {['Two written metabolic health reports', 'Written Q&A access for 3 months'].map((item) => (
+                      {['Initial 40-minute consultation', 'Two 30-minute follow-up consultations'].map((item) => (
                         <li key={item} className="flex items-center gap-1.5 text-xs" style={{ color: C.muted }}>
                           <Check className="h-3 w-3 shrink-0" style={{ color: C.primary }} />
                           {item}
