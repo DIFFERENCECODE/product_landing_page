@@ -1112,20 +1112,20 @@ function AppPreviewSection() {
           transition={{ duration: 0.7 }}
           className="flex flex-col items-center"
         >
-          {/* Screen */}
+          {/* Screen lid */}
           <div
-            className="w-full max-w-3xl rounded-t-2xl rounded-b-sm p-[10px] pb-0 relative"
+            className="w-full max-w-3xl rounded-t-2xl rounded-b-sm overflow-hidden relative"
             style={{
               background: '#1a1a1f',
               boxShadow: '0 40px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.07)',
             }}
           >
-            {/* Top bezel with camera */}
-            <div className="flex items-center justify-center pb-2 pt-1">
+            {/* Thin top bezel — camera only, no horizontal padding */}
+            <div className="flex items-center justify-center h-[22px]" style={{ background: '#1a1a1f' }}>
               <div className="w-[6px] h-[6px] rounded-full" style={{ background: '#3a3a3f' }} />
             </div>
-            {/* Screen area */}
-            <div className="rounded-t-lg overflow-hidden" style={{ background: '#0f1117' }}>
+            {/* Screenshot fills 100% width, zero side gaps */}
+            <div className="overflow-hidden" style={{ background: '#0f1117' }}>
               <Image
                 src="/meo-app-screenshot.png"
                 alt="Meo AI platform — metabolic analysis dashboard"
