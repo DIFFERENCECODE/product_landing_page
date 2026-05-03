@@ -125,6 +125,7 @@ This file is Eric's editorial layer. Drop comments, copy changes, design instruc
 ## Testimonials / Social Proof
 
 <!-- add your entries below this line -->
+none
 
 
 ---
@@ -133,7 +134,7 @@ This file is Eric's editorial layer. Drop comments, copy changes, design instruc
 
 <!-- add your entries below this line -->
 
-
+        
 ---
 
 ## Checkout Page
@@ -146,7 +147,44 @@ This file is Eric's editorial layer. Drop comments, copy changes, design instruc
 ## General / Cross-Cutting
 
 <!-- add your entries below this line -->
+# instruct
+- Eric to dear Saad
+  ```I can be around this afternoon for instant checking``` -- interact with you.
 
+ - Not just this ERIC.md specifications, but we also need these:
+  - Gauges: https://docs.google.com/document/d/1NZijPx_HXyhvCWLUo0m87eEGniGaRbjife3Qe_U_GhY/edit?tab=t.obr245uer2x#bookmark=id.53ppolf4afag
+  - Six Markers text: https://docs.google.com/document/d/1cMlgAol22NjUshEfE5yy5dv0GECEC2aKBFhHKOhXMgo/edit?tab=t.s2lvv8okfzd#bookmark=id.vb4n4ck2e0ja
+  - !Therapist placeholder with Spen! : https://docs.google.com/document/d/1cMlgAol22NjUshEfE5yy5dv0GECEC2aKBFhHKOhXMgo/edit?tab=t.s2lvv8okfzd#bookmark=id.550r9iuexejn
+  - !BAS Logo! : https://docs.google.com/document/d/1cMlgAol22NjUshEfE5yy5dv0GECEC2aKBFhHKOhXMgo/edit?tab=t.s2lvv8okfzd#bookmark=id.a5z8fwlp12d4
+
+# comment
+- These items we can do Later
+   - the integration of `meterbolic.com` and `app.`
+   - adding Pixel (referensed this already in /diff/site project
+   - words from Meterbolic -- collected sayings or aphorisms from Eric to be dynamically displayed
+
+# instruct
+In the terms/page.tsx, you write:
+              These terms govern your purchase and use of the Meo Metabolic
+              Health Cholesterol Tracker (&ldquo;Meo&rdquo;), sold by Meterbolic
+              Ltd, England &amp; Wales. By placing an order you agree to be
+              bound by these terms. They are governed by the laws of England
+              &amp; Wales.
+            </p>
+- The existing DIFFERENCECODe/aite website
+ - Has terms and conditions
+ - Privacy ...
+- This needs to be integrated with what you have above.
+
+# instruct
+```function UrgencyBadge() {
+  const msgs = [
+    '⚡ Only 14 kits left at this price',
+    '🔥 23 people viewing this right now',
+    '📦 Ships in 72 hrs — order before5PM',
+  ];
+```
+- the first two make no sense as constants. Looks entirely wrongwhen it is constant for the UX
 
 ---
 
@@ -156,7 +194,7 @@ Notes specific to how this landing page should behave inside meocombined.
 
 <!-- add your entries below this line -->
 
-- We should see the Landing Pages embseed insie the website. So that it is in the context of the website.
+- We should see the Landing Pages embedded inside the website. So that it is in the context of the website.
 - We should have access to the enclist mode of the MeO.
   - enlist mode is when they sign up to the mailinglist, then they are on the ENLIST Tier
 
