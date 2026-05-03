@@ -9,7 +9,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo, useState, useTransition } from 'react';
+import { useMemo, useState, useTransition, useEffect } from 'react';
 import {
   ShoppingCart,
   ArrowLeft,
@@ -107,6 +107,81 @@ function TrustStrip() {
   );
 }
 
+// ─── Hero image slider ────────────────────────────────────────────────
+const HERO_SLIDES = [
+  {
+    src: '/lipid-meter.png',
+    alt: 'Meo Digital Lipid Meter',
+    width: 400,
+    height: 655,
+    className: 'h-[200px] w-auto object-contain',
+    label: 'Digital Lipid Meter',
+  },
+  {
+    src: '/ebook-cover.jpg',
+    alt: 'The Thin Book of Fat — Marina Young',
+    width: 200,
+    height: 280,
+    className: 'h-[200px] w-auto object-cover rounded-xl shadow-2xl',
+    label: 'The Thin Book of Fat',
+  },
+];
+
+function HeroImageSlider() {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setActive((p) => (p + 1) % HERO_SLIDES.length), 3000);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div
+      className="flex flex-col items-center justify-center gap-4 p-5 sm:p-6"
+      style={{ background: 'rgba(255,255,255,0.04)' }}
+    >
+      <div className="relative w-full flex items-center justify-center h-[210px] overflow-hidden">
+        {HERO_SLIDES.map((slide, i) => (
+          <div
+            key={i}
+            className="absolute inset-0 flex items-center justify-center transition-opacity duration-500"
+            style={{ opacity: active === i ? 1 : 0 }}
+          >
+            <Image
+              src={slide.src}
+              alt={slide.alt}
+              width={slide.width}
+              height={slide.height}
+              className={slide.className}
+              priority={i === 0}
+            />
+          </div>
+        ))}
+      </div>
+      {/* Dot navigation */}
+      <div className="flex items-center gap-2">
+        {HERO_SLIDES.map((slide, i) => (
+          <button
+            key={i}
+            onClick={() => setActive(i)}
+            className="flex flex-col items-center gap-1"
+            aria-label={`Show ${slide.label}`}
+          >
+            <span
+              className="block rounded-full transition-all duration-300"
+              style={{
+                width: active === i ? 20 : 6,
+                height: 6,
+                background: active === i ? C.primary : 'rgba(255,255,255,0.3)',
+              }}
+            />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── Hero product card ────────────────────────────────────────────────
 function HeroProductCard() {
   const features = [
@@ -120,31 +195,7 @@ function HeroProductCard() {
       className="rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-[260px_1fr]"
       style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
     >
-      <div
-        className="flex items-end justify-center gap-4 p-5 sm:p-6"
-        style={{ background: 'rgba(255,255,255,0.04)' }}
-      >
-        <Image
-          src="/lipid-meter.png"
-          alt="Meo Digital Lipid Meter"
-          width={400}
-          height={655}
-          className="w-full max-w-[130px] h-auto object-contain"
-          priority
-        />
-        <div className="flex flex-col items-center gap-1.5 pb-1">
-          <Image
-            src="/ebook-cover.jpg"
-            alt="The Thin Book of Fat — Marina Young"
-            width={200}
-            height={280}
-            className="w-full max-w-[90px] h-auto object-contain rounded-md shadow-lg"
-          />
-          <span className="text-[9px] text-center leading-tight max-w-[90px]" style={{ color: 'rgba(255,255,255,0.45)' }}>
-            The Thin Book of Fat
-          </span>
-        </div>
-      </div>
+      <HeroImageSlider />
       <div className="p-5 sm:p-7 flex flex-col justify-between gap-5">
         <div>
           <span
@@ -335,15 +386,15 @@ function OrderSummary({
           <span>Subtotal</span>
           <span>£{total}</span>
         </div>
-        <div className="flex justify-between" style={{ color: C.muted }}>
+        <div className="flex justify-between text-xs" style={{ color: C.muted }}>
           <span>Shipping</span>
-          <span>£9.99</span>
+          <span>Calculated at checkout</span>
         </div>
       </div>
 
       <div className="flex items-baseline justify-between mb-5 pb-5" style={{ borderBottom: `1px solid ${C.border}` }}>
         <span className="font-semibold" style={{ color: C.fg }}>Total</span>
-        <span className="text-2xl font-bold" style={{ color: C.fg }}>£{(total + 9.99).toFixed(2)}</span>
+        <span className="text-2xl font-bold" style={{ color: C.fg }}>£{total}</span>
       </div>
 
       {!glucoseSelected && (
@@ -359,7 +410,7 @@ function OrderSummary({
         style={{ background: C.primary, color: C.primaryFg }}
       >
         {isPending ? 'Redirecting…' : (
-          <>Pay £{(total + 9.99).toFixed(2)} <ArrowRight className="h-4 w-4" /></>
+          <>Pay £{total} <ArrowRight className="h-4 w-4" /></>
         )}
       </button>
 
@@ -388,7 +439,7 @@ function MobilePayBar({ total, onPay, isPending, glucoseSelected }: { total: num
     >
       <div className="flex-1 min-w-0">
         <p className="text-[10px] uppercase tracking-wide" style={{ color: C.muted }}>Total</p>
-        <p className="text-lg font-bold leading-none" style={{ color: C.fg }}>£{(total + 9.99).toFixed(2)}</p>
+        <p className="text-lg font-bold leading-none" style={{ color: C.fg }}>£{total}</p>
       </div>
       <button
         onClick={onPay}
