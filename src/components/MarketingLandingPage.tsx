@@ -1109,15 +1109,15 @@ function EbookSection() {
             className="flex justify-center"
           >
             <div
-              className="rounded-3xl flex items-center justify-center p-8"
-              style={{ background: C.bgCard, border: `1px solid ${C.border}`, width: 260, height: 300 }}
+              className="rounded-3xl flex items-center justify-center p-8 w-full md:w-[260px] h-[260px] md:h-[300px]"
+              style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
             >
               <Image
                 src="/ebook-cover.jpg"
                 alt="The Thin Book of Fat — Marina Young"
                 width={200}
                 height={267}
-                className="h-[220px] w-auto object-cover rounded-xl shadow-2xl"
+                className="h-[180px] md:h-[220px] w-auto object-cover rounded-xl shadow-2xl"
                 style={{ transform: 'rotate(-6deg)', transformOrigin: 'center' }}
               />
             </div>
