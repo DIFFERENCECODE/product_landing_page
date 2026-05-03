@@ -163,7 +163,7 @@ export const FAQ_ITEMS = [
   {
     question: 'How accurate is the meter?',
     answer:
-      'The Sejoy BF-101b is CE-marked and reads within ±10% of reference-lab panels for TC, HDL, LDL and triglycerides. But the real value of Meo is in the trend across hundreds of your own readings — small per-reading variance washes out in the pattern.',
+      'The BF-102 is CE-marked and reads within ±10% of reference-lab panels for TC, HDL, LDL and triglycerides. But the real value of Meo is in the trend across hundreds of your own readings — small per-reading variance washes out in the pattern.',
   },
   {
     question: 'Is it hard to use?',
@@ -173,12 +173,12 @@ export const FAQ_ITEMS = [
   {
     question: 'Can I trust the AI?',
     answer:
-      'Meo AI doesn\'t diagnose, prescribe, or replace your doctor. It reads your history, spots patterns, and tells you clearly what it sees — with its sources. When something is unusual, it recommends you see a healthcare professional. You always own the decision.',
+      'Meo AI does not diagnose, prescribe, or replace your doctor. It reads your history, identifies your biological patterns, and tells you clearly what it sees. When something is unusual, it recommends you see a healthcare professional. You are always in charge.',
   },
   {
     question: '£149 — what does that actually get me?',
     answer:
-      'Read it as 6 months of Meo AI with the lipid meter, 10 test strips, lancets, carry case, and a Biological Age Score all bundled in. One private-clinic panel costs £80–£150, runs once, gives you paper. Meo costs £149 once, runs unlimited times, and pairs each reading with AI interpretation you can actually act on.',
+      'MeO is here to be your companion lifelong, to help you to achieve optimal vitality and healthy ageing. As your first step in this journey, you enjoy 6 months of Meo AI (the world\'s first AI specialising in Metabolic Health), with the lipid meter, 10 lipid test strips (lancets & carry case), Dashboard, PDF Report and Biological Age Score calculations and your personal targets all bundled in. One private-clinic panel costs £80–£150, runs once, gives you just the raw numbers on paper. Meo costs £149, runs multiple times to track your progress as you make the MeO proposed changes, and pairs each reading with AI interpretation you can actually act on to improve yourself. Start the journey with our science at your beck and call.',
   },
   {
     question: 'Is this a medical device?',
