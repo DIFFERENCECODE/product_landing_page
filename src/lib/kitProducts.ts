@@ -191,6 +191,11 @@ export const FAQ_ITEMS = [
       'Single readings are noisy — six months gives your metabolism time to actually move. The retest is a fasting reading at month six so we can compare against your baseline and tell you whether you reached your Target Biological Age Score. A personalised report is included with findings and lifestyle recommendations.',
   },
   {
+    question: 'Can I add glucose monitoring to my Meo system?',
+    answer:
+      'Yes — at checkout you can extend your system with the Glucose + MultiMeter (measures glucose, ketones, cholesterol and uric acid in one device — bundled with 50 free glucose strips and 25 ketone strips) or the SyAI Continuous Glucose Monitor (14-day sensor, streams readings directly into Meo AI so it can correlate spikes with your meals, sleep and stress). Both are optional add-ons; the core Metabolic Health Tracker works standalone.',
+  },
+  {
     question: 'How long does shipping take?',
     answer:
       'Orders ship within 72 hours to the UK, EU, US, Canada, Australia, and Ireland. Quantities are limited — if stock is low you will be added to the waiting list and notified as soon as your order ships. Typical delivery is 2–5 business days depending on destination.',

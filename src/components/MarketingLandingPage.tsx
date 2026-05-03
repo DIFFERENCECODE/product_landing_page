@@ -2064,7 +2064,6 @@ export default function MarketingLandingPage() {
       <PartnersSection />
       <ObjectionsSection />
       <GuaranteeSection />
-      <AddonsSection />
       <FAQSection />
       <NewsletterSection />
       <Footer />
