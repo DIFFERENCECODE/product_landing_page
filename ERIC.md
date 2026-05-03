@@ -32,6 +32,13 @@ Saad or Erik try to make it look better.
 - If these numbers are no realistic, then they make us look not credible. So they shoudl be dynamic to look real or we drop this.
 
 - It is a good idea but the implementation must be realistic or even real.
+
+# The pattern behind the number 
+- that is for the Kraft Test - has nthing to do with the Lipid Meter Product.
+- We add this stuff later
+
+# Built by the people who live this
+- arrows for horiz scrolll noop!
 --
 
 ## https://shop.meterbolic.com/checkout
@@ -46,6 +53,11 @@ Biological Age Score included
  - Metabolic Data Visualisation Dashboard
  - Reports and Guidance to improve your vitality and scores on the dashboard
 
+- Do we want price post & packaging on /checkout?
+ - why not just at the Stripe add it there?
+  -less customer bounce?
+
+#########################################################################################################33
 # Eric's Comments & Instructions
 
 This file is Eric's editorial layer. Drop comments, copy changes, design instructions, and ideas here. Nothing in this file touches the live code directly — hand it to Saad or Claude to action. Each entry has a section reference, a type tag, and the instruction body.
