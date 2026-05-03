@@ -2050,7 +2050,7 @@ export default function MarketingLandingPage() {
           first understand what Meo IS, before they go deep into how
           each component works. Surfaces the £362-of-value-for-£149
           math early so deeper engagement happens with that anchor. */}
-      <OfferStackSection />
+
       <BiomarkersSection />
       <LipidTrackingSection />
       <EbookSection />
