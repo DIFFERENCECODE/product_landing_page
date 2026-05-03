@@ -56,32 +56,13 @@
   <line x1="55" y1="163" x2="480" y2="163"
         stroke="#4ade80" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.7" clip-path="url(#plot)"/>
 
-  <!-- YOU scatter dots — descending trend from ~53.3 to ~51.2 -->
-  <!-- y_pos(v) = 190 - (v-50.5)*54 -->
-  <!-- Jan (x≈55±12) -->
-  <circle cx="48"  cy="41"  r="4.5" fill="#f87171"/>  <!-- 53.3 -->
-  <circle cx="62"  cy="52"  r="4.5" fill="#f87171"/>  <!-- 53.1 -->
-  <circle cx="55"  cy="35"  r="4.5" fill="#f87171"/>  <!-- 53.4 -->
-  <!-- Feb (x≈140±10) -->
-  <circle cx="133" cy="68"  r="4.5" fill="#f87171"/>  <!-- 52.8 -->
-  <circle cx="147" cy="82"  r="4.5" fill="#f87171"/>  <!-- 52.5 -->
-  <circle cx="140" cy="74"  r="4.5" fill="#f87171"/>  <!-- 52.6 -->
-  <!-- Mar (x≈225±10) -->
-  <circle cx="218" cy="95"  r="4.5" fill="#f87171"/>  <!-- 52.3 -->
-  <circle cx="232" cy="109" r="4.5" fill="#f87171"/>  <!-- 52.0 -->
-  <circle cx="225" cy="102" r="4.5" fill="#f87171"/>  <!-- 52.1 -->
-  <!-- Apr (x≈310±10) -->
-  <circle cx="303" cy="120" r="4.5" fill="#f87171"/>  <!-- 51.8 -->
-  <circle cx="317" cy="114" r="4.5" fill="#f87171"/>  <!-- 51.9 -->
-  <circle cx="310" cy="127" r="4.5" fill="#f87171"/>  <!-- 51.7 -->
-  <!-- May (x≈395±10) -->
-  <circle cx="388" cy="136" r="4.5" fill="#f87171"/>  <!-- 51.5 -->
-  <circle cx="402" cy="131" r="4.5" fill="#f87171"/>  <!-- 51.6 -->
-  <circle cx="395" cy="142" r="4.5" fill="#f87171"/>  <!-- 51.4 -->
-  <!-- Jun (x≈480±10) -->
-  <circle cx="473" cy="152" r="4.5" fill="#f87171"/>  <!-- 51.2 -->
-  <circle cx="480" cy="163" r="4.5" fill="#f87171"/>  <!-- 51.0 -->
-  <circle cx="480" cy="158" r="4.5" fill="#f87171"/>  <!-- 51.1 -->
+  <!-- YOU scatter dots — 2 per month, descending toward OUR TARGET -->
+  <!-- Jan --> <circle cx="48"  cy="41"  r="4.5" fill="#f87171"/> <circle cx="62"  cy="52"  r="4.5" fill="#f87171"/>
+  <!-- Feb --> <circle cx="133" cy="68"  r="4.5" fill="#f87171"/> <circle cx="147" cy="82"  r="4.5" fill="#f87171"/>
+  <!-- Mar --> <circle cx="218" cy="95"  r="4.5" fill="#f87171"/> <circle cx="232" cy="109" r="4.5" fill="#f87171"/>
+  <!-- Apr --> <circle cx="303" cy="120" r="4.5" fill="#f87171"/> <circle cx="317" cy="114" r="4.5" fill="#f87171"/>
+  <!-- May --> <circle cx="388" cy="136" r="4.5" fill="#f87171"/> <circle cx="402" cy="131" r="4.5" fill="#f87171"/>
+  <!-- Jun --> <circle cx="473" cy="152" r="4.5" fill="#f87171"/> <circle cx="480" cy="163" r="4.5" fill="#f87171"/>
 
   <!-- Legend -->
   <circle cx="64"  cy="224" r="4" fill="#f87171"/>

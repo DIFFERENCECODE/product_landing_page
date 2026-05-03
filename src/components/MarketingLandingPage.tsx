@@ -1080,54 +1080,70 @@ function BioAgeSection() {
   );
 }
 
-// ─── Scores preview (BAS gauge + KRAFT gauge + progress chart) ───────
+// ─── Scores preview — product image mockup ───────────────────────────
 function ScoresSection() {
   return (
-    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
-      <div className="max-w-4xl mx-auto">
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
+      <div className="max-w-5xl mx-auto">
         <SectionHeader
-          eyebrow="Your Scores — Live Example"
-          title={<>What your <span style={{ color: C.primary }}>Meo dashboard</span> looks like.</>}
-          subtitle="Every reading produces a Biological Age Score and a KRAFT Deep Fat Score. Track both over time and watch them move toward your personal target."
+          eyebrow="Your Meo Dashboard"
+          title={<>See your metabolic health <span style={{ color: C.primary }}>at a glance.</span></>}
+          subtitle="Every reading generates a Biological Age Score and a KRAFT Deep Fat Score. Track both against your personal target — updated the moment you test."
         />
 
-        {/* Two gauges side by side */}
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="rounded-2xl overflow-hidden"
-            style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
-          >
-            <img src="/bas-gauge.svg" alt="Biological Age Score gauge — 53.3 Age" className="w-full" />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.08 }}
-            className="rounded-2xl overflow-hidden"
-            style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
-          >
-            <img src="/kraft-gauge.svg" alt="KRAFT Deep Fat Score gauge — 1.00 kg" className="w-full" />
-          </motion.div>
-        </div>
-
-        {/* Progress chart full width */}
+        {/* Product mockup frame */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.14 }}
-          className="mt-5 rounded-2xl overflow-hidden"
-          style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+          transition={{ duration: 0.6 }}
+          className="mt-10 rounded-2xl overflow-hidden"
+          style={{
+            border: `1px solid ${C.border}`,
+            boxShadow: '0 32px 80px rgba(0,0,0,0.45)',
+          }}
         >
-          <img src="/bas-progress-chart.svg" alt="Biological Age Score — YOU vs OUR TARGET over 6 months" className="w-full" />
+          {/* Browser chrome bar */}
+          <div
+            className="flex items-center gap-2 px-4 py-3"
+            style={{ background: '#143730', borderBottom: `1px solid ${C.border}` }}
+          >
+            <span className="w-3 h-3 rounded-full" style={{ background: '#f87171' }} />
+            <span className="w-3 h-3 rounded-full" style={{ background: '#fbbf24' }} />
+            <span className="w-3 h-3 rounded-full" style={{ background: '#4ade80' }} />
+            <div
+              className="ml-4 flex-1 max-w-xs rounded-md px-3 py-1 text-xs"
+              style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.4)' }}
+            >
+              app.meterbolic.com/dashboard
+            </div>
+          </div>
+
+          {/* Dashboard content */}
+          <div className="p-4 sm:p-6" style={{ background: '#1c4a40' }}>
+            {/* Top label */}
+            <p className="text-xs font-semibold mb-4" style={{ color: C.muted }}>
+              Your scores · Latest reading
+            </p>
+
+            {/* Two gauges */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
+                <img src="/bas-gauge.svg" alt="Biological Age Score — 53.3 Age" className="w-full" />
+              </div>
+              <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
+                <img src="/kraft-gauge.svg" alt="KRAFT Deep Fat Score — 1.00 kg" className="w-full" />
+              </div>
+            </div>
+
+            {/* Progress chart */}
+            <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
+              <img src="/bas-progress-chart.svg" alt="BAS progress — YOU vs OUR TARGET" className="w-full" />
+            </div>
+          </div>
         </motion.div>
 
-        <p className="mt-8 text-center text-sm" style={{ color: C.muted }}>
+        <p className="mt-6 text-center text-xs" style={{ color: 'rgba(255,255,255,0.3)' }}>
           Illustrative data — your scores update with every reading you take.
         </p>
       </div>
