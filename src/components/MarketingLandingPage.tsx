@@ -1108,13 +1108,17 @@ function EbookSection() {
             transition={{ duration: 0.6 }}
             className="flex justify-center"
           >
-            <div className="rounded-xl overflow-hidden shadow-2xl" style={{ width: 200 }}>
+            <div
+              className="rounded-3xl flex items-center justify-center p-8"
+              style={{ background: C.bgCard, border: `1px solid ${C.border}`, width: 260, height: 300 }}
+            >
               <Image
                 src="/ebook-cover.jpg"
                 alt="The Thin Book of Fat — Marina Young"
                 width={200}
                 height={267}
-                className="w-full h-auto object-cover"
+                className="h-[220px] w-auto object-cover rounded-xl shadow-2xl"
+                style={{ transform: 'rotate(-6deg)', transformOrigin: 'center' }}
               />
             </div>
           </motion.div>
