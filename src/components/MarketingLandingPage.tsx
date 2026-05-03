@@ -1099,30 +1099,14 @@ function EbookSection() {
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
       <div className="max-w-5xl mx-auto">
-        {/* Book + copy row */}
-        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-10 lg:gap-14 items-center mb-14">
+        {/* Book + copy row — text left, image right (mirrors device section) */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center mb-14">
           <motion.div
-            initial={{ opacity: 0, x: -16 }}
+            initial={{ opacity: 0, x: -24 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex justify-center"
+            transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <div
-              className="rounded-3xl flex items-center justify-center p-8 w-full md:w-[260px] h-[260px] md:h-[300px]"
-              style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
-            >
-              <Image
-                src="/ebook-cover.jpg"
-                alt="The Thin Book of Fat — Marina Young"
-                width={200}
-                height={267}
-                className="h-[180px] md:h-[220px] w-auto object-cover rounded-xl shadow-2xl"
-                style={{ transform: 'rotate(-6deg)', transformOrigin: 'center' }}
-              />
-            </div>
-          </motion.div>
-          <div>
             <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>
               The action manual
             </p>
@@ -1143,7 +1127,24 @@ function EbookSection() {
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: 24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="rounded-3xl overflow-hidden flex items-center justify-center p-8"
+            style={{ background: C.bgCard, border: `1px solid ${C.border}`, minHeight: 320 }}
+          >
+            <Image
+              src="/ebook-cover.jpg"
+              alt="The Thin Book of Fat — Marina Young"
+              width={200}
+              height={267}
+              className="h-[260px] w-auto object-cover rounded-xl shadow-2xl"
+              style={{ transform: 'rotate(-6deg)', transformOrigin: 'center' }}
+            />
+          </motion.div>
         </div>
 
         {/* Author card */}
