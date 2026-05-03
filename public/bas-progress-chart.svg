@@ -56,13 +56,13 @@
   <line x1="55" y1="163" x2="480" y2="163"
         stroke="#4ade80" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.7" clip-path="url(#plot)"/>
 
-  <!-- YOU scatter dots — 2 per month, descending toward OUR TARGET -->
-  <!-- Jan --> <circle cx="48"  cy="41"  r="4.5" fill="#f87171"/> <circle cx="62"  cy="52"  r="4.5" fill="#f87171"/>
-  <!-- Feb --> <circle cx="133" cy="68"  r="4.5" fill="#f87171"/> <circle cx="147" cy="82"  r="4.5" fill="#f87171"/>
-  <!-- Mar --> <circle cx="218" cy="95"  r="4.5" fill="#f87171"/> <circle cx="232" cy="109" r="4.5" fill="#f87171"/>
-  <!-- Apr --> <circle cx="303" cy="120" r="4.5" fill="#f87171"/> <circle cx="317" cy="114" r="4.5" fill="#f87171"/>
-  <!-- May --> <circle cx="388" cy="136" r="4.5" fill="#f87171"/> <circle cx="402" cy="131" r="4.5" fill="#f87171"/>
-  <!-- Jun --> <circle cx="473" cy="152" r="4.5" fill="#f87171"/> <circle cx="480" cy="163" r="4.5" fill="#f87171"/>
+  <!-- YOU — 1 dot per month, centred on x-tick, between grid lines -->
+  <circle cx="55"  cy="41"  r="4.5" fill="#f87171"/>  <!-- Jan  53.3 -->
+  <circle cx="140" cy="73"  r="4.5" fill="#f87171"/>  <!-- Feb  52.6 -->
+  <circle cx="225" cy="97"  r="4.5" fill="#f87171"/>  <!-- Mar  52.2 -->
+  <circle cx="310" cy="118" r="4.5" fill="#f87171"/>  <!-- Apr  51.9 -->
+  <circle cx="395" cy="133" r="4.5" fill="#f87171"/>  <!-- May  51.5 -->
+  <circle cx="480" cy="155" r="4.5" fill="#f87171"/>  <!-- Jun  51.2 -->
 
   <!-- Legend -->
   <circle cx="64"  cy="224" r="4" fill="#f87171"/>
