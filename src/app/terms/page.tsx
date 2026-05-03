@@ -91,9 +91,9 @@ export default function TermsPage() {
           <section>
             <h2 className="font-semibold mb-3">4. Payment + delivery</h2>
             <p>
-              Payment is taken at checkout via Stripe. Orders ship within 48
+              Payment is taken at checkout via Stripe. Orders ship within 72
               hours within the UK and EU; 2&ndash;5 business days delivery
-              typical. Free UK shipping is included.
+              typical. Shipping is £9.99.
             </p>
           </section>
 

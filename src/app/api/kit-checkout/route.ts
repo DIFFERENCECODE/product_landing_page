@@ -66,11 +66,22 @@ export async function POST(req: NextRequest) {
     const session = await stripe.checkout.sessions.create({
       mode,
       line_items: lineItems,
-      // Collect shipping address via Stripe
       shipping_address_collection: {
         allowed_countries: ['GB', 'US', 'CA', 'AU', 'IE', 'NL', 'DE', 'FR', 'ES', 'IT'],
       },
-      // Allow Stripe to collect email
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            type: 'fixed_amount',
+            fixed_amount: { amount: 999, currency: 'gbp' },
+            display_name: 'Standard Shipping',
+            delivery_estimate: {
+              minimum: { unit: 'business_day', value: 2 },
+              maximum: { unit: 'business_day', value: 5 },
+            },
+          },
+        },
+      ],
       billing_address_collection: 'auto',
       success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/checkout`,

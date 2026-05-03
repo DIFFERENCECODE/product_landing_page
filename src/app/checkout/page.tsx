@@ -90,7 +90,7 @@ function TrustStrip() {
     { icon: <Clock className="h-4 w-4" />, label: 'Ships in 72 hours' },
     { icon: <Shield className="h-4 w-4" />, label: '30-day money-back' },
     { icon: <Lock className="h-4 w-4" />, label: 'Secure Stripe checkout' },
-    { icon: <Check className="h-4 w-4" />, label: 'Free UK shipping' },
+    { icon: <Check className="h-4 w-4" />, label: '£9.99 UK shipping' },
   ];
   return (
     <div
@@ -337,13 +337,13 @@ function OrderSummary({
         </div>
         <div className="flex justify-between" style={{ color: C.muted }}>
           <span>Shipping</span>
-          <span style={{ color: C.primary }}>Free</span>
+          <span>£9.99</span>
         </div>
       </div>
 
       <div className="flex items-baseline justify-between mb-5 pb-5" style={{ borderBottom: `1px solid ${C.border}` }}>
         <span className="font-semibold" style={{ color: C.fg }}>Total</span>
-        <span className="text-2xl font-bold" style={{ color: C.fg }}>£{total}</span>
+        <span className="text-2xl font-bold" style={{ color: C.fg }}>£{(total + 9.99).toFixed(2)}</span>
       </div>
 
       {!glucoseSelected && (
@@ -359,7 +359,7 @@ function OrderSummary({
         style={{ background: C.primary, color: C.primaryFg }}
       >
         {isPending ? 'Redirecting…' : (
-          <>Pay £{total} <ArrowRight className="h-4 w-4" /></>
+          <>Pay £{(total + 9.99).toFixed(2)} <ArrowRight className="h-4 w-4" /></>
         )}
       </button>
 
@@ -388,7 +388,7 @@ function MobilePayBar({ total, onPay, isPending, glucoseSelected }: { total: num
     >
       <div className="flex-1 min-w-0">
         <p className="text-[10px] uppercase tracking-wide" style={{ color: C.muted }}>Total</p>
-        <p className="text-lg font-bold leading-none" style={{ color: C.fg }}>£{total}</p>
+        <p className="text-lg font-bold leading-none" style={{ color: C.fg }}>£{(total + 9.99).toFixed(2)}</p>
       </div>
       <button
         onClick={onPay}
@@ -668,7 +668,7 @@ export default function CheckoutPage() {
               <h3 className="mb-1.5" style={{ color: C.fg }}>Shipping &amp; payment</h3>
               <p className="text-sm" style={{ color: C.muted }}>
                 Your email and shipping address are collected on the next step (Stripe Checkout).
-                We ship from London within 72 hours · free UK shipping · tracked delivery.
+                We ship from London within 72 hours · £9.99 shipping · tracked delivery.
               </p>
             </section>
 

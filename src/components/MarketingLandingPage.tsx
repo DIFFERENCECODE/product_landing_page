@@ -264,7 +264,7 @@ function Hero() {
     'Ships in 72 hours · limited quantities',
   ];
   const featuresRowB = [
-    'Free UK shipping',
+    '£9.99 UK shipping · tracked delivery',
     '10 lipid test strips + lancets + carry case included',
     'Q&A with the book author, Marina Young via Meo',
     'Biological Age Score + your Target Score',
@@ -373,7 +373,7 @@ function Hero() {
             doesn't compete with the CTA visually. The richer trust
             grid lives below as separate cards. */}
         <p className="text-xs mt-3" style={{ color: C.muted }}>
-          Lipid meter included free · 30-day money-back · Free UK shipping
+          Lipid meter included free · 30-day money-back · £9.99 UK shipping
         </p>
         <UrgencyBadge />
 
@@ -781,7 +781,7 @@ function OfferStackSection() {
             Start with 6 months of Meo · {formatGBP(price)} <ArrowRight className="h-4 w-4" />
           </CTAButton>
           <span className="text-xs" style={{ color: C.muted }}>
-            30-day money-back · Free UK shipping  </span>
+            30-day money-back · £9.99 UK shipping  </span>
         </div>
       </div>
     </section>
@@ -1622,6 +1622,7 @@ function FAQSection() {
 // ─── Newsletter / Waitlist ───────────────────────────────────────────
 function NewsletterSection() {
   const [email, setEmail] = useState('');
+  const [honeypot, setHoneypot] = useState('');
   const [state, setState] = useState<'idle' | 'submitting' | 'done' | 'error'>('idle');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -1629,12 +1630,12 @@ function NewsletterSection() {
     if (!email.trim()) return;
     setState('submitting');
     try {
-      const res = await fetch('/api/waitlist', {
+      const res = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: 'newsletter' }),
+        body: JSON.stringify({ email, _hp: honeypot }),
       });
-      if (!res.ok && res.status !== 404) throw new Error('Failed');
+      if (!res.ok) throw new Error('Failed');
       setState('done');
     } catch {
       setState('error');
@@ -1655,16 +1656,17 @@ function NewsletterSection() {
           style={{ background: C.pill, color: C.pillFg }}
         >
           <Mail className="h-3.5 w-3.5" />
-          Not ready yet? Get the starter guide.
+          Free extract — no purchase needed.
         </div>
         <h2
           className="font-extrabold mb-3"
           style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(26px, 4vw, 34px)' }}
         >
-          Stay ahead of your health.
+          Not ready to buy? Get the first chapter free.
         </h2>
         <p className="text-base mb-8" style={{ color: C.muted }}>
-          Get the free <strong style={{ color: C.fg }}>Metabolic Health Starter Guide</strong> and updates on Meo. No spam — ever.
+          Subscribe and we&apos;ll send you a free extract from{' '}
+          <strong style={{ color: C.fg }}>The Thin Book of Fat</strong> by Marina Young — plus early access to new products in the Metabolic Health Tracker Series. No spam, ever.
         </p>
         {state === 'done' ? (
           <motion.div
@@ -1673,10 +1675,20 @@ function NewsletterSection() {
             className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold"
             style={{ background: C.pill, color: C.pillFg }}
           >
-            <DropletIcon size={16} /> You&apos;re on the list — watch your inbox!
+            <DropletIcon size={16} /> Check your inbox — extract is on its way!
           </motion.div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-sm mx-auto">
+            {/* Honeypot — hidden from humans, filled by bots */}
+            <input
+              type="text"
+              name="_hp"
+              value={honeypot}
+              onChange={(e) => setHoneypot(e.target.value)}
+              style={{ display: 'none' }}
+              tabIndex={-1}
+              autoComplete="off"
+            />
             <input
               type="email"
               required
@@ -1696,7 +1708,7 @@ function NewsletterSection() {
               className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-opacity hover:opacity-90 disabled:opacity-60 shrink-0"
               style={{ background: C.primary, color: C.primaryFg }}
             >
-              {state === 'submitting' ? 'Joining…' : <>Join free <ArrowRight className="h-4 w-4" /></>}
+              {state === 'submitting' ? 'Sending…' : <>Get extract <ArrowRight className="h-4 w-4" /></>}
             </button>
           </form>
         )}
@@ -1776,30 +1788,48 @@ function StickyMobileCTA() {
 // Shown near every primary CTA. Rotates through 3 messages to feel
 // dynamic rather than a static label.
 function UrgencyBadge() {
-  const msgs = [
-    '⚡ Only 14 kits left at this price',
-    '🔥 23 people viewing this right now',
-    '📦 Ships in 72 hrs — order before5PM',
-  ];
-  const [idx, setIdx] = useState(0);
+  const [stock, setStock] = useState<{ count: number; available: boolean; low: boolean } | null>(null);
+
   useEffect(() => {
-    const t = setInterval(() => setIdx((i) => (i + 1) % msgs.length), 3500);
-    return () => clearInterval(t);
+    fetch('/api/stock')
+      .then((r) => r.json())
+      .then(setStock)
+      .catch(() => null);
   }, []);
+
+  if (!stock) return null;
+
+  // Only show badge when stock is low (≤20) or unavailable
+  if (!stock.available) {
+    return (
+      <p className="text-xs font-medium text-center mt-2" style={{ color: '#f87171' }}>
+        ⚠️ Currently out of stock — join the waiting list below
+      </p>
+    );
+  }
+
+  if (stock.low) {
+    return (
+      <AnimatePresence mode="wait">
+        <motion.p
+          key="low"
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -6 }}
+          transition={{ duration: 0.3 }}
+          className="text-xs font-medium text-center mt-2"
+          style={{ color: C.danger }}
+        >
+          ⚡ Only {stock.count} kits left at this price
+        </motion.p>
+      </AnimatePresence>
+    );
+  }
+
   return (
-    <AnimatePresence mode="wait">
-      <motion.p
-        key={idx}
-        initial={{ opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -6 }}
-        transition={{ duration: 0.3 }}
-        className="text-xs font-medium text-center mt-2"
-        style={{ color: C.danger }}
-      >
-        {msgs[idx]}
-      </motion.p>
-    </AnimatePresence>
+    <p className="text-xs font-medium text-center mt-2" style={{ color: C.muted }}>
+      📦 Ships in 72 hrs · while stocks last
+    </p>
   );
 }
 
@@ -1837,7 +1867,7 @@ function StickyDesktopCTA() {
           </div>
           <div className="flex items-center gap-4 shrink-0">
             <div className="text-right hidden md:block">
-              <p className="text-xs" style={{ color: C.muted }}>30-day money-back · Free UK shipping</p>
+              <p className="text-xs" style={{ color: C.muted }}>30-day money-back · £9.99 UK shipping</p>
               <p className="text-xs" style={{ color: C.danger }}>⚡ Limited stock</p>
             </div>
             <Link
@@ -1925,7 +1955,7 @@ function ExitIntentOverlay() {
             >
               Get Meo — {formatGBP(KIT_PRODUCT.price)} <ArrowRight className="h-4 w-4" />
             </Link>
-            <p className="text-xs mt-3" style={{ color: C.muted }}>30-day money-back · Free UK shipping · Limited stock</p>
+            <p className="text-xs mt-3" style={{ color: C.muted }}>30-day money-back · £9.99 UK shipping · Limited stock</p>
           </motion.div>
         </motion.div>
       )}
