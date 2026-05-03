@@ -831,7 +831,7 @@ function LipidTrackingSection() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="rounded-3xl overflow-hidden flex items-end justify-center gap-5 p-6"
+          className="rounded-3xl overflow-hidden flex items-center justify-center p-6"
           style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
         >
           <Image
@@ -839,20 +839,8 @@ function LipidTrackingSection() {
             alt="Meo Digital Lipid Meter — finger-prick, strip, 3 minutes"
             width={400}
             height={655}
-            className="h-[280px] w-auto object-contain"
+            className="h-[300px] w-auto object-contain"
           />
-          <div className="flex flex-col items-center gap-2 pb-2">
-            <Image
-              src="/ebook-cover.jpg"
-              alt="The Thin Book of Fat — Marina Young"
-              width={200}
-              height={267}
-              className="w-[110px] h-auto object-cover rounded-lg shadow-xl"
-            />
-            <span className="text-[9px] text-center leading-tight max-w-[100px]" style={{ color: 'rgba(255,255,255,0.45)' }}>
-              The Thin Book of Fat
-            </span>
-          </div>
         </motion.div>
         <motion.div
           initial={{ opacity: 0, x: 24 }}
@@ -1979,6 +1967,7 @@ export default function MarketingLandingPage() {
       <OfferStackSection />
       <BiomarkersSection />
       <LipidTrackingSection />
+      <EbookSection />
       <InsulinPatternSection />
       <BioAgeSection />
       <MeoAISection />
