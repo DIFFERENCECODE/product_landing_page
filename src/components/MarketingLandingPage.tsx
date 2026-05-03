@@ -956,6 +956,9 @@ function BioAgeSection() {
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
       <div className="max-w-5xl mx-auto">
+        <div className="flex justify-center mb-4">
+          <img src="/bas-logo.svg" alt="Biological Age Score" className="w-14 h-14 opacity-90" />
+        </div>
         <SectionHeader
           eyebrow="Biological Age Score"
           title={<>Your number, read in <span style={{ color: C.primary }}>years</span>.</>}

@@ -190,7 +190,7 @@ function HeroProductCard() {
     { icon: <Brain className="h-4 w-4" />, text: '6 months of Meo AI' },
     { icon: <Activity className="h-4 w-4" />, text: 'Lipid meter — bundled' },
     { icon: <Droplets className="h-4 w-4" />, text: '20 lipid test strips + lancets + carry case' },
-    { icon: <Zap className="h-4 w-4" />, text: 'Biological Age Score included' },
+    { icon: <img src="/bas-logo.svg" alt="BAS" className="h-4 w-4" />, text: 'Biological Age Score included' },
     { icon: <BarChart2 className="h-4 w-4" />, text: 'Metabolic Data Visualisation Dashboard' },
     { icon: <FileText className="h-4 w-4" />, text: 'Reports & guidance to improve your vitality' },
   ];
