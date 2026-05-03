@@ -1222,21 +1222,124 @@ function AppPreviewSection() {
   );
 }
 
-// ─── Grafana gauges preview ───────────────────────────────────────────
-const GAUGES = [
-  { file: 'bmi',               label: 'BMI' },
-  { file: 'glucose',           label: 'Glucose' },
-  { file: 'hdl',               label: 'HDL' },
-  { file: 'homa-ir',           label: 'HOMA-IR' },
-  { file: 'lap',               label: 'LAP' },
-  { file: 'ldl',               label: 'LDL' },
-  { file: 'tg-hdl',            label: 'TG/HDL' },
-  { file: 'total-cholesterol', label: 'Total Cholesterol' },
-  { file: 'triglyceride',      label: 'Triglyceride' },
-  { file: 'tyg',               label: 'TyG' },
-  { file: 'wwi',               label: 'WWI' },
-  { file: 'waist-height',      label: 'Waist/Height' },
+// ─── SVG Gauge component ─────────────────────────────────────────────
+
+interface GaugeZone { to: number; color: string }
+interface GaugeConfig {
+  label: string; value: number; min: number; max: number; unit: string;
+  zones: GaugeZone[];
+}
+
+const GAUGE_CONFIGS: GaugeConfig[] = [
+  { label: 'BMI',               value: 31.2, min: 0,   max: 50,  unit: 'kg/m²',
+    zones: [{to:18.5,color:'#60a5fa'},{to:25,color:'#4ade80'},{to:30,color:'#fbbf24'},{to:50,color:'#f87171'}] },
+  { label: 'Glucose',           value: 4.6,  min: 2,   max: 12,  unit: 'mmol/L',
+    zones: [{to:3.9,color:'#60a5fa'},{to:5.6,color:'#4ade80'},{to:7,color:'#fbbf24'},{to:12,color:'#f87171'}] },
+  { label: 'HDL',               value: 1.2,  min: 0,   max: 3,   unit: 'mmol/L',
+    zones: [{to:1,color:'#f87171'},{to:1.3,color:'#fbbf24'},{to:3,color:'#4ade80'}] },
+  { label: 'HOMA-IR',           value: 0.3,  min: 0,   max: 8,   unit: '',
+    zones: [{to:1,color:'#4ade80'},{to:2,color:'#fbbf24'},{to:4,color:'#fb923c'},{to:8,color:'#f87171'}] },
+  { label: 'LAP',               value: 78.5, min: 0,   max: 200, unit: '',
+    zones: [{to:25,color:'#4ade80'},{to:50,color:'#fbbf24'},{to:200,color:'#f87171'}] },
+  { label: 'LDL',               value: 5.1,  min: 0,   max: 8,   unit: 'mmol/L',
+    zones: [{to:2.6,color:'#4ade80'},{to:3.3,color:'#a3e635'},{to:4.1,color:'#fbbf24'},{to:8,color:'#f87171'}] },
+  { label: 'TG/HDL',            value: 2.0,  min: 0,   max: 6,   unit: '',
+    zones: [{to:1,color:'#4ade80'},{to:2,color:'#a3e635'},{to:3,color:'#fbbf24'},{to:6,color:'#f87171'}] },
+  { label: 'Total Cholesterol', value: 7.3,  min: 2,   max: 12,  unit: 'mmol/L',
+    zones: [{to:5,color:'#4ade80'},{to:6.2,color:'#fbbf24'},{to:12,color:'#f87171'}] },
+  { label: 'Triglyceride',      value: 2.3,  min: 0,   max: 10,  unit: 'mmol/L',
+    zones: [{to:1.7,color:'#4ade80'},{to:5.6,color:'#fbbf24'},{to:10,color:'#f87171'}] },
+  { label: 'TyG',               value: 9.0,  min: 7,   max: 12,  unit: '',
+    zones: [{to:8.5,color:'#4ade80'},{to:9.5,color:'#fbbf24'},{to:12,color:'#f87171'}] },
+  { label: 'WWI',               value: 7.4,  min: 4,   max: 14,  unit: '',
+    zones: [{to:9,color:'#4ade80'},{to:10.5,color:'#fbbf24'},{to:14,color:'#f87171'}] },
+  { label: 'Waist/Height',      value: 0.6,  min: 0,   max: 1,   unit: '',
+    zones: [{to:0.5,color:'#4ade80'},{to:0.6,color:'#fbbf24'},{to:1,color:'#f87171'}] },
 ];
+
+// Arc: 240° sweep, start at 8-o'clock (210° standard math), end at 4-o'clock (330°/-30°).
+// Fraction 0→1 maps angle 210° → -30° going CW on screen (decreasing standard math degrees).
+const G_CX = 80, G_CY = 76, G_R = 58, G_SW = 11;
+
+function gPt(angleDeg: number): [number, number] {
+  const r = (angleDeg * Math.PI) / 180;
+  return [G_CX + G_R * Math.cos(r), G_CY - G_R * Math.sin(r)];
+}
+
+function gArc(f0: number, f1: number): string {
+  const clamped0 = Math.max(0, Math.min(0.9999, f0));
+  const clamped1 = Math.max(0, Math.min(0.9999, f1));
+  if (clamped1 - clamped0 < 0.001) return '';
+  const a0 = 210 - clamped0 * 240;
+  const a1 = 210 - clamped1 * 240;
+  const [x0, y0] = gPt(a0);
+  const [x1, y1] = gPt(a1);
+  const large = (clamped1 - clamped0) * 240 > 180 ? 1 : 0;
+  return `M${x0.toFixed(1)} ${y0.toFixed(1)}A${G_R} ${G_R} 0 ${large} 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`;
+}
+
+function SvgGauge({ cfg, delay = 0 }: { cfg: GaugeConfig; delay?: number }) {
+  const { value, min, max, label, unit, zones } = cfg;
+  const frac = Math.max(0.005, Math.min(0.995, (value - min) / (max - min)));
+  const activeColor = (zones.find(z => value <= z.to) ?? zones[zones.length - 1]).color;
+  const [tipX, tipY] = gPt(210 - frac * 240);
+  const display = value >= 100 ? Math.round(value).toString() : String(value);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.45, delay }}
+      className="rounded-2xl p-2 flex flex-col items-center"
+      style={{
+        background: 'rgba(20,55,46,0.7)',
+        border: '1px solid rgba(164,214,94,0.15)',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+      }}
+    >
+      <svg viewBox="0 0 160 115" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+        {/* background track */}
+        <path d={gArc(0, 1)} stroke="rgba(255,255,255,0.07)" strokeWidth={G_SW} strokeLinecap="round" />
+
+        {/* zone bands (thin, outer) */}
+        {zones.map((z, i) => {
+          const f0 = i === 0 ? 0 : (zones[i - 1].to - min) / (max - min);
+          const f1 = (z.to - min) / (max - min);
+          const path = gArc(Math.max(0, f0), Math.min(1, f1));
+          return path ? <path key={i} d={path} stroke={z.color} strokeWidth={3} strokeLinecap="butt" opacity={0.28} /> : null;
+        })}
+
+        {/* value fill */}
+        <path d={gArc(0, frac)} stroke={activeColor} strokeWidth={G_SW} strokeLinecap="round" />
+
+        {/* tip dot */}
+        <circle cx={tipX.toFixed(1)} cy={tipY.toFixed(1)} r={G_SW / 2 + 2.5} fill={activeColor} />
+        <circle cx={tipX.toFixed(1)} cy={tipY.toFixed(1)} r={G_SW / 2 - 1} fill="rgba(0,0,0,0.55)" />
+
+        {/* value */}
+        <text x={G_CX} y={G_CY + 3} textAnchor="middle" dominantBaseline="middle"
+          fill={activeColor} fontSize={23} fontWeight="700" fontFamily="system-ui,-apple-system,sans-serif">
+          {display}
+        </text>
+
+        {/* unit */}
+        {unit && (
+          <text x={G_CX} y={G_CY + 20} textAnchor="middle"
+            fill="rgba(255,255,255,0.40)" fontSize={7.5} fontFamily="system-ui,sans-serif">
+            {unit}
+          </text>
+        )}
+
+        {/* label */}
+        <text x={G_CX} y={103} textAnchor="middle"
+          fill="rgba(255,255,255,0.72)" fontSize={9.5} fontFamily="system-ui,sans-serif">
+          {label}
+        </text>
+      </svg>
+    </motion.div>
+  );
+}
 
 function GaugesPreviewSection() {
   return (
@@ -1254,34 +1357,13 @@ function GaugesPreviewSection() {
             <span style={{ color: C.primary }}>Colour-coded to your range.</span>
           </h2>
           <p className="max-w-xl mx-auto text-base" style={{ color: C.muted }}>
-            {GAUGES.length} metabolic markers tracked simultaneously — each gauge calibrated to your personal baseline, not a population average.
+            {GAUGE_CONFIGS.length} metabolic markers tracked simultaneously — each gauge calibrated to your personal baseline, not a population average.
           </p>
         </div>
 
-        {/* Individual gauge grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-          {GAUGES.map((g, i) => (
-            <motion.div
-              key={g.file}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
-              className="rounded-2xl flex flex-col items-center justify-center px-3 pt-3 pb-2"
-              style={{
-                background: 'rgba(30,70,60,0.55)',
-                border: `1px solid rgba(164,214,94,0.18)`,
-                boxShadow: '0 4px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(164,214,94,0.08)',
-              }}
-            >
-              <Image
-                src={`/gauges/gauge-${g.file}.png`}
-                alt={`${g.label} gauge`}
-                width={360}
-                height={300}
-                className="w-full h-auto block"
-              />
-            </motion.div>
+          {GAUGE_CONFIGS.map((g, i) => (
+            <SvgGauge key={g.label} cfg={g} delay={i * 0.05} />
           ))}
         </div>
       </div>
