@@ -411,7 +411,7 @@ function Hero() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.45 }}
-        className="relative max-w-3xl mx-auto w-full mt-8 sm:mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3"
+        className="relative max-w-xl mx-auto w-full mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3"
       >
         {[
           { icon: <Heart className="h-4 w-4" />, label: '30-day', sub: 'money-back guarantee' },
