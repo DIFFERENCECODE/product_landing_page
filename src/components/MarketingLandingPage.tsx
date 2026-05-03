@@ -1219,6 +1219,67 @@ function AppPreviewSection() {
   );
 }
 
+// ─── Grafana gauges preview ───────────────────────────────────────────
+function GaugesPreviewSection() {
+  const metrics = ['BMI', 'Glucose', 'HDL', 'HOMA-IR', 'LAP', 'LDL', 'TG/HDL', 'Total Cholesterol', 'Triglyceride', 'TyG', 'WWI', 'Waist/Height'];
+  return (
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-12">
+          <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>
+            Your dashboard
+          </p>
+          <h2
+            className="font-extrabold mb-4"
+            style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(26px, 4vw, 38px)' }}
+          >
+            Every marker. All at once.<br className="hidden sm:block" />
+            <span style={{ color: C.primary }}>Colour-coded to your range.</span>
+          </h2>
+          <p className="max-w-xl mx-auto text-base" style={{ color: C.muted }}>
+            Your Meo dashboard tracks {metrics.length} metabolic markers simultaneously — each gauge calibrated to your personal baseline, not a population average.
+          </p>
+        </div>
+
+        {/* Gauge grid image */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.65 }}
+          className="rounded-3xl overflow-hidden"
+          style={{
+            background: '#161b22',
+            border: `1px solid ${C.border}`,
+            boxShadow: '0 30px 70px rgba(0,0,0,0.4)',
+          }}
+        >
+          <Image
+            src="/grafana-gauges.png"
+            alt="Meo metabolic dashboard — 12 biomarker gauges colour-coded to your range"
+            width={3163}
+            height={1873}
+            className="w-full h-auto block"
+          />
+        </motion.div>
+
+        {/* Metric tags */}
+        <div className="flex flex-wrap justify-center gap-2 mt-8">
+          {metrics.map((m) => (
+            <span
+              key={m}
+              className="px-3 py-1 rounded-full text-xs font-medium"
+              style={{ background: C.bgCard, color: C.muted, border: `1px solid ${C.border}` }}
+            >
+              {m}
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─── eBook ───────────────────────────────────────────────────────────
 function EbookSection() {
   const chapters = [
@@ -2110,6 +2171,7 @@ export default function MarketingLandingPage() {
       <BioAgeSection />
       <MeoAISection />
       <AppPreviewSection />
+      <GaugesPreviewSection />
       <BenefitsSection />
       <NumbersVsInsightsSection />
       <TestimonialsSection />
