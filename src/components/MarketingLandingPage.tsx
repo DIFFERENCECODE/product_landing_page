@@ -260,7 +260,7 @@ function Hero() {
     "World's first and only Metabolic Health AI!",
     '6 months of Meo AI included',
     '30-day money-back guarantee',
-    'Trusted bt the global leaders in Health Insurance',
+    'Trusted by the global leaders in Health Insurance',
     '1 of only 3 lipid meters registered for home use in UK & EU',
     'Ships in 72 hours · limited quantities',
   ];
