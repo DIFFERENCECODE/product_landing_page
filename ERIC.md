@@ -146,6 +146,8 @@ none
 
 ## General / Cross-Cutting
 
+<!-- add your entries below this line -->
+# instruct
 - Eric to dear Saad
  - Not just this ERIC.md, also need these
   - Gauges: https://docs.google.com/document/d/1NZijPx_HXyhvCWLUo0m87eEGniGaRbjife3Qe_U_GhY/edit?tab=t.obr245uer2x#bookmark=id.53ppolf4afag
@@ -153,11 +155,12 @@ none
   - !Therapist placeholder with Spen! : https://docs.google.com/document/d/1cMlgAol22NjUshEfE5yy5dv0GECEC2aKBFhHKOhXMgo/edit?tab=t.s2lvv8okfzd#bookmark=id.550r9iuexejn
   - !BAS Logo! : https://docs.google.com/document/d/1cMlgAol22NjUshEfE5yy5dv0GECEC2aKBFhHKOhXMgo/edit?tab=t.s2lvv8okfzd#bookmark=id.a5z8fwlp12d4
 
+# comment
 - These items we can do Later
    - the integration of `meterbolic.com` and `app.`
    - adding Pixel (referensed this already in /diff/site project
 
-<!-- add your entries below this line -->
+# instruct
 In the terms/page.tsx, you write:
               These terms govern your purchase and use of the Meo Metabolic
               Health Cholesterol Tracker (&ldquo;Meo&rdquo;), sold by Meterbolic
@@ -169,6 +172,16 @@ In the terms/page.tsx, you write:
  - Has terms and conditions
  - Privacy ...
 - This needs to be integrated with what you have above.
+
+# instruct
+```function UrgencyBadge() {
+  const msgs = [
+    '⚡ Only 14 kits left at this price',
+    '🔥 23 people viewing this right now',
+    '📦 Ships in 72 hrs — order before5PM',
+  ];
+```
+- the first two make no sense as constants. Looks entirely wrongwhen it is constant for the UX
 
 ---
 
