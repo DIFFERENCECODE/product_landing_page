@@ -1086,8 +1086,21 @@ function MeoAISection() {
   );
 }
 
-// ─── App preview (laptop mockup) ─────────────────────────────────────
+// ─── App preview (laptop mockup with sliding screens) ────────────────
+const APP_SCREENS = [
+  { src: '/meo-app-screenshot.png',  alt: 'Meo AI — metabolic analysis dashboard', label: 'Analysis' },
+  { src: '/meo-app-personalize.png', alt: 'Meo AI — personalise your data',         label: 'Personalise' },
+  { src: '/meo-app-activity.png',    alt: 'Meo AI — recent activity & readings',    label: 'Activity' },
+];
+
 function AppPreviewSection() {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setActive((p) => (p + 1) % APP_SCREENS.length), 3500);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6 overflow-hidden" style={{ background: C.bgDeep }}>
       <div className="max-w-5xl mx-auto">
@@ -1120,19 +1133,33 @@ function AppPreviewSection() {
               boxShadow: '0 40px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.07)',
             }}
           >
-            {/* Thin top bezel — camera only, no horizontal padding */}
+            {/* Thin top bezel — camera dot */}
             <div className="flex items-center justify-center h-[22px]" style={{ background: '#1a1a1f' }}>
               <div className="w-[6px] h-[6px] rounded-full" style={{ background: '#3a3a3f' }} />
             </div>
-            {/* Screenshot fills 100% width, zero side gaps */}
-            <div className="overflow-hidden" style={{ background: '#0f1117' }}>
-              <Image
-                src="/meo-app-screenshot.png"
-                alt="Meo AI platform — metabolic analysis dashboard"
-                width={1200}
-                height={750}
-                className="w-full h-auto block"
-              />
+            {/* Sliding screen area */}
+            <div className="relative overflow-hidden" style={{ background: '#0f1117' }}>
+              {APP_SCREENS.map((screen, i) => (
+                <div
+                  key={i}
+                  className="transition-opacity duration-700"
+                  style={{
+                    position: i === 0 ? 'relative' : 'absolute',
+                    inset: 0,
+                    opacity: active === i ? 1 : 0,
+                    pointerEvents: active === i ? 'auto' : 'none',
+                  }}
+                >
+                  <Image
+                    src={screen.src}
+                    alt={screen.alt}
+                    width={1200}
+                    height={750}
+                    className="w-full h-auto block"
+                    priority={i === 0}
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
@@ -1150,17 +1177,42 @@ function AppPreviewSection() {
               boxShadow: '0 8px 24px rgba(0,0,0,0.45)',
             }}
           >
-            {/* Trackpad indent hint */}
             <div className="flex justify-center pt-[6px]">
               <div className="w-[60px] h-[6px] rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }} />
             </div>
           </div>
 
-          {/* Table reflection / ground shadow */}
+          {/* Ground shadow */}
           <div
             className="w-full max-w-[820px] h-[2px] rounded-full mt-0.5"
             style={{ background: 'rgba(0,0,0,0.3)', filter: 'blur(4px)' }}
           />
+
+          {/* Dot + label nav */}
+          <div className="flex items-center gap-6 mt-8">
+            {APP_SCREENS.map((screen, i) => (
+              <button
+                key={i}
+                onClick={() => setActive(i)}
+                className="flex flex-col items-center gap-2 group"
+              >
+                <span
+                  className="block rounded-full transition-all duration-300"
+                  style={{
+                    width: active === i ? 24 : 8,
+                    height: 8,
+                    background: active === i ? C.primary : 'rgba(255,255,255,0.25)',
+                  }}
+                />
+                <span
+                  className="text-xs font-medium transition-colors duration-200"
+                  style={{ color: active === i ? C.primary : 'rgba(255,255,255,0.35)' }}
+                >
+                  {screen.label}
+                </span>
+              </button>
+            ))}
+          </div>
         </motion.div>
       </div>
     </section>
