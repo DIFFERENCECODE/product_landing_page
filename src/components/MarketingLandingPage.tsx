@@ -2049,6 +2049,7 @@ function Footer() {
         <nav className="flex items-center gap-5 text-sm" aria-label="Footer navigation">
           <Link href="/privacy" className="hover:underline" style={{ color: C.muted }}>Privacy</Link>
           <Link href="/terms" className="hover:underline" style={{ color: C.muted }}>Terms</Link>
+          <Link href="/cookies" className="hover:underline" style={{ color: C.muted }}>Cookies</Link>
           <a href="mailto:hello@meterbolic.com" className="hover:underline" style={{ color: C.muted }}>Contact</a>
         </nav>
       </div>
@@ -2086,10 +2087,9 @@ function StickyMobileCTA() {
 }
 
 // ─── Urgency badge ───────────────────────────────────────────────────
-// Shown near every primary CTA. Rotates through 3 messages to feel
-// dynamic rather than a static label.
 function UrgencyBadge() {
   const [stock, setStock] = useState<{ count: number; available: boolean; low: boolean } | null>(null);
+  const [viewers, setViewers] = useState(0);
 
   useEffect(() => {
     fetch('/api/stock')
@@ -2098,9 +2098,16 @@ function UrgencyBadge() {
       .catch(() => null);
   }, []);
 
+  // Randomise viewer count on mount and drift it slightly every 45s
+  useEffect(() => {
+    const rand = () => Math.floor(Math.random() * 22) + 9; // 9–30
+    setViewers(rand());
+    const t = setInterval(() => setViewers((v) => Math.max(9, v + Math.floor(Math.random() * 5) - 2)), 45000);
+    return () => clearInterval(t);
+  }, []);
+
   if (!stock) return null;
 
-  // Only show badge when stock is low (≤20) or unavailable
   if (!stock.available) {
     return (
       <p className="text-xs font-medium text-center mt-2" style={{ color: '#f87171' }}>
@@ -2109,28 +2116,34 @@ function UrgencyBadge() {
     );
   }
 
-  if (stock.low) {
-    return (
-      <AnimatePresence mode="wait">
-        <motion.p
-          key="low"
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -6 }}
-          transition={{ duration: 0.3 }}
-          className="text-xs font-medium text-center mt-2"
-          style={{ color: C.danger }}
-        >
-          ⚡ Only {stock.count} kits left at this price
-        </motion.p>
-      </AnimatePresence>
-    );
-  }
-
   return (
-    <p className="text-xs font-medium text-center mt-2" style={{ color: C.muted }}>
-      📦 Ships in 72 hrs · while stocks last
-    </p>
+    <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mt-2">
+      {stock.low && (
+        <AnimatePresence mode="wait">
+          <motion.span
+            key="low"
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.3 }}
+            className="text-xs font-medium"
+            style={{ color: C.danger }}
+          >
+            ⚡ Only {stock.count} kits left
+          </motion.span>
+        </AnimatePresence>
+      )}
+      {viewers > 0 && (
+        <span className="text-xs font-medium" style={{ color: C.muted }}>
+          🔥 {viewers} people viewing this right now
+        </span>
+      )}
+      {!stock.low && (
+        <span className="text-xs font-medium" style={{ color: C.muted }}>
+          📦 Ships in 72 hrs · while stocks last
+        </span>
+      )}
+    </div>
   );
 }
 

@@ -57,9 +57,17 @@ export default function PrivacyPage() {
                 back from Stripe to fulfil your order.
               </li>
               <li>
-                <strong>Waitlist data</strong> — email address (you submit it on the
-                checkout success page) so we can email you when your Meo AI account
-                is ready.
+                <strong>Health &amp; metabolic data</strong> — lipid readings, metabolic
+                test results, and health history you choose to log into the Meo AI
+                service. This data is used solely to provide your personalised
+                Meo AI experience and generate your reports. It is never sold or
+                shared with third parties for marketing.
+              </li>
+              <li>
+                <strong>Waitlist / newsletter data</strong> — email address (you submit
+                it on the checkout success page or the subscribe form) so we can email
+                you when your Meo AI account is ready and send product updates you
+                have opted in to receive.
               </li>
               <li>
                 <strong>Operational logs</strong> — IP address, user agent, timestamp
@@ -153,7 +161,12 @@ export default function PrivacyPage() {
           </section>
         </div>
 
-        <p className="mt-12 text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>
+        <div className="mt-10 flex gap-6 text-sm" style={{ color: "rgba(255,255,255,0.62)" }}>
+          <Link href="/terms" className="hover:underline">Terms of Service</Link>
+          <Link href="/cookies" className="hover:underline">Cookies Policy</Link>
+        </div>
+
+        <p className="mt-6 text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>
           This page is a working policy provided in good faith. For binding
           legal guidance specific to your jurisdiction, consult a qualified
           solicitor.

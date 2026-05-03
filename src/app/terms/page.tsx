@@ -164,7 +164,12 @@ export default function TermsPage() {
           </section>
         </div>
 
-        <p className="mt-12 text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>
+        <div className="mt-10 flex gap-6 text-sm" style={{ color: "rgba(255,255,255,0.62)" }}>
+          <Link href="/privacy" className="hover:underline">Privacy Policy</Link>
+          <Link href="/cookies" className="hover:underline">Cookies Policy</Link>
+        </div>
+
+        <p className="mt-6 text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>
           This page is provided in good faith as working terms. For binding
           legal guidance specific to your jurisdiction, consult a qualified
           solicitor.
