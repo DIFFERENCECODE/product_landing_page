@@ -695,12 +695,13 @@ function MeetMeoSection() {
 //     instantly without reading the line items
 function OfferStackSection() {
   const items = [
-    { label: '6 months of Meo AI access',          value: 17400, note: '£29/mo at the standard rate' },
-    { label: 'Digital Lipid Meter',                value: 8000,  note: 'UK & EU Registered · Bundled' },
-    { label: '10 Lipid Test Strips',               value: 2200,  note: 'enough for 10 readings included' },
-    { label: 'Lancets',                            value: 800,   note: 'included in the kit' },
-    { label: 'Carry Case',                         value: 1200,  note: 'included in the kit' },
-    { label: 'Biological Age Score + Your Target',      value: 4000,  note: 'baseline + ongoing goal' },
+    { label: '6 months of Meo AI access',          value: 17400, note: '£29/month at the standard rate' },
+    { label: 'Digital Lipid Meter',                value: 15000,  note: 'UK & EU Registered' },
+    { label: 'Metabolc Health Dashboard',          value: 7500,  note: 'developed over many years with unique featurres' },
+    { label: 'Reporting on your Metabolic Health',  value: 3500,  note: 'in Meo or as seperate PDF' },
+    { label: 'Metabolic Health Book and Q&A with author',  value: 5500,  note: 'ask the author directly and give feedback on the book' },
+    { label: 'Referral to the country\'s finest therapists and coaches',  value: 25000,  note: 'a curated list of the best available to you for as a subscriber' },
+    { label: 'Biological Age Score + Your Target Scores',      value: 5000,  note: 'baseline + ongoing goal' },
   ] as const;
   const total = items.reduce((s, x) => s + x.value, 0);
   const price = KIT_PRODUCT.price;
@@ -1446,7 +1447,7 @@ function ObjectionsSection() {
   const items = [
     {
       q: 'How accurate is the meter?',
-      a: 'The Sejoy BF-101b is CE-marked and reads within ±10% of reference-lab panels for TC, HDL, LDL and triglycerides. But the real value of Meo is in the trend across hundreds of your own readings — small per-reading variance washes out in the pattern.',
+      a: 'The BF-102 is CE-marked and reads within ±10% of reference-lab panels for TC, HDL, LDL and triglycerides. But the real value of Meo is in the trend across hundreds of your own readings — small per-reading variance washes out in the pattern.',
     },
     {
       q: 'Is it hard to use?',
@@ -1454,11 +1455,11 @@ function ObjectionsSection() {
     },
     {
       q: 'Can I trust the AI?',
-      a: 'Meo AI doesn’t diagnose, prescribe, or replace your doctor. It reads your history, spots patterns, and tells you clearly what it sees — with its sources. When something is unusual, it recommends you see a healthcare professional. You always own the decision.',
+      a: 'Meo AI does not diagnose, prescribe, or replace your doctor. It reads your history, identifies your biological patterns, and tells you clearly what it sees. When something is unusual, it recommends you see a healthcare professional. You are always in charge.',
     },
     {
       q: '£149 — what does that actually get me?',
-      a: 'Read it as 6 months of Meo AI with the lipid meter, 10 test strips, lancets, carry case, and a Biological Age Score all bundled in. One private-clinic panel costs £80–£150, runs once, gives you paper. Meo costs £149 once, runs unlimited times, and pairs each reading with AI interpretation you can actually act on.',
+      a: 'MeO is here to be your companion lifelong, to help you to achieve optimal vitality and healthy ageing. As your first step in this journey, you enjoy 6 months of Meo AI (the world\'s first AI specialising in Metabolic Health), with the lipid meter, 10 lipid test strips (lancets & carry case), Dashboard, PDF Report and Biological Age Score calculations and your personal targets all bundled in. One private-clinic panel costs £80–£150, runs once, gives you just the raw numbers on paper. Meo costs £149, runs multiple times to track your progress as you make the MeO proposed changes, and pairs each reading with AI interpretation you can actually act on to improve yourself. Start the journey with our science at your beck and call',
     },
   ];
   return (

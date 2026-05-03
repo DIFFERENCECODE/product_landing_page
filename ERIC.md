@@ -125,6 +125,7 @@ This file is Eric's editorial layer. Drop comments, copy changes, design instruc
 ## Testimonials / Social Proof
 
 <!-- add your entries below this line -->
+none
 
 
 ---
@@ -133,7 +134,7 @@ This file is Eric's editorial layer. Drop comments, copy changes, design instruc
 
 <!-- add your entries below this line -->
 
-
+        
 ---
 
 ## Checkout Page
@@ -146,7 +147,17 @@ This file is Eric's editorial layer. Drop comments, copy changes, design instruc
 ## General / Cross-Cutting
 
 <!-- add your entries below this line -->
-
+In the terms/page.tsx, you write:
+              These terms govern your purchase and use of the Meo Metabolic
+              Health Cholesterol Tracker (&ldquo;Meo&rdquo;), sold by Meterbolic
+              Ltd, England &amp; Wales. By placing an order you agree to be
+              bound by these terms. They are governed by the laws of England
+              &amp; Wales.
+            </p>
+- The existing DIFFERENCECODe/aite website
+ - Has terms and conditions
+ - Privacy ...
+- This needs to be integrated with what you have above.
 
 ---
 
@@ -156,7 +167,7 @@ Notes specific to how this landing page should behave inside meocombined.
 
 <!-- add your entries below this line -->
 
-- We should see the Landing Pages embseed insie the website. So that it is in the context of the website.
+- We should see the Landing Pages embedded inside the website. So that it is in the context of the website.
 - We should have access to the enclist mode of the MeO.
   - enlist mode is when they sign up to the mailinglist, then they are on the ENLIST Tier
 
