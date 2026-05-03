@@ -1267,11 +1267,11 @@ function GaugesPreviewSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.05 }}
-              className="rounded-2xl overflow-hidden"
+              className="rounded-2xl flex flex-col items-center justify-center px-3 pt-3 pb-2"
               style={{
-                background: '#161b22',
-                border: `1px solid ${C.border}`,
-                boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
+                background: 'rgba(30,70,60,0.55)',
+                border: `1px solid rgba(164,214,94,0.18)`,
+                boxShadow: '0 4px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(164,214,94,0.08)',
               }}
             >
               <Image
