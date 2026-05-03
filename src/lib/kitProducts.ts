@@ -106,6 +106,15 @@ export const KIT_PRODUCT: KitProduct = {
 // Customers can buy any quantity from 0 to 9 of each (cart-side
 // behaviour, not modelled here — checkout UI handles the qty step).
 
+export const THERAPY_ADDON: KitAddon = {
+  id: 'therapy-spencer',
+  name: 'Metabolic Coach — Spencer Martin',
+  description:
+    '3-month coaching subscription with Spencer Martin, UK National Swimmer. 40-minute initial consultation + two 30-minute follow-ups + two written metabolic health reports + written Q&A access for 3 months.',
+  price: 29500, // £295
+  priceId: process.env.NEXT_PUBLIC_ADDON_THERAPY_PRICE_ID || 'price_meo_therapy_placeholder',
+};
+
 export const KIT_ADDONS: KitAddon[] = [
   {
     id: 'multimeter',

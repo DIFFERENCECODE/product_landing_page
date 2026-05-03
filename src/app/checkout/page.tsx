@@ -30,8 +30,11 @@ import {
 } from 'lucide-react';
 import {
   KIT_PRODUCTS,
+  THERAPY_ADDON,
   type AddonProduct,
 } from '@/lib/kitProducts';
+
+const THERAPY_PRICE = THERAPY_ADDON.price / 100; // £295
 
 // ─── Brand colour tokens ──────────────────────────────────────────────
 const C = {
@@ -344,6 +347,7 @@ function AddonRow({
 // ─── Order summary ────────────────────────────────────────────────────
 function OrderSummary({
   selectedAddons,
+  therapySelected,
   total,
   onPay,
   isPending,
@@ -351,6 +355,7 @@ function OrderSummary({
   glucoseSelected,
 }: {
   selectedAddons: { addon: AddonProduct; qty: number }[];
+  therapySelected: boolean;
   total: number;
   onPay: () => void;
   isPending: boolean;
@@ -372,7 +377,7 @@ function OrderSummary({
         <span className="font-semibold text-sm shrink-0" style={{ color: C.fg }}>£{KIT_PRODUCTS.baseKit.price}</span>
       </div>
 
-      {selectedAddons.length > 0 && (
+      {(selectedAddons.length > 0 || therapySelected) && (
         <div className="space-y-2 mb-3 pb-3" style={{ borderBottom: `1px solid ${C.border}` }}>
           {selectedAddons.map(({ addon, qty }) => (
             <div key={addon.id} className="flex justify-between gap-3 text-sm">
@@ -382,6 +387,12 @@ function OrderSummary({
               <span className="shrink-0" style={{ color: C.fg }}>£{addon.price * qty}</span>
             </div>
           ))}
+          {therapySelected && (
+            <div className="flex justify-between gap-3 text-sm">
+              <span className="min-w-0" style={{ color: C.muted }}>Metabolic Coach — Spencer Martin</span>
+              <span className="shrink-0" style={{ color: C.fg }}>£{THERAPY_PRICE}</span>
+            </div>
+          )}
         </div>
       )}
 
@@ -463,6 +474,7 @@ export default function CheckoutPage() {
   const [quantities, setQuantities] = useState<Record<string, number>>(
     Object.fromEntries(KIT_PRODUCTS.addons.map((a) => [a.id, 0])),
   );
+  const [therapySelected, setTherapySelected] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -492,7 +504,7 @@ export default function CheckoutPage() {
       ),
     [quantities],
   );
-  const total = KIT_PRODUCTS.baseKit.price + addonsTotal;
+  const total = KIT_PRODUCTS.baseKit.price + addonsTotal + (therapySelected ? THERAPY_PRICE : 0);
 
   const selectedAddons = useMemo(
     () =>
@@ -516,6 +528,9 @@ export default function CheckoutPage() {
         const addons = KIT_PRODUCTS.addons
           .filter((a) => (quantities[a.id] ?? 0) > 0)
           .map((a) => ({ priceId: a.priceId, quantity: quantities[a.id] }));
+        if (therapySelected) {
+          addons.push({ priceId: THERAPY_ADDON.priceId, quantity: 1 });
+        }
         const res = await fetch('/api/kit-checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -715,6 +730,73 @@ export default function CheckoutPage() {
               </section>
             )}
 
+            {/* ── Therapy / Metabolic Coach ── */}
+            <section>
+              <div className="flex items-baseline gap-3 mb-1">
+                <h2
+                  className="m-0"
+                  style={{ color: C.fg, fontFamily: 'var(--font-serif)', fontSize: 'clamp(22px, 2.5vw, 26px)' }}
+                >
+                  Add a Metabolic Coach
+                </h2>
+                <span className="text-xs" style={{ color: C.muted }}>Optional</span>
+              </div>
+              <p className="text-sm mb-5" style={{ color: C.muted }}>
+                Work 1-to-1 with a specialist to interpret your data and build an action plan.
+              </p>
+              <button
+                onClick={() => setTherapySelected((v) => !v)}
+                className="w-full text-left rounded-2xl p-5 transition-all"
+                style={{
+                  background: therapySelected ? 'rgba(164,214,94,0.08)' : C.bgCard,
+                  border: `1px solid ${therapySelected ? C.primary : C.border}`,
+                }}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0">
+                    <Image
+                      src="/spencer-martin.jpg"
+                      alt="Spencer Martin"
+                      fill
+                      className="object-cover object-top"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <span className="font-semibold text-base" style={{ color: C.fg }}>Spencer Martin</span>
+                      <span
+                        className="text-[10px] font-semibold px-2 py-0.5 rounded"
+                        style={{ background: C.pill, color: C.pillFg }}
+                      >
+                        UK National Swimmer
+                      </span>
+                      <span className="font-semibold text-sm ml-auto shrink-0" style={{ color: C.fg }}>+£{THERAPY_PRICE}</span>
+                    </div>
+                    <p className="text-sm mb-2" style={{ color: C.muted }}>
+                      3-month subscription · 40 min initial + 2 × 30 min follow-ups
+                    </p>
+                    <ul className="space-y-0.5">
+                      {['Two written metabolic health reports', 'Written Q&A access for 3 months'].map((item) => (
+                        <li key={item} className="flex items-center gap-1.5 text-xs" style={{ color: C.muted }}>
+                          <Check className="h-3 w-3 shrink-0" style={{ color: C.primary }} />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div
+                    className="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-1"
+                    style={{
+                      borderColor: therapySelected ? C.primary : C.border,
+                      background: therapySelected ? C.primary : 'transparent',
+                    }}
+                  >
+                    {therapySelected && <Check className="h-3 w-3" style={{ color: C.primaryFg }} />}
+                  </div>
+                </div>
+              </button>
+            </section>
+
             {/* Shipping note */}
             <section
               className="rounded-2xl p-5 sm:p-6"
@@ -757,6 +839,7 @@ export default function CheckoutPage() {
           <aside className="md:sticky md:top-24 md:max-h-[calc(100vh-7rem)] md:overflow-y-auto">
             <OrderSummary
               selectedAddons={selectedAddons}
+              therapySelected={therapySelected}
               total={total}
               onPay={handleCheckout}
               isPending={isPending}
