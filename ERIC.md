@@ -149,7 +149,9 @@ none
 <!-- add your entries below this line -->
 # instruct
 - Eric to dear Saad
- - Not just this ERIC.md, also need these
+  ```I can be around this afternoon for instant checking``` -- interact with you.
+
+ - Not just this ERIC.md specifications, but we also need these:
   - Gauges: https://docs.google.com/document/d/1NZijPx_HXyhvCWLUo0m87eEGniGaRbjife3Qe_U_GhY/edit?tab=t.obr245uer2x#bookmark=id.53ppolf4afag
   - Six Markers text: https://docs.google.com/document/d/1cMlgAol22NjUshEfE5yy5dv0GECEC2aKBFhHKOhXMgo/edit?tab=t.s2lvv8okfzd#bookmark=id.vb4n4ck2e0ja
   - !Therapist placeholder with Spen! : https://docs.google.com/document/d/1cMlgAol22NjUshEfE5yy5dv0GECEC2aKBFhHKOhXMgo/edit?tab=t.s2lvv8okfzd#bookmark=id.550r9iuexejn
@@ -159,6 +161,7 @@ none
 - These items we can do Later
    - the integration of `meterbolic.com` and `app.`
    - adding Pixel (referensed this already in /diff/site project
+   - words from Meterbolic -- collected sayings or aphorisms from Eric to be dynamically displayed
 
 # instruct
 In the terms/page.tsx, you write:
