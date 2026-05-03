@@ -1641,8 +1641,56 @@ function PartnerCard({ partner }: { partner: typeof PARTNERS[number] }) {
 function PartnersSection() {
   const [idx, setIdx] = useState(0);
   const total = PARTNERS.length;
-  const prev = () => setIdx((i) => (i - 1 + total) % total);
-  const next = () => setIdx((i) => (i + 1) % total);
+  const deskPerView = 3;
+  const deskMax = total - deskPerView; // 2
+
+  const prev = () => setIdx((i) => Math.max(0, i - 1));
+  const next = () => setIdx((i) => Math.min(total - 1, i + 1));
+
+  useEffect(() => {
+    const t = setInterval(() => setIdx((i) => (i + 1) % total), 4500);
+    return () => clearInterval(t);
+  }, [total]);
+
+  const deskStart = Math.min(idx, deskMax);
+
+  const NavControls = () => (
+    <div className="flex items-center justify-center gap-4 mt-8">
+      <button
+        onClick={prev}
+        className="w-10 h-10 rounded-full flex items-center justify-center transition-opacity hover:opacity-80"
+        style={{ background: C.bgCard, border: `1px solid ${C.border}`, color: C.fg }}
+        aria-label="Previous"
+      >
+        <ChevronDown className="h-5 w-5 rotate-90" />
+      </button>
+
+      <div className="flex gap-2">
+        {PARTNERS.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setIdx(i)}
+            className="rounded-full transition-all duration-300"
+            style={{
+              width: i === idx ? 20 : 8,
+              height: 8,
+              background: i === idx ? C.primary : C.border,
+            }}
+            aria-label={`Go to ${PARTNERS[i].name}`}
+          />
+        ))}
+      </div>
+
+      <button
+        onClick={next}
+        className="w-10 h-10 rounded-full flex items-center justify-center transition-opacity hover:opacity-80"
+        style={{ background: C.bgCard, border: `1px solid ${C.border}`, color: C.fg }}
+        aria-label="Next"
+      >
+        <ChevronDown className="h-5 w-5 -rotate-90" />
+      </button>
+    </div>
+  );
 
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
@@ -1653,21 +1701,31 @@ function PartnersSection() {
           subtitle="Decades of clinical, commercial, and metabolic expertise — all pointed at one goal: making your cholesterol data actually useful."
         />
 
-        {/* Desktop: up to 4 cards per row */}
-        <div className="hidden sm:grid mt-12 gap-6"
-          style={{ gridTemplateColumns: `repeat(${Math.min(PARTNERS.length, 5)}, minmax(0, 1fr))` }}
-        >
-          {PARTNERS.map((p) => (
-            <PartnerCard key={p.name} partner={p} />
-          ))}
+        {/* Desktop carousel: 3 cards at a time */}
+        <div className="hidden sm:block mt-12">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`desk-${deskStart}`}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.4, ease: 'easeInOut' }}
+              className="grid grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              {PARTNERS.slice(deskStart, deskStart + deskPerView).map((p) => (
+                <PartnerCard key={p.name} partner={p} />
+              ))}
+            </motion.div>
+          </AnimatePresence>
+          <NavControls />
         </div>
 
-        {/* Mobile: carousel */}
+        {/* Mobile carousel: 1 card */}
         <div className="sm:hidden mt-12 flex flex-col items-center">
           <div className="w-full max-w-sm">
             <AnimatePresence mode="wait">
               <motion.div
-                key={idx}
+                key={`mob-${idx}`}
                 initial={{ opacity: 0, x: 40 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -40 }}
@@ -1677,42 +1735,7 @@ function PartnersSection() {
               </motion.div>
             </AnimatePresence>
           </div>
-
-          <div className="flex items-center gap-6 mt-8">
-            <button
-              onClick={prev}
-              className="w-10 h-10 rounded-full flex items-center justify-center transition-opacity hover:opacity-80"
-              style={{ background: C.bgCard, border: `1px solid ${C.border}`, color: C.fg }}
-              aria-label="Previous"
-            >
-              <ChevronDown className="h-5 w-5 rotate-90" />
-            </button>
-
-            <div className="flex gap-2">
-              {PARTNERS.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setIdx(i)}
-                  className="rounded-full transition-all"
-                  style={{
-                    width: i === idx ? 20 : 8,
-                    height: 8,
-                    background: i === idx ? C.primary : C.border,
-                  }}
-                  aria-label={`Go to ${PARTNERS[i].name}`}
-                />
-              ))}
-            </div>
-
-            <button
-              onClick={next}
-              className="w-10 h-10 rounded-full flex items-center justify-center transition-opacity hover:opacity-80"
-              style={{ background: C.bgCard, border: `1px solid ${C.border}`, color: C.fg }}
-              aria-label="Next"
-            >
-              <ChevronDown className="h-5 w-5 -rotate-90" />
-            </button>
-          </div>
+          <NavControls />
         </div>
       </div>
     </section>
