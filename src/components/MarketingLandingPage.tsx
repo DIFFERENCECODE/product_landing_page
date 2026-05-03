@@ -696,11 +696,12 @@ function MeetMeoSection() {
 function OfferStackSection() {
   const items = [
     { label: '6 months of Meo AI access',          value: 17400, note: '£29/month at the standard rate' },
-    { label: 'Digital Lipid Meter',                value: 15000,  note: 'UK & EU Registered' },
-    { label: 'Metabolc Health Dashboard',          value: 7500,  note: 'developed over many years with unique featurres' },
-    { label: 'Reporting on your Metabolic Health',  value: 3500,  note: 'in Meo or as seperate PDF' },
-    { label: 'Metabolic Health Book and Q&A with author',  value: 5500,  note: 'ask the author directly and give feedback on the book' },
-    { label: 'Referral to the country\'s finest therapists and coaches',  value: 25000,  note: 'a curated list of the best available to you for as a subscriber' },
+    { label: 'State of Art Lipid Meter',           value: 15000,  note: 'UK & EU Registered' },
+    { label: 'Metabolc Health Dashboard',          value: 7500,  note: 'developed over many years with unique features' },
+    { label: 'Meterbolic Digital Pack',            value: 4000,  note: 'years of expereince and expert resources to direct your lifelong health journey' },
+    { label: 'Your Metabolic Health Report',       value: 3500,  note: 'in Meo or as seperate PDF' },
+    { label: 'Metabolic Health Book and Q&A with the Author',  value: 5500,  note: 'ask the author directly and give feedback on the book' },
+    { label: 'Referral if desired to the country\'s finest therapists and coaches',  value: 25000,  note: 'a curated list of the best available to you for as a subscriber' },
     { label: 'Biological Age Score + Your Target Scores',      value: 5000,  note: 'baseline + ongoing goal' },
   ] as const;
   const total = items.reduce((s, x) => s + x.value, 0);

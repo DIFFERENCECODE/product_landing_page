@@ -146,6 +146,17 @@ none
 
 ## General / Cross-Cutting
 
+- Eric to dear Saad
+ - Not just this ERIC.md, also need these
+  - Gauges: https://docs.google.com/document/d/1NZijPx_HXyhvCWLUo0m87eEGniGaRbjife3Qe_U_GhY/edit?tab=t.obr245uer2x#bookmark=id.53ppolf4afag
+  - Six Markers text: https://docs.google.com/document/d/1cMlgAol22NjUshEfE5yy5dv0GECEC2aKBFhHKOhXMgo/edit?tab=t.s2lvv8okfzd#bookmark=id.vb4n4ck2e0ja
+  - !Therapist placeholder with Spen! : https://docs.google.com/document/d/1cMlgAol22NjUshEfE5yy5dv0GECEC2aKBFhHKOhXMgo/edit?tab=t.s2lvv8okfzd#bookmark=id.550r9iuexejn
+  - !BAS Logo! : https://docs.google.com/document/d/1cMlgAol22NjUshEfE5yy5dv0GECEC2aKBFhHKOhXMgo/edit?tab=t.s2lvv8okfzd#bookmark=id.a5z8fwlp12d4
+
+- These items we can do Later
+   - the integration of `meterbolic.com` and `app.`
+   - adding Pixel (referensed this already in /diff/site project
+
 <!-- add your entries below this line -->
 In the terms/page.tsx, you write:
               These terms govern your purchase and use of the Meo Metabolic
