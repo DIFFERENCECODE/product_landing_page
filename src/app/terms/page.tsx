@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Terms of sale and use for Meo by Meterbolic Ltd.",
+  description: "Terms of sale and use for Meo by Metabolic Health Ltd.",
   robots: { index: true, follow: true },
 };
 
@@ -156,7 +156,7 @@ export default function TermsPage() {
           <section>
             <h2 className="font-semibold mb-3">10. Contact</h2>
             <p>
-              Meterbolic Ltd ·{" "}
+              Metabolic Health Ltd ·{" "}
               <a href="mailto:hello@meterbolic.com" className="underline">
                 hello@meterbolic.com
               </a>

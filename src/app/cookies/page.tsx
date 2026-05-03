@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Cookies Policy — Meo by Meterbolic",
-  description: "How Meterbolic Ltd uses cookies on shop.meterbolic.com.",
+  description: "How Metabolic Health Ltd uses cookies on shop.meterbolic.com.",
   robots: { index: true, follow: true },
 };
 
@@ -163,7 +163,7 @@ export default function CookiesPage() {
         </div>
 
         <p className="mt-6 text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>
-          © 2026 Meterbolic Ltd. All rights reserved.
+          © 2026 Metabolic Health Ltd. All rights reserved.
         </p>
       </div>
     </main>

@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "How Meterbolic Ltd collects, uses, and protects your personal information.",
+  description: "How Metabolic Health Ltd collects, uses, and protects your personal information.",
   robots: { index: true, follow: true },
 };
 
@@ -41,7 +41,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="font-semibold mb-3">1. Who we are</h2>
             <p>
-              Meterbolic Ltd (&ldquo;we&rdquo;, &ldquo;us&rdquo;) operates shop.meterbolic.com, the
+              Metabolic Health Ltd (&ldquo;we&rdquo;, &ldquo;us&rdquo;) operates shop.meterbolic.com, the
               Meo Metabolic Health Cholesterol Tracker shop. We are the data
               controller for personal information collected through this site.
               Contact: <a href="mailto:hello@meterbolic.com" className="underline">hello@meterbolic.com</a>.

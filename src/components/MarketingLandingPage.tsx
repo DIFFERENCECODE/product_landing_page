@@ -2079,7 +2079,7 @@ function Footer() {
         and are not a substitute for professional testing. Meo AI provides pattern-based insights, not medical advice;
         if something concerns you, speak to a healthcare professional.
       </p>
-      <p className="text-xs" style={{ color: C.muted }}>© 2026 Meterbolic Ltd. All rights reserved.</p>
+      <p className="text-xs" style={{ color: C.muted }}>© 2026 Metabolic Health Ltd. All rights reserved.</p>
     </footer>
   );
 }
