@@ -2114,7 +2114,6 @@ export default function MarketingLandingPage() {
       <NumbersVsInsightsSection />
       <TestimonialsSection />
       <PartnersSection />
-      <ObjectionsSection />
       <GuaranteeSection />
       <FAQSection />
       <NewsletterSection />

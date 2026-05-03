@@ -161,14 +161,29 @@ export const BIOMARKERS = [
 
 export const FAQ_ITEMS = [
   {
+    question: 'How accurate is the meter?',
+    answer:
+      'The Sejoy BF-101b is CE-marked and reads within ±10% of reference-lab panels for TC, HDL, LDL and triglycerides. But the real value of Meo is in the trend across hundreds of your own readings — small per-reading variance washes out in the pattern.',
+  },
+  {
+    question: 'Is it hard to use?',
+    answer:
+      'A finger-prick and a strip — the same motion a diabetic runs three times a day. If you can tap your phone, you can run a Meo reading in under 3 minutes.',
+  },
+  {
+    question: 'Can I trust the AI?',
+    answer:
+      'Meo AI doesn\'t diagnose, prescribe, or replace your doctor. It reads your history, spots patterns, and tells you clearly what it sees — with its sources. When something is unusual, it recommends you see a healthcare professional. You always own the decision.',
+  },
+  {
+    question: '£149 — what does that actually get me?',
+    answer:
+      'Read it as 6 months of Meo AI with the lipid meter, 10 test strips, lancets, carry case, and a Biological Age Score all bundled in. One private-clinic panel costs £80–£150, runs once, gives you paper. Meo costs £149 once, runs unlimited times, and pairs each reading with AI interpretation you can actually act on.',
+  },
+  {
     question: 'Is this a medical device?',
     answer:
       'The lipid meter is a CE-marked clinical-grade instrument and one of only three lipid meters registered for Home Use in the UK & EU. Meo as a whole is a wellness and monitoring system — it is not intended to diagnose, treat, cure, or prevent any disease. Always consult a qualified healthcare professional for medical advice.',
-  },
-  {
-    question: 'How accurate is the meter?',
-    answer:
-      'The meter reads within ±10% of reference-lab panels for Total Cholesterol, HDL, LDL and Triglycerides. More importantly, the real value of Meo is in the trend across many readings — small per-reading variance washes out in the pattern.',
   },
   {
     question: 'What can Meo AI actually do?',
