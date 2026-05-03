@@ -1259,7 +1259,7 @@ const GAUGE_CONFIGS: GaugeConfig[] = [
 
 // Arc: 240° sweep, start at 8-o'clock (210° standard math), end at 4-o'clock (330°/-30°).
 // Fraction 0→1 maps angle 210° → -30° going CW on screen (decreasing standard math degrees).
-const G_CX = 80, G_CY = 76, G_R = 58, G_SW = 11;
+const G_CX = 80, G_CY = 70, G_R = 58, G_SW = 11;
 
 function gPt(angleDeg: number): [number, number] {
   const r = (angleDeg * Math.PI) / 180;
@@ -1291,14 +1291,14 @@ function SvgGauge({ cfg, delay = 0 }: { cfg: GaugeConfig; delay?: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.45, delay }}
-      className="rounded-2xl p-2 flex flex-col items-center"
+      className="rounded-2xl p-3 sm:p-4 flex flex-col items-center"
       style={{
         background: 'rgba(20,55,46,0.7)',
         border: '1px solid rgba(164,214,94,0.15)',
         boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
       }}
     >
-      <svg viewBox="0 0 160 115" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+      <svg viewBox="0 0 160 126" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
         {/* background track */}
         <path d={gArc(0, 1)} stroke="rgba(255,255,255,0.07)" strokeWidth={G_SW} strokeLinecap="round" />
 
@@ -1332,7 +1332,7 @@ function SvgGauge({ cfg, delay = 0 }: { cfg: GaugeConfig; delay?: number }) {
         )}
 
         {/* label */}
-        <text x={G_CX} y={103} textAnchor="middle"
+        <text x={G_CX} y={115} textAnchor="middle"
           fill="rgba(255,255,255,0.72)" fontSize={9.5} fontFamily="system-ui,sans-serif">
           {label}
         </text>
@@ -1345,7 +1345,7 @@ function GaugesPreviewSection() {
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-14">
           <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>
             Your dashboard
           </p>
@@ -1361,7 +1361,7 @@ function GaugesPreviewSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
           {GAUGE_CONFIGS.map((g, i) => (
             <SvgGauge key={g.label} cfg={g} delay={i * 0.05} />
           ))}
