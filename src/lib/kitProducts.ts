@@ -76,7 +76,7 @@ export const KIT_PRODUCT: KitProduct = {
       icon: 'bar-chart',
       title: 'Biological Age Score (BAS) + Target Score',
       description:
-        'One number for where your metabolism is now, one for where it can be. Observational, not predictive. Built on ten years of industrialising the gold-standard Kraft Test.',
+        'Calculated from your fasting lipid panel plus your age, sex, weight, height and waist — tested to match visceral fat. Also shown as a Kraft Deep Fat Score in kg. Track both over time; your target is set alongside your score so you always know the direction of travel.',
     },
     {
       icon: 'refresh',

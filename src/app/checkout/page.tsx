@@ -35,6 +35,7 @@ import {
 } from '@/lib/kitProducts';
 
 const THERAPY_PRICE = THERAPY_ADDON.price / 100; // £295
+const THERAPY_AVAILABLE = !THERAPY_ADDON.priceId.includes('placeholder');
 
 // ─── Brand colour tokens ──────────────────────────────────────────────
 const C = {
@@ -504,7 +505,7 @@ export default function CheckoutPage() {
       ),
     [quantities],
   );
-  const total = KIT_PRODUCTS.baseKit.price + addonsTotal + (therapySelected ? THERAPY_PRICE : 0);
+  const total = KIT_PRODUCTS.baseKit.price + addonsTotal + (therapySelected && THERAPY_AVAILABLE ? THERAPY_PRICE : 0);
 
   const selectedAddons = useMemo(
     () =>
@@ -528,7 +529,7 @@ export default function CheckoutPage() {
         const addons = KIT_PRODUCTS.addons
           .filter((a) => (quantities[a.id] ?? 0) > 0)
           .map((a) => ({ priceId: a.priceId, quantity: quantities[a.id] }));
-        if (therapySelected) {
+        if (therapySelected && THERAPY_AVAILABLE) {
           addons.push({ priceId: THERAPY_ADDON.priceId, quantity: 1 });
         }
         const res = await fetch('/api/kit-checkout', {
@@ -745,8 +746,9 @@ export default function CheckoutPage() {
                 Work 1-to-1 with a specialist to interpret your data and build an action plan.
               </p>
               <button
-                onClick={() => setTherapySelected((v) => !v)}
-                className="w-full text-left rounded-2xl p-5 transition-all"
+                onClick={() => THERAPY_AVAILABLE && setTherapySelected((v) => !v)}
+                disabled={!THERAPY_AVAILABLE}
+                className="w-full text-left rounded-2xl p-5 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                 style={{
                   background: therapySelected ? 'rgba(164,214,94,0.08)' : C.bgCard,
                   border: `1px solid ${therapySelected ? C.primary : C.border}`,
@@ -770,7 +772,11 @@ export default function CheckoutPage() {
                       >
                         UK National Swimmer
                       </span>
-                      <span className="font-semibold text-sm ml-auto shrink-0" style={{ color: C.fg }}>+£{THERAPY_PRICE}</span>
+                      {THERAPY_AVAILABLE ? (
+                        <span className="font-semibold text-sm ml-auto shrink-0" style={{ color: C.fg }}>+£{THERAPY_PRICE}</span>
+                      ) : (
+                        <span className="text-xs font-semibold px-2 py-0.5 rounded ml-auto shrink-0" style={{ background: 'rgba(255,255,255,0.08)', color: C.muted }}>Coming Soon</span>
+                      )}
                     </div>
                     <p className="text-sm mb-2" style={{ color: C.muted }}>
                       3-month subscription · 40 min initial + 2 × 30 min follow-ups

@@ -961,8 +961,8 @@ function BioAgeSection() {
         </div>
         <SectionHeader
           eyebrow="Biological Age Score"
-          title={<>Your number, read in <span style={{ color: C.primary }}>years</span>.</>}
-          subtitle="Every reading feeds a single number we call your Biological Age Score. It's not a diagnosis. It's a compass."
+          title={<>Your metabolism, expressed in <span style={{ color: C.primary }}>years</span>.</>}
+          subtitle="A single number calculated from your fasting lipid readings plus five body measurements — tested to match the amount of fat around your internal organs."
         />
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <motion.div
@@ -972,13 +972,14 @@ function BioAgeSection() {
             transition={{ duration: 0.6 }}
             className="flex justify-center"
           >
-            <BioAgeDial score={38} delta={-2.4} size={300} />
+            <BioAgeDial score={53} delta={-2.7} size={300} />
           </motion.div>
           <div className="space-y-4">
             {[
-              { icon: <TrendingUp className="h-5 w-5" style={{ color: C.primary }} />, label: 'Drops when your ratios improve' },
-              { icon: <Activity className="h-5 w-5" style={{ color: C.primary }} />, label: 'Rises when they drift' },
-              { icon: <Sparkles className="h-5 w-5" style={{ color: C.primary }} />, label: 'One number, updated weekly' },
+              { icon: <TrendingUp className="h-5 w-5" style={{ color: C.primary }} />, label: 'Track change over time — not a one-off snapshot' },
+              { icon: <Activity className="h-5 w-5" style={{ color: C.primary }} />, label: 'Also shown as a visceral fat score in kg' },
+              { icon: <Sparkles className="h-5 w-5" style={{ color: C.primary }} />, label: 'Your score + your personal target, side by side' },
+              { icon: <DropletIcon size={20} />, label: 'Requires lipid panel + glucose + age, sex, weight, height, waist' },
             ].map((x, i) => (
               <motion.div
                 key={i}
@@ -991,7 +992,7 @@ function BioAgeSection() {
               >
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ background: C.pill }}
+                  style={{ background: C.pill, color: C.primary }}
                 >
                   {x.icon}
                 </div>
@@ -1001,7 +1002,7 @@ function BioAgeSection() {
           </div>
         </div>
         <p className="mt-10 max-w-2xl mx-auto italic text-base text-center" style={{ color: C.muted }}>
-          This is the metric you&apos;ll start watching every week. The one you&apos;ll text your partner about. The one your friends will ask you for.
+          Don&apos;t fixate on the number itself. Watch it move. That&apos;s the whole point.
         </p>
       </div>
     </section>
