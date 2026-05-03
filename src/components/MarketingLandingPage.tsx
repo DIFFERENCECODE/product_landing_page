@@ -828,7 +828,7 @@ function BiomarkersSection() {
               className="rounded-2xl p-5 flex flex-col items-center gap-2"
               style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
             >
-              <p className="font-bold" style={{ color: bm.abbr === 'Bio Age' ? C.primary : C.fg, fontSize: '20px' }}>
+              <p className="font-bold text-center leading-tight" style={{ color: bm.abbr === 'BAS' ? C.primary : C.fg, fontSize: 'clamp(13px, 1.5vw, 17px)' }}>
                 {bm.abbr}
               </p>
               <p className="text-xs text-center" style={{ color: C.muted }}>{bm.label}</p>

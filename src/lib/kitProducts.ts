@@ -158,12 +158,12 @@ export const KIT_LITE: KitAddon = {
 // ─── Biomarkers surfaced on the landing page ────────────────────────
 
 export const BIOMARKERS = [
-  { abbr: 'TC', label: 'Total cholesterol' },
-  { abbr: 'HDL', label: 'Protective cholesterol' },
+  { abbr: 'Total Cholesterol', label: 'Overall lipid load' },
   { abbr: 'LDL', label: 'Atherogenic cholesterol' },
-  { abbr: 'TG', label: 'Triglycerides' },
-  { abbr: 'TC/HDL', label: 'Cholesterol ratio' },
-  { abbr: 'Bio Age', label: 'Biological Age Score' },
+  { abbr: 'HDL', label: 'Protective cholesterol' },
+  { abbr: 'Triglyceride', label: 'Blood fat from diet & liver' },
+  { abbr: 'TG:HDL', label: 'Insulin resistance marker' },
+  { abbr: 'BAS', label: 'Biological Age Score' },
 ] as const;
 
 // ─── FAQ ─────────────────────────────────────────────────────────────
