@@ -2281,7 +2281,6 @@ export default function MarketingLandingPage() {
       <BiomarkersSection />
       <LipidTrackingSection />
       <EbookSection />
-      <InsulinPatternSection />
       <BioAgeSection />
       <MeoAISection />
       <AppPreviewSection />
