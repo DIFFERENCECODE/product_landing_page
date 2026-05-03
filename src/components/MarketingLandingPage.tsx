@@ -235,13 +235,19 @@ const PILL_GRADIENTS = [
 ];
 
 function Hero() {
-  // Pick a random pill gradient on mount. SSR renders a stable default
-  // (first item) — useEffect rolls the dice on the client so each
-  // pageload gets a different look without hydration mismatch.
   const [pillGradient, setPillGradient] = useState(PILL_GRADIENTS[0]);
+  const [stockAvailable, setStockAvailable] = useState<boolean | null>(null);
+
   useEffect(() => {
     const next = PILL_GRADIENTS[Math.floor(Math.random() * PILL_GRADIENTS.length)];
     setPillGradient(next);
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/stock')
+      .then((r) => r.json())
+      .then((d) => setStockAvailable(d.available))
+      .catch(() => setStockAvailable(true));
   }, []);
 
   // Same idea but for the soft background accent behind the section —
@@ -265,8 +271,8 @@ function Hero() {
     'Ships in 72 hours · limited quantities',
   ];
   const featuresRowB = [
-    'Tracked delivery',
-    '10 lipid test strips + lancets + carry case included',
+    '£9.99 tracked delivery · UK & EU',
+    '20 lipid test strips + lancets + carry case included',
     'Q&A with the book author, Marina Young via Meo',
     'Biological Age Score + your Target Score',
     '10 years of leadership industrialising the Kraft Test',
@@ -358,9 +364,19 @@ function Hero() {
           transition={{ duration: 0.5, delay: 0.25 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
         >
-          <CTAButton size="lg">
-            Start with 6 months of Meo · {formatGBP(KIT_PRODUCT.price)} <ArrowRight className="h-4 w-4" />
-          </CTAButton>
+          {stockAvailable === false ? (
+            <button
+              onClick={() => document.getElementById('newsletter')?.scrollIntoView({ behavior: 'smooth' })}
+              className="inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-opacity hover:opacity-90 px-10 py-4 text-base"
+              style={{ background: C.primary, color: C.primaryFg }}
+            >
+              Join the Waitlist <ArrowRight className="h-4 w-4" />
+            </button>
+          ) : (
+            <CTAButton size="lg">
+              Start with 6 months of Meo · {formatGBP(KIT_PRODUCT.price)} <ArrowRight className="h-4 w-4" />
+            </CTAButton>
+          )}
           <button
             onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
             className="text-sm hover:underline cursor-pointer bg-transparent border-0 p-0"
@@ -1944,7 +1960,7 @@ function NewsletterSection() {
   };
 
   return (
-    <section className="py-14 sm:py-20 px-5 sm:px-6" style={{ background: C.bgDeep }}>
+    <section id="newsletter" className="py-14 sm:py-20 px-5 sm:px-6" style={{ background: C.bgDeep }}>
       <motion.div
         className="max-w-2xl mx-auto text-center"
         initial={{ opacity: 0, y: 20 }}
@@ -2111,7 +2127,14 @@ function UrgencyBadge() {
   if (!stock.available) {
     return (
       <p className="text-xs font-medium text-center mt-2" style={{ color: '#f87171' }}>
-        ⚠️ Currently out of stock — join the waiting list below
+        ⚠️ Currently out of stock —{' '}
+        <button
+          onClick={() => document.getElementById('newsletter')?.scrollIntoView({ behavior: 'smooth' })}
+          className="underline cursor-pointer bg-transparent border-0 p-0 font-medium"
+          style={{ color: '#f87171' }}
+        >
+          join the waiting list
+        </button>
       </p>
     );
   }
