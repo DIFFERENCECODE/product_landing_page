@@ -1,0 +1,43 @@
+<svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,-apple-system,sans-serif">
+  <!-- Background -->
+  <rect width="320" height="260" fill="#111827" rx="10"/>
+
+  <!-- Title row -->
+  <circle cx="16" cy="18" r="5" fill="#f87171"/>
+  <text x="26" y="23" fill="rgba(255,255,255,0.55)" font-size="11">Biological Age Score</text>
+
+  <!-- Background arc track (240° sweep, large-arc-flag=1) -->
+  <!-- centre 160,165  r=115  start (60.4,222.5) → end (259.6,222.5) -->
+  <path d="M60.4 222.5 A115 115 0 1 1 259.6 222.5"
+        stroke="rgba(255,255,255,0.07)" stroke-width="18" fill="none" stroke-linecap="round"/>
+
+  <!-- Zone colour bands (thin, decorative) -->
+  <!-- Green  f 0→0.30  end (74.5,88.1) sweep=72° laf=0 -->
+  <path d="M60.4 222.5 A115 115 0 0 1 74.5 88.1"
+        stroke="#4ade80" stroke-width="4" fill="none" stroke-linecap="butt" opacity="0.35"/>
+  <!-- Yellow-green  f 0.30→0.50  end (160,50) sweep=48° laf=0 -->
+  <path d="M74.5 88.1 A115 115 0 0 1 160 50"
+        stroke="#a3e635" stroke-width="4" fill="none" stroke-linecap="butt" opacity="0.35"/>
+  <!-- Amber  f 0.50→0.70  end (245.5,88.1) sweep=48° laf=0 -->
+  <path d="M160 50 A115 115 0 0 1 245.5 88.1"
+        stroke="#fbbf24" stroke-width="4" fill="none" stroke-linecap="butt" opacity="0.35"/>
+  <!-- Red  f 0.70→1.0  end (259.6,222.5) sweep=72° laf=0 -->
+  <path d="M245.5 88.1 A115 115 0 0 1 259.6 222.5"
+        stroke="#f87171" stroke-width="4" fill="none" stroke-linecap="butt" opacity="0.35"/>
+
+  <!-- Value fill — 53.3 Age → f=0.466, tip (143.7,51.2), sweep=111.8° laf=0 -->
+  <path d="M60.4 222.5 A115 115 0 0 1 143.7 51.2"
+        stroke="#a3e635" stroke-width="18" fill="none" stroke-linecap="round"/>
+
+  <!-- Needle tip -->
+  <circle cx="143.7" cy="51.2" r="13" fill="#a3e635"/>
+  <circle cx="143.7" cy="51.2" r="7"  fill="rgba(0,0,0,0.65)"/>
+
+  <!-- Value labels -->
+  <text x="160" y="160" text-anchor="middle" fill="white" font-size="46" font-weight="700">53.3</text>
+  <text x="160" y="186" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="15">Age</text>
+
+  <!-- Range ticks -->
+  <text x="46"  y="238" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="11">30</text>
+  <text x="274" y="238" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="11">80</text>
+</svg>
