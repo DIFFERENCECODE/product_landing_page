@@ -710,6 +710,73 @@ function MeetMeoSection() {
 //   - the math is simple and explicit (no hand-wavy "best deal" claims)
 //   - the strikethrough is a visual heuristic the brain processes
 //     instantly without reading the line items
+function OfferGraphCarousel() {
+  const [slide, setSlide] = useState(0);
+  const slides = [
+    {
+      label: 'Your Scores',
+      content: (
+        <div className="flex gap-3 justify-center">
+          <img src="/bas-gauge.svg"   alt="Biological Age Score gauge"  className="w-[48%] rounded-xl" />
+          <img src="/kraft-gauge.svg" alt="KRAFT Deep Fat Score gauge"   className="w-[48%] rounded-xl" />
+        </div>
+      ),
+    },
+    {
+      label: 'Your Progress',
+      content: (
+        <img src="/bas-progress-chart.svg" alt="YOU vs OUR TARGET progress chart" className="w-full rounded-xl" />
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    const id = setInterval(() => setSlide((p) => (p + 1) % slides.length), 4000);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div className="mb-10">
+      <div className="rounded-2xl overflow-hidden p-4" style={{ background: C.bgCard, border: `1px solid ${C.border}` }}>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={slide}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.35 }}
+          >
+            {slides[slide].content}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+      {/* 2-dot nav */}
+      <div className="flex items-center justify-center gap-3 mt-4">
+        {slides.map((s, i) => (
+          <button
+            key={i}
+            onClick={() => setSlide(i)}
+            className="flex flex-col items-center gap-1.5"
+            aria-label={s.label}
+          >
+            <span
+              className="block rounded-full transition-all duration-300"
+              style={{
+                width: slide === i ? 28 : 8,
+                height: 8,
+                background: slide === i ? C.primary : 'rgba(255,255,255,0.22)',
+              }}
+            />
+            <span className="text-[10px]" style={{ color: slide === i ? C.primary : 'rgba(255,255,255,0.3)' }}>
+              {s.label}
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function OfferStackSection() {
   const items = [
     { label: '6 months of Meo AI access',          value: 17400, note: '£29/month at the standard rate' },
@@ -734,12 +801,16 @@ function OfferStackSection() {
           subtitle="No promo, no countdown, no flash sale. Every item is listed so you can see exactly what you are getting — and what it costs outside the bundle."
         />
 
+        <div className="mt-10">
+          <OfferGraphCarousel />
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mt-10 rounded-2xl overflow-hidden"
+          className="rounded-2xl overflow-hidden"
           style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
         >
           {items.map((it, i) => (
@@ -957,7 +1028,7 @@ function BioAgeSection() {
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
       <div className="max-w-5xl mx-auto">
         <div className="flex justify-center mb-4">
-          <img src="/bas-logo.svg" alt="Biological Age Score" className="w-14 h-14 opacity-90" />
+          <img src="/bas-logo.svg" alt="Biological Age Score" className="w-20 h-20 opacity-90" />
         </div>
         <SectionHeader
           eyebrow="Biological Age Score"
