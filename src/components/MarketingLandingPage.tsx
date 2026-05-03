@@ -1086,6 +1086,87 @@ function MeoAISection() {
   );
 }
 
+// ─── App preview (laptop mockup) ─────────────────────────────────────
+function AppPreviewSection() {
+  return (
+    <section className="py-16 sm:py-24 px-5 sm:px-6 overflow-hidden" style={{ background: C.bgDeep }}>
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-12">
+          <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>
+            The Meo AI platform
+          </p>
+          <h2
+            className="font-extrabold"
+            style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(26px, 4vw, 38px)' }}
+          >
+            Everything in one place — readings,<br className="hidden sm:block" />
+            patterns, and your <span style={{ color: C.primary }}>AI coach</span>.
+          </h2>
+        </div>
+
+        {/* Laptop mockup */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="flex flex-col items-center"
+        >
+          {/* Screen */}
+          <div
+            className="w-full max-w-3xl rounded-t-2xl rounded-b-sm p-[10px] pb-0 relative"
+            style={{
+              background: '#1a1a1f',
+              boxShadow: '0 40px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.07)',
+            }}
+          >
+            {/* Top bezel with camera */}
+            <div className="flex items-center justify-center pb-2 pt-1">
+              <div className="w-[6px] h-[6px] rounded-full" style={{ background: '#3a3a3f' }} />
+            </div>
+            {/* Screen area */}
+            <div className="rounded-t-lg overflow-hidden" style={{ background: '#0f1117' }}>
+              <Image
+                src="/meo-app-screenshot.png"
+                alt="Meo AI platform — metabolic analysis dashboard"
+                width={1200}
+                height={750}
+                className="w-full h-auto block"
+              />
+            </div>
+          </div>
+
+          {/* Hinge strip */}
+          <div
+            className="w-full max-w-3xl h-[4px]"
+            style={{ background: 'linear-gradient(to bottom, #2a2a2f, #1a1a1f)' }}
+          />
+
+          {/* Base / keyboard deck */}
+          <div
+            className="w-full max-w-[820px] h-[22px] rounded-b-xl"
+            style={{
+              background: 'linear-gradient(to bottom, #2c2c32, #222228)',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.45)',
+            }}
+          >
+            {/* Trackpad indent hint */}
+            <div className="flex justify-center pt-[6px]">
+              <div className="w-[60px] h-[6px] rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }} />
+            </div>
+          </div>
+
+          {/* Table reflection / ground shadow */}
+          <div
+            className="w-full max-w-[820px] h-[2px] rounded-full mt-0.5"
+            style={{ background: 'rgba(0,0,0,0.3)', filter: 'blur(4px)' }}
+          />
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 // ─── eBook ───────────────────────────────────────────────────────────
 function EbookSection() {
   const chapters = [
@@ -1976,6 +2057,7 @@ export default function MarketingLandingPage() {
       <InsulinPatternSection />
       <BioAgeSection />
       <MeoAISection />
+      <AppPreviewSection />
       <BenefitsSection />
       <NumbersVsInsightsSection />
       <TestimonialsSection />
