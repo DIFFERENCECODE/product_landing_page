@@ -1080,6 +1080,61 @@ function BioAgeSection() {
   );
 }
 
+// ─── Scores preview (BAS gauge + KRAFT gauge + progress chart) ───────
+function ScoresSection() {
+  return (
+    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
+      <div className="max-w-4xl mx-auto">
+        <SectionHeader
+          eyebrow="Your Scores — Live Example"
+          title={<>What your <span style={{ color: C.primary }}>Meo dashboard</span> looks like.</>}
+          subtitle="Every reading produces a Biological Age Score and a KRAFT Deep Fat Score. Track both over time and watch them move toward your personal target."
+        />
+
+        {/* Two gauges side by side */}
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="rounded-2xl overflow-hidden"
+            style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+          >
+            <img src="/bas-gauge.svg" alt="Biological Age Score gauge — 53.3 Age" className="w-full" />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.08 }}
+            className="rounded-2xl overflow-hidden"
+            style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+          >
+            <img src="/kraft-gauge.svg" alt="KRAFT Deep Fat Score gauge — 1.00 kg" className="w-full" />
+          </motion.div>
+        </div>
+
+        {/* Progress chart full width */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.14 }}
+          className="mt-5 rounded-2xl overflow-hidden"
+          style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+        >
+          <img src="/bas-progress-chart.svg" alt="Biological Age Score — YOU vs OUR TARGET over 6 months" className="w-full" />
+        </motion.div>
+
+        <p className="mt-8 text-center text-sm" style={{ color: C.muted }}>
+          Illustrative data — your scores update with every reading you take.
+        </p>
+      </div>
+    </section>
+  );
+}
+
 // ─── Meo AI — CORE ───────────────────────────────────────────────────
 function MeoAISection() {
   const pillars = [
@@ -2393,6 +2448,7 @@ export default function MarketingLandingPage() {
       <LipidTrackingSection />
       <EbookSection />
       <BioAgeSection />
+      <ScoresSection />
       <MeoAISection />
       <AppPreviewSection />
       <GaugesPreviewSection />
