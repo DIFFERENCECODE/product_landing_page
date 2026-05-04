@@ -168,10 +168,26 @@ function SectionHeader({
 
 // ─── Navbar ──────────────────────────────────────────────────────────
 function Navbar() {
+  // Transparent over the hero, frosted-glass once scrolled past it.
+  // Threshold ~80vh keeps the swap inside the hero so the navbar
+  // never floats over plain content unstyled.
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4"
-      style={{ background: 'rgba(28,74,64,0.92)', backdropFilter: 'blur(12px)', borderBottom: `1px solid ${C.border}` }}
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 transition-all duration-300"
+      style={{
+        background: scrolled ? 'rgba(28,74,64,0.72)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(12px)' : 'none',
+        WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
+        borderBottom: scrolled ? `1px solid ${C.border}` : '1px solid transparent',
+      }}
     >
       <Link href="/" className="flex items-center gap-1.5" aria-label="Meo home">
         {/* Wordmark: literal "Meo" letters + droplet icon. The droplet
@@ -283,6 +299,23 @@ function Hero() {
       className="relative min-h-screen flex flex-col justify-center pt-24 pb-12 sm:pb-16 px-5 sm:px-6 overflow-hidden"
       style={{ background: C.bg }}
     >
+      {/* Background video — fills the hero, sits behind everything.
+          A dark overlay on top keeps headline/CTA legible. */}
+      <video
+        aria-hidden
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="pointer-events-none absolute inset-0 w-full h-full object-cover"
+        src="/liquid-metal.mp4"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{ background: 'rgba(0,0,0,0.55)' }}
+      />
+
       {/* Soft radial accent — randomised per pageload so the hero
           has a different mood each visit (light source position
           shifts across upper-left / upper-right / lower-left). */}
