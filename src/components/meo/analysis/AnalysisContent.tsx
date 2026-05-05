@@ -1,0 +1,366 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { BarChart3 } from 'lucide-react';
+import { useTheme } from '@/theme/ThemeProvider';
+import ReactECharts from 'echarts-for-react';
+import type { EChartsOption } from 'echarts';
+import { getValidIdToken } from '@/lib/meo-app/auth';
+import { ScoreGauges } from './ScoreGauges';
+
+// Types
+interface GraphDataPoint {
+  time: string;
+  glucose: number;
+  insulin: number;
+}
+
+interface AnalysisContentProps {
+  // Kept as an optional prop for back-compat with any caller still passing
+  // chat-driven graph data. The component now self-fetches /api/user-data
+  // as the primary source; this prop is only a fallback.
+  graphData?: GraphDataPoint[];
+}
+
+// Canonical unit map: bang-api stores both original and unit-converted
+// twins (e.g. Glucose in mMol AND mg/dL). We keep only the canonical row
+// per (time, analyte) so peak calculations aren't polluted by conversions.
+//
+// IMPORTANT for Insulin: bang-api takes the user-submitted value in
+// 'uIU/mL' (capital L) and ALSO writes a converted twin labeled 'µIU/ml'
+// (lowercase l) whose value is value/6.945 — i.e. the pmol/L conversion
+// mislabeled with the wrong micro-unit. The 'µIU/ml' rows are NOT real
+// readings, so we must treat only 'uIU/mL' as canonical and exclude the
+// lowercase variant entirely. Otherwise the dedupe picks whichever row
+// happens to come first and you get a chart with values like 0.21, 1.37
+// instead of the actual 26.9 µIU/mL the user entered.
+const CANONICAL_UNITS: Record<string, string[]> = {
+  Glucose: ['mMol', 'mmol/L'],
+  Insulin: ['uIU/mL'],
+};
+
+// Default data
+const defaultKraftData: GraphDataPoint[] = [
+  { time: '0hr', glucose: 85, insulin: 5 },
+  { time: '0.5hr', glucose: 145, insulin: 55 },
+  { time: '1hr', glucose: 160, insulin: 95 },
+  { time: '1.5hr', glucose: 150, insulin: 120 },
+  { time: '2hr', glucose: 135, insulin: 95 },
+  { time: '2.5hr', glucose: 115, insulin: 65 },
+  { time: '3hr', glucose: 100, insulin: 40 },
+  { time: '3.5hr', glucose: 92, insulin: 28 },
+  { time: '4hr', glucose: 88, insulin: 18 },
+  { time: '4.5hr', glucose: 85, insulin: 12 },
+  { time: '5hr', glucose: 83, insulin: 8 },
+];
+
+// Risk Score Gauge Component
+function RiskScoreGauge({ score }: { score: number }) {
+  const color = score >= 70 ? '#ef4444' : score >= 50 ? '#f97316' : '#22c55e';
+
+  const option: EChartsOption = {
+    series: [
+      {
+        type: 'gauge',
+        startAngle: 90,
+        endAngle: -270,
+        radius: '90%',
+        center: ['50%', '50%'],
+        progress: {
+          show: true,
+          width: 8,
+          roundCap: true,
+          itemStyle: { color },
+        },
+        pointer: { show: false },
+        axisLine: {
+          lineStyle: {
+            width: 8,
+            color: [[1, 'rgba(255, 255, 255, 0.1)']],
+          },
+        },
+        axisTick: { show: false },
+        splitLine: { show: false },
+        axisLabel: { show: false },
+        detail: { show: false },
+        data: [{ value: score }],
+      },
+    ],
+  };
+
+  return (
+    <div className="relative w-20 h-20">
+      <ReactECharts option={option} style={{ width: '100%', height: '100%' }} opts={{ renderer: 'svg' }} />
+      <div className="absolute inset-0 flex items-center justify-center">
+        <BarChart3 className="h-8 w-8 text-orange-500" />
+      </div>
+    </div>
+  );
+}
+
+export function AnalysisContent({ graphData: graphDataProp }: AnalysisContentProps) {
+  const { theme } = useTheme();
+  const [fetchedGraphData, setFetchedGraphData] = useState<GraphDataPoint[] | null>(null);
+
+  // Self-fetch user data so the page is always correct, regardless of
+  // whether a chat-driven graph_data payload populated MeOApp state.
+  // The chat path was unreliable: kraft_curve_data has unit-converted
+  // duplicates whose Map-based merge produced swapped peaks (insulin
+  // values landing in the glucose field, etc).
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const token = await getValidIdToken();
+        if (!token) return;
+        const res = await fetch('/api/user-data', { headers: { Authorization: `Bearer ${token}` } });
+        if (!res.ok || cancelled) return;
+        const data = await res.json();
+
+        // Build a deduped (time, analyte) → value map preferring canonical units.
+        type Row = { time: string; name: string; unit: string; value: number };
+        const rawMeasurements: Row[] = Array.isArray(data?.measurements) ? data.measurements : [];
+        const byKey = new Map<string, Row>();
+        for (const m of rawMeasurements) {
+          const key = `${m.time}|${m.name}`;
+          const existing = byKey.get(key);
+          const canonical = CANONICAL_UNITS[m.name];
+          const isCanonical = canonical ? canonical.includes(m.unit) : true;
+          if (!existing) {
+            byKey.set(key, m);
+          } else {
+            const existingIsCanonical = canonical ? canonical.includes(existing.unit) : true;
+            if (isCanonical && !existingIsCanonical) byKey.set(key, m);
+          }
+        }
+        const deduped = Array.from(byKey.values());
+
+        // Pair glucose/insulin into chart points by time. Sort by time
+        // ascending so the first point is the baseline reading.
+        const glucoseRows = deduped
+          .filter((m) => m.name === 'Glucose')
+          .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+        const insulinRows = deduped
+          .filter((m) => m.name === 'Insulin')
+          .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+
+        // Use whichever series has more points as the time axis;
+        // align the other series by nearest timestamp.
+        const baseRows = glucoseRows.length >= insulinRows.length ? glucoseRows : insulinRows;
+        const otherRows = baseRows === glucoseRows ? insulinRows : glucoseRows;
+        const baseIsGlucose = baseRows === glucoseRows;
+
+        const points: GraphDataPoint[] = baseRows.map((r, i) => {
+          const t = new Date(r.time).getTime();
+          const matched = otherRows.reduce<{ row: Row | null; diff: number }>(
+            (best, candidate) => {
+              const diff = Math.abs(new Date(candidate.time).getTime() - t);
+              return !best.row || diff < best.diff ? { row: candidate, diff } : best;
+            },
+            { row: null, diff: Infinity },
+          );
+          return {
+            time: i === 0 ? '0hr' : `${(i * 0.5).toFixed(1)}hr`,
+            glucose: baseIsGlucose ? r.value : matched.row?.value ?? 0,
+            insulin: baseIsGlucose ? matched.row?.value ?? 0 : r.value,
+          };
+        });
+        if (points.length > 0) setFetchedGraphData(points);
+      } catch {
+        // Silent fail — fall back to props or default chart
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  // Prefer self-fetched data over props; fall back to default chart only
+  // when nothing else is available.
+  const effectiveGraphData = fetchedGraphData ?? graphDataProp ?? [];
+  const hasRealData = effectiveGraphData.length > 0;
+  const data = hasRealData ? effectiveGraphData : defaultKraftData;
+
+  // Compute Kraft curve summary metrics from actual data
+  const peakGlucose = hasRealData
+    ? Number(Math.max(...data.map((d) => d.glucose)).toFixed(1))
+    : Math.round(Math.max(...data.map((d) => d.glucose)));
+  const peakInsulin = hasRealData
+    ? Number(Math.max(...data.map((d) => d.insulin)).toFixed(1))
+    : Math.round(Math.max(...data.map((d) => d.insulin)));
+  // Recovery time: last timepoint where glucose is still above baseline (first reading)
+  const baselineGlucose = data[0]?.glucose ?? 0;
+  const recoveryIndex = data.findLastIndex((d) => d.glucose > baselineGlucose * 1.05);
+  const recoveryTime =
+    recoveryIndex >= 0 ? data[recoveryIndex]?.time ?? '—' : hasRealData ? '—' : data[data.length - 1]?.time ?? '—';
+  // Risk score: clinical heuristic for Kraft test interpretation.
+  //   Peak insulin: <40 µIU/mL is healthy, 40–100 elevated, >100 high risk.
+  //   Recovery: glucose returning to baseline within 2hr is healthy.
+  // Maps to a 0–100 scale where ~30 = low, ~60 = elevated, ~80+ = high.
+  const insulinComponent = Math.min(60, (peakInsulin / 100) * 60);
+  const recoveryComponent = Math.min(40, (Math.max(recoveryIndex, 0) / Math.max(data.length - 1, 1)) * 40);
+  const riskScore = hasRealData
+    ? Math.min(100, Math.max(0, Math.round(insulinComponent + recoveryComponent)))
+    : 0;
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-start">
+        <div>
+          <h1 className="text-2xl font-bold" style={{ color: theme.colors.foreground }}>
+            Metabolic Analysis
+          </h1>
+          <p className="text-sm" style={{ color: theme.colors.muted }}>
+            Based on your latest data
+          </p>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <p className="text-xs" style={{ color: theme.colors.muted }}>
+              Risk Score
+            </p>
+            <p className="text-3xl font-bold text-orange-500">{hasRealData ? riskScore : '—'}</p>
+          </div>
+          <RiskScoreGauge score={hasRealData ? riskScore : 0} />
+        </div>
+      </div>
+
+      {/* Grafana-parity score gauges (BAS + KRAFT Deep Fat Score).
+          Self-contained: fetches sessions + scores from /api/scores/*
+          and mirrors the exact Grafana panel thresholds, colors, ranges. */}
+      <ScoreGauges />
+
+
+      {/* Kraft Curve Card */}
+      <div
+        className="rounded-xl border p-6"
+        style={{
+          backgroundColor: theme.colors.card,
+          borderColor: theme.colors.cardBorder,
+        }}
+      >
+        <div className="flex justify-between items-start mb-4">
+          <div>
+            <h2 className="text-xl font-bold" style={{ color: theme.colors.foreground }}>
+              Kraft Curve Analysis
+            </h2>
+            <p className="text-sm" style={{ color: theme.colors.muted }}>
+              5-Hour Glucose Tolerance Test
+            </p>
+          </div>
+          <span
+            className="px-3 py-1 rounded-full text-xs font-medium"
+            style={{
+              backgroundColor: `${theme.colors.warning}20`,
+              color: theme.colors.warning,
+              border: `1px solid ${theme.colors.warning}40`,
+            }}
+          >
+            At Risk
+          </span>
+        </div>
+
+        <div className="h-[350px] w-full">
+          <ReactECharts
+            option={{
+              animation: true,
+              grid: { top: 60, right: 80, bottom: 80, left: 60, containLabel: false },
+              xAxis: {
+                type: 'category',
+                data: data.map((d) => d.time),
+                boundaryGap: false,
+                axisLine: { lineStyle: { color: '#374151' } },
+                axisLabel: { color: '#9ca3af', fontSize: 12 },
+              },
+              yAxis: [
+                {
+                  type: 'value',
+                  // Real data is in mMol; default mock data is in mg/dL
+                  name: hasRealData ? 'Glucose (mMol)' : 'Glucose (mg/dL)',
+                  min: 0,
+                  max: hasRealData ? Math.ceil(Math.max(peakGlucose * 1.2, 15)) : 200,
+                  position: 'left',
+                  axisLine: { show: true, lineStyle: { color: '#3b82f6' } },
+                  axisLabel: { color: '#3b82f6', fontSize: 12 },
+                  splitLine: { lineStyle: { color: '#374151', opacity: 0.3, type: 'dashed' } },
+                },
+                {
+                  type: 'value',
+                  name: 'Insulin (μIU/mL)',
+                  min: 0,
+                  max: hasRealData ? Math.ceil(Math.max(peakInsulin * 1.3, 30)) : 150,
+                  position: 'right',
+                  axisLine: { show: true, lineStyle: { color: '#f97316' } },
+                  axisLabel: { color: '#f97316', fontSize: 12 },
+                  splitLine: { show: false },
+                },
+              ],
+              tooltip: {
+                trigger: 'axis',
+                backgroundColor: '#1f2937',
+                borderColor: '#374151',
+                textStyle: { color: '#fff' },
+              },
+              legend: { data: ['glucose', 'insulin'], bottom: 10, textStyle: { color: '#9ca3af' }, icon: 'circle' },
+              dataset: { source: data },
+              series: [
+                {
+                  name: 'glucose',
+                  type: 'line',
+                  yAxisIndex: 0,
+                  encode: { x: 'time', y: 'glucose' },
+                  smooth: 0.3,
+                  showSymbol: true,
+                  lineStyle: { color: '#3b82f6', width: 3 },
+                  itemStyle: { color: '#3b82f6' },
+                  symbol: 'circle',
+                  symbolSize: 10,
+                },
+                {
+                  name: 'insulin',
+                  type: 'line',
+                  yAxisIndex: 1,
+                  encode: { x: 'time', y: 'insulin' },
+                  smooth: 0.3,
+                  showSymbol: true,
+                  lineStyle: { color: '#f97316', width: 3 },
+                  itemStyle: { color: '#f97316' },
+                  symbol: 'circle',
+                  symbolSize: 10,
+                },
+              ],
+            } as EChartsOption}
+            style={{ width: '100%', height: '100%' }}
+            notMerge
+          />
+        </div>
+
+        {/* Metrics Grid */}
+        <div className="grid grid-cols-3 gap-4 mt-6">
+          {[
+            { value: String(peakGlucose), label: 'Peak Glucose', color: '#3b82f6' },
+            { value: String(peakInsulin), label: 'Peak Insulin', color: '#f97316' },
+            { value: recoveryTime, label: 'Recovery Time', color: theme.colors.primary },
+          ].map((metric, i) => (
+            <div
+              key={i}
+              className="rounded-lg p-4 border"
+              style={{
+                backgroundColor: theme.colors.accent,
+                borderColor: theme.colors.cardBorder,
+              }}
+            >
+              <p className="text-3xl font-bold" style={{ color: metric.color }}>
+                {metric.value}
+              </p>
+              <p className="text-xs" style={{ color: theme.colors.muted }}>
+                {metric.label}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default AnalysisContent;
