@@ -69,7 +69,6 @@ const EMOTIONAL_OPTS = [
 
 const COLLECTION_OPTS = [
   { value: 'finger-prick', label: 'Finger prick — small sample from your fingertip' },
-  { value: 'tasso', label: 'Tasso — device on the upper arm that collects blood for you' },
 ] as const;
 
 type FormData = {
@@ -93,7 +92,10 @@ const INITIAL: FormData = {
   symptoms: [],
   eating_pattern: '',
   emotional_context: '',
-  collection_preference: '',
+  // Pre-selected: only one collection method is currently offered
+  // (Tasso has been retired). Step 7 still shows the choice so the
+  // user can see it, but the Next button is enabled immediately.
+  collection_preference: 'finger-prick',
 };
 
 function Radio({
