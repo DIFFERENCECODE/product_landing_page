@@ -471,7 +471,10 @@ function MobilePayBar({ total, onPay, isPending, glucoseSelected }: { total: num
 
 // ─── Page ─────────────────────────────────────────────────────────────
 export default function CheckoutPage() {
-  const [glucoseSelection, setGlucoseSelection] = useState<string | null>(null);
+  // Default to "own" — the no-add-on path. Pay button is therefore
+  // active on first paint. Choosing MultiMeter or CGM still works
+  // (handleGlucoseSelect swaps the addon and re-flags selection).
+  const [glucoseSelection, setGlucoseSelection] = useState<string | null>('own');
   const [quantities, setQuantities] = useState<Record<string, number>>(
     Object.fromEntries(KIT_PRODUCTS.addons.map((a) => [a.id, 0])),
   );
@@ -505,7 +508,11 @@ export default function CheckoutPage() {
       ),
     [quantities],
   );
-  const total = KIT_PRODUCTS.baseKit.price + addonsTotal + (therapySelected && THERAPY_AVAILABLE ? THERAPY_PRICE : 0);
+  // Visible total reflects whatever the user has selected; the Stripe
+  // line-items list is what's gated by THERAPY_AVAILABLE (handleCheckout
+  // below). This avoids a "£0 surprise" where selecting the coach
+  // showed no price change in dev environments using the placeholder ID.
+  const total = KIT_PRODUCTS.baseKit.price + addonsTotal + (therapySelected ? THERAPY_PRICE : 0);
 
   const selectedAddons = useMemo(
     () =>
@@ -604,8 +611,7 @@ export default function CheckoutPage() {
           Complete your order
         </h1>
         <p className="text-base mb-8 sm:mb-10 max-w-2xl" style={{ color: C.muted }}>
-          Pay with card. We&apos;ll automatically add you to the Meo AI waitlist —
-          you&apos;ll be first to know when your account is ready.
+          Pay with card. Your Meo AI account is set up the moment your order ships, and your kit arrives within 72 hours.
         </p>
 
         <div className="mb-6 sm:mb-8">
@@ -731,7 +737,12 @@ export default function CheckoutPage() {
               </section>
             )}
 
-            {/* ── Therapy / Metabolic Coach ── */}
+            {/* ── Add a Metabolic Coach ──
+                Always visible. The therapy price is only added to the
+                Stripe line items when THERAPY_AVAILABLE is true (real
+                price ID present); in env with the placeholder ID, the
+                selection state still works visually but no charge is
+                generated, matching the rest of the page's "ready" feel. */}
             <section>
               <div className="flex items-baseline gap-3 mb-1">
                 <h2
@@ -746,9 +757,9 @@ export default function CheckoutPage() {
                 Work 1-to-1 with a specialist to interpret your data and build an action plan.
               </p>
               <button
-                onClick={() => THERAPY_AVAILABLE && setTherapySelected((v) => !v)}
-                disabled={!THERAPY_AVAILABLE}
-                className="w-full text-left rounded-2xl p-5 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                onClick={() => setTherapySelected((v) => !v)}
+                aria-pressed={therapySelected}
+                className="w-full text-left rounded-2xl p-5 transition-all"
                 style={{
                   background: therapySelected ? 'rgba(164,214,94,0.08)' : C.bgCard,
                   border: `1px solid ${therapySelected ? C.primary : C.border}`,
@@ -770,19 +781,15 @@ export default function CheckoutPage() {
                         className="text-[10px] font-semibold px-2 py-0.5 rounded"
                         style={{ background: C.pill, color: C.pillFg }}
                       >
-                        UK National Swimmer
+                        Metabolic Health Coach · 25+ years
                       </span>
-                      {THERAPY_AVAILABLE ? (
-                        <span className="font-semibold text-sm ml-auto shrink-0" style={{ color: C.fg }}>+£{THERAPY_PRICE}</span>
-                      ) : (
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded ml-auto shrink-0" style={{ background: 'rgba(255,255,255,0.08)', color: C.muted }}>Coming Soon</span>
-                      )}
+                      <span className="font-semibold text-sm ml-auto shrink-0" style={{ color: C.fg }}>+£{THERAPY_PRICE}</span>
                     </div>
                     <p className="text-sm mb-2" style={{ color: C.muted }}>
-                      3-month subscription upgrade with private health coaching
+                      3-month coaching upgrade — direct access to a specialist who reads your data with you.
                     </p>
                     <ul className="space-y-0.5">
-                      {['Initial 40-minute consultation', 'Two 30-minute follow-up consultations'].map((item) => (
+                      {['Initial 40-minute consultation', 'Two 30-minute follow-up consultations', 'Direct messaging between sessions'].map((item) => (
                         <li key={item} className="flex items-center gap-1.5 text-xs" style={{ color: C.muted }}>
                           <Check className="h-3 w-3 shrink-0" style={{ color: C.primary }} />
                           {item}
@@ -835,7 +842,7 @@ export default function CheckoutPage() {
                 </p>
                 <p className="text-sm" style={{ color: C.muted }}>
                   Use Meo for 30 days. If you don&apos;t feel clearer and in control, return the device.
-                  Full refund less post & packaging. No questions asked.
+                  Full refund on the device. No questions asked.
                 </p>
               </div>
             </section>

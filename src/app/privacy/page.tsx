@@ -64,10 +64,9 @@ export default function PrivacyPage() {
                 shared with third parties for marketing.
               </li>
               <li>
-                <strong>Waitlist / newsletter data</strong> — email address (you submit
-                it on the checkout success page or the subscribe form) so we can email
-                you when your Meo AI account is ready and send product updates you
-                have opted in to receive.
+                <strong>Account &amp; newsletter data</strong> — email address (you submit
+                it at checkout or via the subscribe form) so we can set up your Meo AI
+                account and send product updates you have opted in to receive.
               </li>
               <li>
                 <strong>Operational logs</strong> — IP address, user agent, timestamp
