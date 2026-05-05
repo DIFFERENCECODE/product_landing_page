@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Mail, Twitter, Linkedin, Instagram } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar } from '@/components/MarketingLandingPage';
+import { PeopleCarousel } from '@/components/PeopleCarousel';
 
 export const metadata: Metadata = {
   title: 'About — Meterbolic',
@@ -25,152 +26,9 @@ const STATS = [
   { value: '5–10×', label: 'Higher risk of chronic disease' },
 ] as const;
 
-const TIMELINE = [
-  {
-    year: '2018',
-    title: 'Company Founded',
-    body: 'Meterbolic is established with a mission to bring preventative metabolic health into the mainstream.',
-  },
-  {
-    year: '2019',
-    title: 'First Kraft Clinics',
-    body: "Launched in-person Kraft tests inspired by Dr Joseph Kraft's research, paired with personalised coaching.",
-  },
-  {
-    year: '2020',
-    title: 'Prototype Development',
-    body: 'Refined testing protocols and coaching frameworks, shaping the foundation for scalable at-home diagnostics.',
-  },
-  {
-    year: '2021',
-    title: 'Pilot Trials',
-    body: 'Delivered pilot programmes with patients to validate testing methods and generate early outcome data.',
-  },
-  {
-    year: '2022–2023',
-    title: 'Clinical Growth',
-    body: 'Expanded in-person Kraft testing and coaching, building real-world insights into insulin resistance and metabolic health.',
-  },
-  {
-    year: '2026',
-    title: 'Home Testing and AI Coach',
-    body:
-      'Launch of at-home Kraft testing kits and Meo, our AI-powered health coach, scaling years of clinical expertise into accessible, personalised guidance.',
-  },
-  {
-    year: 'Next',
-    title: 'The Digital Double',
-    body:
-      "We are now developing the Meterbolic Digital Double, integrating biomarker data, lifestyle patterns, and Meo's intelligence into a precision health twin that predicts risks, optimises decisions, and delivers truly proactive care.",
-  },
-] as const;
-
-const ADVISORS = [
-  {
-    photo: '/team-tim-noakes.png',
-    name: 'Prof. Tim Noakes',
-    role: 'Scientific Advisor',
-    bio: "Emeritus Professor at UCT's Division of Exercise Science and Sports Medicine. Renowned for pioneering research in exercise physiology, nutrition, and low-carbohydrate science. Author and endurance athlete with 70+ marathons and ultramarathons.",
-  },
-  {
-    photo: '/team-robbert-slingerland.png',
-    name: 'Dr. Robbert Slingerland',
-    role: 'Scientific Advisor',
-    bio: 'Chair of Clinical Chemistry Laboratories at Isala Klinieken, Zwolle (Netherlands) and Chair of the European Reference Laboratory. Specialist in clinical chemistry and biostatistics with extensive research into metabolic biomarkers.',
-  },
-  {
-    photo: '/team-david-jehring.png',
-    name: 'David Jehring',
-    role: 'Technology Advisor',
-    bio: 'CEO and Founder of Black Pear Software. Healthcare technology leader with a background as CTO at Apollo Medical Systems Ltd, specialising in digital health integration.',
-  },
-  {
-    photo: '/team-isabella-cooper.png',
-    name: 'Dr. Isabella Cooper',
-    role: 'Research Advisor',
-    bio: 'PhD in Biochemistry, Physiology and Pathophysiology. Researcher in hyperinsulinemia and ketogenic science, advising on metabolic disease mechanisms and nutritional interventions.',
-  },
-] as const;
-
-const TEAM = [
-  {
-    photo: '/team-eric-smith.jpg',
-    name: 'Dr. Eric Smith',
-    role: 'Founder',
-    bio: 'Innovative engineer and medical doctor who founded Meterbolic to revolutionize metabolic health diagnostics.',
-  },
-  {
-    photo: '/team-andy.png',
-    name: 'Andy Taylor',
-    role: 'Clinic Lead',
-    bio: 'Former professional footballer turned metabolic health expert and UKSCA-accredited coach.',
-  },
-  {
-    photo: '/team-spencer.png',
-    name: 'Spencer Martin',
-    role: 'Sales Manager',
-    bio: "Over 25 years in pharmaceutical sales, specialising in diabetes therapies and coaching. Driving Meterbolic's commercial outreach and partner growth.",
-  },
-  {
-    photo: '/team-gabor.png',
-    name: 'Prof. Gabor Erdosi',
-    role: 'Chief Metabolic Scientist',
-    bio: 'Molecular biologist focused on metabolic dysfunction and sweetener science, advancing evidence-based innovation in diagnostics.',
-  },
-  {
-    photo: '/team-justin.png',
-    name: 'Prof Justin Tondt',
-    role: 'Chief Medical Officer',
-    bio: "Medical professional guiding Meterbolic's clinical protocols and ensuring scientific rigour in metabolic health interventions.",
-  },
-  {
-    photo: '/team-erik.jpg',
-    name: 'Erik Kettschick',
-    role: 'UX/UI Designer',
-    bio: 'Specialises in visual identity and product design, creating user-friendly digital experiences and graphics that bring the Meterbolic brand to life.',
-  },
-  {
-    photo: '/team-lech.jpeg',
-    name: 'Lechenu Iyoko',
-    role: 'AI Engineer',
-    bio: 'Expert in machine learning algorithms and IT infrastructure, developing scalable AI solutions for personalised metabolic health.',
-  },
-  {
-    photo: '/team-bhanu.jpeg',
-    name: 'Bhanu Rangavazzala',
-    role: 'DevSecOps',
-    bio: "Improving data infrastructure, rebuilding dashboards and developing AI training pipelines to support the company's analytics and product innovation.",
-  },
-  {
-    photo: '/team-helen.png',
-    name: 'Helen MacGregor',
-    role: 'Finance',
-    bio: 'Trusted advisor who provides strategic insights, financial analysis, and risk management solutions to help organisations optimise performance and ensure compliance.',
-  },
-] as const;
-
-function PersonCard({ photo, name, role, bio }: { photo: string; name: string; role: string; bio: string }) {
-  return (
-    <div
-      className="rounded-2xl flex flex-col h-full overflow-hidden"
-      style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
-    >
-      <div className="relative w-full shrink-0" style={{ aspectRatio: '1/1', overflow: 'hidden' }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={photo}
-          alt={name}
-          className="absolute inset-0 w-full h-full object-cover object-top"
-        />
-      </div>
-      <div className="p-6 flex flex-col flex-1">
-        <h3 className="font-bold text-lg mb-1" style={{ color: C.fg, fontFamily: FONT_SERIF }}>{name}</h3>
-        <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.primary }}>{role}</p>
-        <p className="text-sm leading-relaxed" style={{ color: C.muted }}>{bio}</p>
-      </div>
-    </div>
-  );
-}
+// People (advisors + core team) live in the PeopleCarousel client
+// component to keep this page a server component (so `metadata` export
+// can stay).
 
 export default function AboutPage() {
   return (
@@ -252,82 +110,10 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Timeline */}
-      <section className="px-5 sm:px-6 py-16 sm:py-24" style={{ background: C.bgDeep }}>
-        <div className="max-w-4xl mx-auto">
-          <p className="text-xs font-semibold tracking-wide mb-3 text-center" style={{ color: C.pillFg }}>
-            Our journey
-          </p>
-          <h2
-            className="font-extrabold mb-3 text-center leading-tight"
-            style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 38px)', textWrap: 'balance' }}
-          >
-            Meterbolic <span style={{ color: C.primary }}>timeline</span>.
-          </h2>
-          <p className="text-center text-base mb-12" style={{ color: C.muted }}>
-            Key milestones in our mission to transform metabolic health.
-          </p>
-          <ol className="relative space-y-6" style={{ borderLeft: `2px solid ${C.border}`, paddingLeft: 24 }}>
-            {TIMELINE.map((t) => (
-              <li key={t.year} className="relative">
-                <span
-                  className="absolute -left-[31px] top-2 w-3 h-3 rounded-full"
-                  style={{ background: C.primary }}
-                  aria-hidden
-                />
-                <div
-                  className="rounded-2xl p-6"
-                  style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
-                >
-                  <p className="text-xs font-semibold tracking-wide mb-2" style={{ color: C.primary }}>{t.year}</p>
-                  <h3 className="font-bold text-lg mb-2" style={{ color: C.fg, fontFamily: FONT_SERIF }}>{t.title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: C.muted }}>{t.body}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* Scientific Advisors */}
-      <section id="team" className="px-5 sm:px-6 py-16 sm:py-24">
-        <div className="max-w-6xl mx-auto">
-          <p className="text-xs font-semibold tracking-wide mb-3 text-center" style={{ color: C.pillFg }}>
-            Meterbolic
-          </p>
-          <h2
-            className="font-extrabold mb-12 text-center leading-tight"
-            style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 38px)', textWrap: 'balance' }}
-          >
-            Meet our <span style={{ color: C.primary }}>scientific advisors</span>.
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {ADVISORS.map((a) => (
-              <PersonCard key={a.name} {...a} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Core team */}
-      <section className="px-5 sm:px-6 py-16 sm:py-24" style={{ background: C.bgDeep }}>
-        <div className="max-w-6xl mx-auto">
-          <p className="text-xs font-semibold tracking-wide mb-3 text-center" style={{ color: C.pillFg }}>
-            Meterbolic team
-          </p>
-          <h2
-            className="font-extrabold mb-12 text-center leading-tight"
-            style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 38px)', textWrap: 'balance' }}
-          >
-            The innovators and scientists <span style={{ color: C.primary }}>behind Meterbolic</span>.
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {TEAM.map((p) => (
-              <PersonCard key={p.name} {...p} />
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* People — single carousel of advisors + core team */}
+      <div id="team">
+        <PeopleCarousel />
+      </div>
 
       {/* Investors */}
       <section className="px-5 sm:px-6 py-16 sm:py-24">
