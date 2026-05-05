@@ -97,16 +97,43 @@ export default function TermsPage() {
             </p>
           </section>
 
-          <section>
-            <h2 className="font-semibold mb-3">5. 30-day money-back guarantee</h2>
+          <section id="refund">
+            <h2 className="font-semibold mb-3">5. Refunds &amp; statutory rights</h2>
+            <p className="mb-4">
+              Two refund regimes apply, depending on when you decide to return.
+              Both are available to every UK customer; nothing on the marketing
+              site overrides them.
+            </p>
+            <h3 className="font-semibold mb-2 text-base">Days 1–14 — your statutory right</h3>
+            <p className="mb-4">
+              Under the Consumer Contracts (Information, Cancellation and
+              Additional Charges) Regulations 2013, you may cancel your order
+              for any reason within 14 days of receiving the Hardware and
+              receive a <strong>full refund of every amount you paid us,
+              including the standard outbound delivery charge</strong>. You bear
+              the cost of returning the Hardware to us unless the product is
+              faulty or not as described, in which case we cover the return.
+            </p>
+            <h3 className="font-semibold mb-2 text-base">Days 15–30 — our voluntary guarantee</h3>
+            <p className="mb-4">
+              Beyond the 14-day statutory window and within 30 days of receipt,
+              we offer a voluntary refund <strong>on the device only</strong> —
+              the price you paid for the Hardware, refunded in full, no
+              questions asked. Outbound and return delivery are not refunded
+              under this voluntary guarantee unless the product is faulty.
+            </p>
+            <h3 className="font-semibold mb-2 text-base">How to start a return</h3>
             <p>
-              You can return the Hardware for a full refund within 30 days of
-              receipt for any reason. Return shipping is free within the UK; we
-              cover other regions case-by-case. Email{" "}
+              Email{" "}
               <a href="mailto:hello@meterbolic.com" className="underline">
                 hello@meterbolic.com
               </a>{" "}
-              to start a return. The eBook is yours to keep.
+              with your order number. We acknowledge within one working day and
+              issue the refund within 14 days of receiving the returned
+              Hardware. The eBook is yours to keep in either case. The
+              Subscription is refunded pro-rata if cancelled within 14 days and
+              not refunded thereafter (cancel any time to stop future renewals
+              — see section 6).
             </p>
           </section>
 

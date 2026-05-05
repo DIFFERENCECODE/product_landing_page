@@ -55,10 +55,14 @@ import {
   Quote,
   TrendingUp,
   AlertCircle,
+  Menu,
+  X,
 } from 'lucide-react';
 import {
   KIT_PRODUCT,
   KIT_ADDONS,
+  KIT_LITE,
+  THERAPY_ADDON,
   BIOMARKERS,
   FAQ_ITEMS,
   formatGBP,
@@ -66,18 +70,22 @@ import {
 import { BioAgeDial, KraftCurve, EbookCover, LipidDroplet } from './Visuals';
 
 // ─── Brand colours ───────────────────────────────────────────────────
+// Foreground colours per the brand spec. Measured ratios on bg #1c4a40:
+//   fg     #f0ede6 ≈ 10.6 : 1  (AAA on body, AAA on large)
+//   muted  #c4bfb8 ≈  6.0 : 1  (AA on body, AAA on large)
+// Card surfaces lighten the bg slightly, so the same text still passes.
 const C = {
   bg: '#1c4a40',
   bgDeep: '#143730',
   bgCard: 'rgba(30, 70, 60, 0.85)',
   bgCardHover: 'rgba(38, 80, 68, 0.95)',
-  border: 'rgba(255,255,255,0.10)',
+  border: 'rgba(255,255,255,0.14)',
   primary: '#a4d65e',
-  primaryFg: '#1a3a2a',
-  fg: '#ffffff',
-  muted: 'rgba(255,255,255,0.62)',
+  primaryFg: '#0f2a1f',
+  fg: '#f0ede6',
+  muted: '#c4bfb8',
   pill: 'rgba(164,214,94,0.18)',
-  pillFg: '#a4d65e',
+  pillFg: '#cdf08a',
   danger: '#f59e0b',
 };
 
@@ -111,10 +119,12 @@ function CTAButton({
   children = <>Get your Metabolic Health Tracker <ArrowRight className="h-4 w-4" /></>,
   variant = 'primary',
   size = 'md',
+  href = '/checkout',
 }: {
   children?: React.ReactNode;
   variant?: 'primary' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
+  href?: string;
 }) {
   const paddings = size === 'sm' ? 'px-5 py-2.5 text-sm' : size === 'lg' ? 'px-10 py-4 text-base' : 'px-8 py-3.5 text-base';
   const styleMap: Record<string, React.CSSProperties> = {
@@ -123,7 +133,7 @@ function CTAButton({
   };
   return (
     <Link
-      href="/checkout"
+      href={href}
       className={`inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-opacity hover:opacity-90 ${paddings}`}
       style={styleMap[variant]}
     >
@@ -153,7 +163,12 @@ function SectionHeader({
       )}
       <h2
         className="font-extrabold mb-4 leading-tight"
-        style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(28px, 4vw, 40px)' }}
+        style={{
+          color: C.fg,
+          fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif',
+          fontSize: 'clamp(28px, 4vw, 40px)',
+          textWrap: 'balance',
+        }}
       >
         {title}
       </h2>
@@ -168,10 +183,9 @@ function SectionHeader({
 
 // ─── Navbar ──────────────────────────────────────────────────────────
 function Navbar() {
-  // Transparent over the hero, frosted-glass once scrolled past it.
-  // Threshold ~80vh keeps the swap inside the hero so the navbar
-  // never floats over plain content unstyled.
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.8);
     onScroll();
@@ -179,49 +193,125 @@ function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 transition-all duration-300"
-      style={{
-        background: scrolled ? 'rgba(28,74,64,0.72)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(12px)' : 'none',
-        WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
-        borderBottom: scrolled ? `1px solid ${C.border}` : '1px solid transparent',
-      }}
-    >
-      <Link href="/" className="flex items-center gap-1.5" aria-label="Meo home">
-        {/* Wordmark: literal "Meo" letters + droplet icon. The droplet
-            sits inline at slightly larger size so it visually anchors
-            the brand glyph alongside the wordmark. */}
-        <span
-          className="text-xl font-bold tracking-tight"
-          style={{
-            color: C.fg,
-            fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif',
-          }}
-        >
-          Meo
-        </span>
-        <DropletIcon size={22} />
-        <span className="hidden sm:inline text-xs ml-2 tracking-wide" style={{ color: C.muted }}>
-          Metabolic Intelligence
-        </span>
-      </Link>
+  // Lock body scroll while the mobile drawer is open.
+  useEffect(() => {
+    if (menuOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = prev; };
+    }
+  }, [menuOpen]);
 
-      <div className="flex items-center gap-3">
-        <span className="hidden sm:inline text-xs" style={{ color: C.muted }}>
-          30-day guarantee
-        </span>
-        <Link
-          href="/checkout"
-          className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-opacity hover:opacity-90"
-          style={{ background: C.primary, color: C.primaryFg }}
-        >
-          <ShoppingCart className="h-4 w-4" />
-          <span className="hidden sm:inline">Get Meo</span>
+  const links = [
+    { label: 'How it works', href: '#how-it-works' },
+    { label: 'Pricing', href: '#tiers' },
+    { label: 'FAQ', href: '#faq' },
+  ];
+
+  return (
+    <>
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 transition-all duration-300"
+        style={{
+          background: scrolled ? 'rgba(28,74,64,0.72)' : 'transparent',
+          backdropFilter: scrolled ? 'blur(12px)' : 'none',
+          WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
+          borderBottom: scrolled ? `1px solid ${C.border}` : '1px solid transparent',
+        }}
+      >
+        <Link href="/" className="flex items-center gap-1.5" aria-label="Meo home">
+          <span
+            className="text-xl font-bold tracking-tight"
+            style={{
+              color: C.fg,
+              fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif',
+            }}
+          >
+            Meo
+          </span>
+          <DropletIcon size={22} />
         </Link>
-      </div>
-    </nav>
+
+        <div className="hidden md:flex items-center gap-7">
+          {links.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              className="text-sm hover:opacity-80 transition-opacity"
+              style={{ color: C.fg }}
+            >
+              {l.label}
+            </a>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Link
+            href="/checkout"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-opacity hover:opacity-90"
+            style={{ background: C.primary, color: C.primaryFg }}
+          >
+            <ShoppingCart className="h-4 w-4" />
+            <span className="hidden sm:inline">Get Meo</span>
+          </Link>
+          <button
+            onClick={() => setMenuOpen(true)}
+            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg"
+            style={{ color: C.fg, border: `1px solid ${C.border}` }}
+            aria-label="Open menu"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile drawer */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden fixed inset-0 z-[60] flex flex-col"
+            style={{ background: 'rgba(10,31,26,0.96)', backdropFilter: 'blur(16px)' }}
+          >
+            <div className="flex items-center justify-between px-6 py-4">
+              <span className="text-xl font-bold" style={{ color: C.fg }}>Meo</span>
+              <button
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center justify-center w-10 h-10 rounded-lg"
+                style={{ color: C.fg, border: `1px solid ${C.border}` }}
+                aria-label="Close menu"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="flex flex-col px-6 pt-8 gap-6">
+              {links.map((l) => (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="text-2xl font-semibold"
+                  style={{ color: C.fg }}
+                >
+                  {l.label}
+                </a>
+              ))}
+              <Link
+                href="/checkout"
+                onClick={() => setMenuOpen(false)}
+                className="mt-6 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-base"
+                style={{ background: C.primary, color: C.primaryFg }}
+              >
+                Get Meo · {formatGBP(KIT_PRODUCT.price)} <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
@@ -236,28 +326,9 @@ function Navbar() {
 //   - horizontally-scrolling feature strip with checkmarks at the
 //     bottom (radial fade on edges, drag-to-scroll on touch, hidden
 //     native scrollbar)
-// Hero pill — a random gradient picked on each pageload. Brand
-// palette only (greens, teals, the warm accent oranges) so it
-// always feels on-brand regardless of which one comes up.
-const PILL_GRADIENTS = [
-  'linear-gradient(135deg, #a4d65e 0%, #2d6a4f 100%)',
-  'linear-gradient(135deg, #cdf08a 0%, #1c4a40 100%)',
-  'linear-gradient(135deg, #2d6a4f 0%, #0a1f1a 100%)',
-  'linear-gradient(45deg, #a4d65e 0%, #f59e0b 100%)',
-  'linear-gradient(135deg, #f59e0b 0%, #1c4a40 100%)',
-  'linear-gradient(135deg, #1c4a40 0%, #5a8a4d 50%, #a4d65e 100%)',
-  'radial-gradient(circle at 30% 30%, #a4d65e 0%, #1c4a40 70%)',
-  'conic-gradient(from 200deg at 50% 50%, #a4d65e, #2d6a4f, #143730, #a4d65e)',
-];
-
 function Hero() {
-  const [pillGradient, setPillGradient] = useState(PILL_GRADIENTS[0]);
   const [stockAvailable, setStockAvailable] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    const next = PILL_GRADIENTS[Math.floor(Math.random() * PILL_GRADIENTS.length)];
-    setPillGradient(next);
-  }, []);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     fetch('/api/stock')
@@ -266,42 +337,32 @@ function Hero() {
       .catch(() => setStockAvailable(true));
   }, []);
 
-  // Same idea but for the soft background accent behind the section —
-  // gives the whole hero a subtly different mood per visit.
-  const sectionAccent = useMemo(() => {
-    const angles = [120, 160, 220, 300];
-    const ang = angles[Math.floor(Math.random() * angles.length)];
-    return `radial-gradient(ellipse 60% 50% at ${ang === 120 ? '30% 10%' : ang === 160 ? '70% 15%' : ang === 220 ? '20% 80%' : '80% 60%'}, rgba(164,214,94,0.10) 0%, rgba(164,214,94,0) 60%)`;
+  // Pause the hero video when it scrolls out of view (perf on long
+  // scrolls; also respects user attention).
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) v.play().catch(() => {});
+        else v.pause();
+      },
+      { threshold: 0.05 },
+    );
+    io.observe(v);
+    return () => io.disconnect();
   }, []);
-
-  // Two distinct lists so the two rows show different content while
-  // sliding in opposite directions — feels less repetitive than the
-  // same row mirrored.
-  const featuresRowA = [
-    'Lab-grade lipid panel · 3 minutes',
-    "World's first and only Metabolic Health AI!",
-    '6 months of Meo AI included',
-    '30-day money-back guarantee',
-    'Trusted by the global leaders in Health Insurance',
-    '1 of only 3 lipid meters registered for home use in UK & EU',
-    'Ships in 72 hours · limited quantities',
-  ];
-  const featuresRowB = [
-    '£9.99 tracked delivery · UK & EU',
-    '20 lipid test strips + lancets + carry case included',
-    'Q&A with the book author, Marina Young via Meo',
-    'Biological Age Score + your Target Score',
-    '10 years of leadership industrialising the Kraft Test',
-  ];
 
   return (
     <section
+      id="top"
       className="relative min-h-screen flex flex-col justify-center pt-24 pb-12 sm:pb-16 px-5 sm:px-6 overflow-hidden"
       style={{ background: C.bg }}
     >
       {/* Background video — fills the hero, sits behind everything.
           A dark overlay on top keeps headline/CTA legible. */}
       <video
+        ref={videoRef}
         aria-hidden
         autoPlay
         loop
@@ -316,28 +377,7 @@ function Hero() {
         style={{ background: 'rgba(0,0,0,0.55)' }}
       />
 
-      {/* Soft radial accent — randomised per pageload so the hero
-          has a different mood each visit (light source position
-          shifts across upper-left / upper-right / lower-left). */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{ background: sectionAccent }}
-      />
-
       <div className="relative max-w-5xl mx-auto w-full text-center">
-        {/* Eyebrow */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium mb-6 sm:mb-8"
-          style={{ background: C.pill, color: C.pillFg }}
-        >
-          <Sparkles className="h-3.5 w-3.5" />
-          Metabolic Intelligence System
-        </motion.div>
-
         {/* Headline with inline pill image */}
         <motion.h1
           initial={{ opacity: 0, y: 16 }}
@@ -350,29 +390,7 @@ function Hero() {
             letterSpacing: '-0.02em',
           }}
         >
-          See what your{' '}
-          <span
-            className="inline-flex align-middle rounded-full overflow-hidden mx-1 sm:mx-2 items-center justify-center"
-            style={{
-              width: 'clamp(80px, 11vw, 140px)',
-              height: 'clamp(50px, 7vw, 86px)',
-              background: pillGradient,
-              border: `1px solid ${C.border}`,
-              verticalAlign: '-0.18em',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.25)',
-            }}
-            aria-hidden
-          >
-            <Image
-              src="/lipid-meter.png"
-              alt=""
-              width={183}
-              height={300}
-              className="h-[88%] w-auto object-contain"
-              priority
-            />
-          </span>{' '}
-          cholesterol
+          See what your cholesterol
           <br className="hidden sm:block" />
           <span> is </span>
           <span style={{ color: C.primary }}>actually</span> telling you.
@@ -390,153 +408,109 @@ function Hero() {
           interpreted by AI, framed for your longevity, and actionable the same day.
         </motion.p>
 
-        {/* CTAs */}
+        {/* CTAs — primary button takes prominence; the secondary
+            text-link sits beneath as a subordinate option (not a
+            co-equal CTA). On mobile the primary is full-width. */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.25 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
+          className="flex flex-col items-center gap-2.5"
         >
           {stockAvailable === false ? (
             <button
               onClick={() => document.getElementById('newsletter')?.scrollIntoView({ behavior: 'smooth' })}
-              className="inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-opacity hover:opacity-90 px-10 py-4 text-base"
+              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl font-semibold transition-opacity hover:opacity-90 px-10 py-4 text-base"
               style={{ background: C.primary, color: C.primaryFg }}
             >
               Join the Waitlist <ArrowRight className="h-4 w-4" />
             </button>
           ) : (
-            <CTAButton size="lg">
-              Start with 6 months of Meo · {formatGBP(KIT_PRODUCT.price)} <ArrowRight className="h-4 w-4" />
-            </CTAButton>
+            <Link
+              href="/checkout"
+              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl font-semibold transition-opacity hover:opacity-90 px-10 py-4 text-base"
+              style={{ background: C.primary, color: C.primaryFg }}
+            >
+              Get Meo · {formatGBP(KIT_PRODUCT.price)} <ArrowRight className="h-4 w-4" />
+            </Link>
           )}
-          <button
-            onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
-            className="text-sm hover:underline cursor-pointer bg-transparent border-0 p-0"
-            style={{ color: C.muted }}
+          <a
+            href="#tiers"
+            className="hover:underline"
+            style={{ color: C.muted, fontSize: 13 }}
           >
-            See how it works ↓
-          </button>
+            or compare all plans from {formatGBP(KIT_LITE.price)} →
+          </a>
         </motion.div>
 
-        {/* Trust line under CTA — single-line summary kept short so it
-            doesn't compete with the CTA visually. The richer trust
-            grid lives below as separate cards. */}
-        <p className="text-xs mt-3" style={{ color: C.muted }}>
-          Lipid meter included free · 30-day money-back guarantee
+        {/* Wellness disclaimer relocated to footer + FAQ #5; the
+            detailed TrustPanel directly below this hero now carries
+            every regulatory and risk-reversal claim. The compact
+            trust bar that briefly lived here was redundant with that
+            panel — removed in this pass. */}
+        <p className="text-xs mt-5" style={{ color: C.muted }}>
+          Lipid meter included free · Ships in 72 hours
         </p>
         <UrgencyBadge />
-
-        {/* Credential pill — the campaign brief's strongest single
-            differentiator, surfaced near the CTA so it's visible
-            without scrolling on most screens. Targets the 40+
-            audience signal-checking before they commit. */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.35 }}
-          className="inline-flex items-center gap-2 mt-6 sm:mt-8 px-4 py-2 rounded-full text-xs font-medium"
-          style={{
-            background: 'rgba(164,214,94,0.08)',
-            border: `1px solid ${C.primary}40`,
-            color: C.fg,
-          }}
-        >
-          <Sparkles className="h-3.5 w-3.5" style={{ color: C.primary }} />
-          Built on ten years of industrialising the gold-standard Kraft Test
-        </motion.div>
-
-        {/* Trust badge grid — 4 visible signals tuned for the 40+
-            scare-driven buyer. Each badge is a single icon + one
-            short line; they're side-by-side on desktop, 2x2 on
-            mobile. Order picked deliberately:
-              1. Money-back  (risk reversal first — biggest objection killer)
-              2. EU registered (clinical credibility)
-              4. Free retest (concrete deliverable that's not just a refund)
-            Position: outside the hero `text-center` block so it spans
-            full width on mobile but still sits above the marquee. */}
       </div>
+    </section>
+  );
+}
 
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.45 }}
-        className="relative max-w-xl mx-auto w-full mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3"
-      >
-        {[
-          { icon: <Heart className="h-4 w-4" />, label: '30-day', sub: 'money-back guarantee' },
-          { icon: <Activity className="h-4 w-4" />, label: 'UK & EU IVDR Registered', sub: '1 of only 3 lipid meters' },
-          { icon: <Clock className="h-4 w-4" />, label: 'Ships in 72 hrs', sub: 'limited quantities' },
-        ].map((b, i) => (
+// ─── Trust panel — surfaces regulatory + accuracy + risk-reversal
+// facts immediately under the hero. Replaces the buried "Trusted by
+// global leaders" claim with concrete, falsifiable signals.
+function TrustPanel() {
+  const items = [
+    {
+      icon: <Shield className="h-5 w-5" />,
+      label: 'UK & EU IVDR Registered',
+      sub: '1 of only 3 lipid meters cleared for home use',
+    },
+    {
+      icon: <Activity className="h-5 w-5" />,
+      label: '±10% of reference-lab',
+      sub: 'CE-marked BF-102 across TC, HDL, LDL, triglycerides',
+    },
+    {
+      icon: <Heart className="h-5 w-5" />,
+      label: '30-day money-back',
+      sub: 'Full refund on the device, no questions asked',
+    },
+    {
+      icon: <Clock className="h-5 w-5" />,
+      label: 'Ships in 72 hours',
+      sub: 'UK · EU · US · Canada · Australia · Ireland',
+    },
+  ];
+  return (
+    <section className="py-10 px-5 sm:px-6" style={{ background: C.bgDeep, borderBottom: `1px solid ${C.border}` }}>
+      {/* CSS Grid stretches every card in the row to the height of the
+          tallest card (default `align-items: stretch`). Each card is
+          itself a flex row that vertically centres its icon + text
+          group, and the text group is a flex column that centres the
+          heading + subtext as a unit — so cards with 1 line of subtext
+          and cards with 2 lines both centre cleanly inside the shared
+          row height. */}
+      <div className="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {items.map((it, i) => (
           <div
             key={i}
-            className="flex items-center gap-2.5 rounded-xl px-3 py-2.5"
+            className="flex flex-row items-center justify-start gap-3 h-full rounded-xl px-4 py-3"
             style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
           >
             <div
-              className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
+              className="flex h-9 w-9 items-center justify-center rounded-lg shrink-0"
               style={{ background: 'rgba(164,214,94,0.12)', color: C.primary }}
             >
-              {b.icon}
+              {it.icon}
             </div>
-            <div className="min-w-0 leading-tight">
-              <div className="text-xs font-semibold" style={{ color: C.fg }}>{b.label}</div>
-              <div className="text-[11px]" style={{ color: C.muted }}>{b.sub}</div>
+            <div className="min-w-0 leading-tight flex flex-col justify-center">
+              <div className="text-sm font-semibold" style={{ color: C.fg }}>{it.label}</div>
+              <div className="text-xs mt-0.5" style={{ color: C.muted }}>{it.sub}</div>
             </div>
           </div>
         ))}
-      </motion.div>
-
-      {/* Cross marquee — two rows, opposite directions.
-          Top row slides left (default direction).
-          Bottom row slides right via .marquee-track-reverse.
-          Both pause when the user hovers the wrapper. Each track is
-          duplicated so the loop is seamless. */}
-      <div
-        className="marquee relative mt-12 sm:mt-16 w-full overflow-hidden space-y-3 sm:space-y-4"
-        style={{
-          maskImage:
-            'linear-gradient(90deg, transparent 0, black 8%, black 92%, transparent 100%)',
-          WebkitMaskImage:
-            'linear-gradient(90deg, transparent 0, black 8%, black 92%, transparent 100%)',
-        }}
-        aria-label="Key Meo features"
-      >
-        {/* Row A — slides left */}
-        <div className="marquee-track">
-          {[...featuresRowA, ...featuresRowA].map((label, i) => (
-            <div
-              key={`a-${i}`}
-              className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm mr-3"
-              style={{
-                background: C.bgCard,
-                border: `1px solid ${C.border}`,
-                color: C.fg,
-              }}
-            >
-              <Check className="h-4 w-4 shrink-0" style={{ color: C.primary }} />
-              <span className="whitespace-nowrap">{label}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Row B — slides right (reversed) */}
-        <div className="marquee-track marquee-track-reverse">
-          {[...featuresRowB, ...featuresRowB].map((label, i) => (
-            <div
-              key={`b-${i}`}
-              className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm mr-3"
-              style={{
-                background: C.bgCard,
-                border: `1px solid ${C.border}`,
-                color: C.fg,
-              }}
-            >
-              <Check className="h-4 w-4 shrink-0" style={{ color: C.primary }} />
-              <span className="whitespace-nowrap">{label}</span>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   );
@@ -556,10 +530,14 @@ function ProblemSection() {
         <SectionHeader
           eyebrow="The visibility problem"
           title={<>Cholesterol changes daily. Most people check it once a year.</>}
-          subtitle="One reading a year. A 90-second conversation. By the time a number 'trends up', the process behind it has been quietly accelerating for half a decade. We've spent ten years industrialising the gold-standard Kraft Test so you don't have to wait for the next annual blood draw to see what your metabolism is doing."
+          subtitle="One reading a year. A 90-second conversation. By the time a number 'trends up', the process behind it has been quietly accelerating for half a decade. Meo brings the lab-grade Kraft-style insulin pattern (a 5-stage pattern of insulin response that flags metabolic dysfunction years before standard blood sugar tests) home so you don't have to wait for the next annual blood draw to see what your metabolism is doing."
         />
 
-        <div className="mt-10 grid sm:grid-cols-2 gap-4">
+        {/* Same pattern as the trust bar: grid stretches all cards to
+            the row's tallest content; each card is a flex row with
+            vertically-centred icon + text so 1-line items and 2-line
+            items both sit in the middle of the shared row height. */}
+        <div className="mt-10 grid sm:grid-cols-2 gap-4 items-stretch">
           {items.map((it, i) => (
             <motion.div
               key={i}
@@ -567,11 +545,13 @@ function ProblemSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.07 }}
-              className="flex items-start gap-3 rounded-2xl p-5"
+              className="flex flex-row items-center justify-start gap-3 h-full rounded-2xl p-5"
               style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
             >
-              <AlertCircle className="h-5 w-5 mt-0.5 shrink-0" style={{ color: C.danger }} />
-              <p className="text-sm" style={{ color: C.fg }}>{it}</p>
+              <AlertCircle className="h-5 w-5 shrink-0" style={{ color: C.danger }} />
+              <div className="min-w-0 flex flex-col justify-center">
+                <p className="text-sm" style={{ color: C.fg }}>{it}</p>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -613,7 +593,7 @@ function WhyTestsFailSection() {
     [
       'Arrives as raw numbers',
       'You need to know: getting better, worse, or holding?',
-      'The world’s only metabolic-health AI explains every reading in plain English',
+      'An AI built specifically for metabolic health — explains every reading in plain English, in the context of your own baseline',
     ],
     [
       'Sits in a clinic / a queue / a fasting morning',
@@ -628,52 +608,72 @@ function WhyTestsFailSection() {
           eyebrow="Why the standard blood test fails"
           title={<>One number. Once a year. In a language you weren&apos;t taught.</>}
         />
+        {/* Desktop: 3-column table. Mobile: each row becomes a stacked
+            card with the greyed problem on top and the accented Meo
+            solution on the bottom. */}
         <div
-          className="mt-10 rounded-2xl overflow-hidden"
+          role="table"
+          aria-label="Standard blood test versus Meo"
+          className="hidden sm:block mt-10 rounded-2xl overflow-hidden"
           style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
         >
-          {/* Header row — visible only on sm+ since the stacked mobile
-              layout has inline labels on each cell. */}
+          {/* Single grid system used by both header and body rows so
+              columns line up to the same gutter. The header inherits
+              identical px / grid-cols / gap values as the body rows. */}
           <div
-            className="hidden sm:grid grid-cols-3 text-xs font-semibold tracking-wide px-6 py-4"
+            role="row"
+            className="grid grid-cols-3 gap-6 text-xs font-semibold tracking-wide uppercase px-6 py-4"
             style={{ background: 'rgba(255,255,255,0.04)', color: C.muted }}
           >
-            <div>Standard blood test</div>
-            <div>What&apos;s missing</div>
-            <div style={{ color: C.primary }}>What Meo does</div>
+            <div role="columnheader">Standard blood test</div>
+            <div role="columnheader">What&apos;s missing</div>
+            <div role="columnheader" style={{ color: C.primary }}>What Meo does</div>
           </div>
           {rows.map(([l, m, r], i) => (
             <div
               key={i}
-              className="px-5 sm:px-6 py-5 text-sm grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6"
+              role="row"
+              className="grid grid-cols-3 gap-6 px-6 py-5 text-sm leading-relaxed"
               style={{ borderTop: `1px solid ${C.border}` }}
             >
-              <div style={{ color: C.muted }}>
-                <span
-                  className="sm:hidden block text-[10px] font-semibold tracking-wide mb-1"
-                  style={{ color: C.pillFg }}
-                >
+              <div role="cell" style={{ color: C.muted }}>{l}</div>
+              <div role="cell" style={{ color: C.fg }}>{m}</div>
+              <div role="cell" style={{ color: C.fg }}>{r}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Mobile: per-row cards. Problem (greyed) on top; the
+            "what's missing" middle column is folded into the Meo
+            solution card on the bottom — fewer column shifts, less
+            cognitive load on a phone screen. */}
+        <div className="sm:hidden mt-10 space-y-4">
+          {rows.map(([l, m, r], i) => (
+            <div
+              key={i}
+              className="rounded-2xl overflow-hidden"
+              style={{ border: `1px solid ${C.border}` }}
+            >
+              <div className="p-5" style={{ background: 'rgba(255,255,255,0.03)' }}>
+                <p className="text-[10px] font-semibold tracking-wide mb-1" style={{ color: C.muted }}>
                   Standard test
-                </span>
-                {l}
+                </p>
+                <p className="text-sm" style={{ color: C.muted }}>{l}</p>
               </div>
-              <div style={{ color: C.fg }}>
-                <span
-                  className="sm:hidden block text-[10px] font-semibold tracking-wide mb-1"
-                  style={{ color: C.pillFg }}
-                >
-                  What&apos;s missing
-                </span>
-                {m}
-              </div>
-              <div style={{ color: C.fg }}>
-                <span
-                  className="sm:hidden block text-[10px] font-semibold tracking-wide mb-1"
-                  style={{ color: C.primary }}
-                >
+              <div
+                className="p-5"
+                style={{
+                  background: 'rgba(164,214,94,0.08)',
+                  borderTop: `1px solid ${C.primary}40`,
+                }}
+              >
+                <p className="text-[10px] font-semibold tracking-wide mb-1" style={{ color: C.primary }}>
                   What Meo does
-                </span>
-                {r}
+                </p>
+                <p className="text-sm mb-3" style={{ color: C.fg }}>{r}</p>
+                <p className="text-xs leading-relaxed" style={{ color: C.muted }}>
+                  <span style={{ color: C.primary, fontWeight: 600 }}>Why it matters: </span>{m}
+                </p>
               </div>
             </div>
           ))}
@@ -722,9 +722,6 @@ function MeetMeoSection() {
               <p className="text-sm" style={{ color: C.muted }}>{p.sub}</p>
             </motion.div>
           ))}
-        </div>
-        <div className="text-center mt-12">
-          <CTAButton>Explore how it works <ArrowRight className="h-4 w-4" /></CTAButton>
         </div>
       </div>
     </section>
@@ -918,7 +915,7 @@ function BiomarkersSection() {
       <div className="max-w-5xl mx-auto text-center">
         <SectionHeader
           eyebrow="What Meo measures"
-          title={<>Six markers — Life Changing Visualisations — One drop of Blood</>}
+          title={<>Six markers · Life-changing visualisations · One drop of blood</>}
           subtitle="A lab-grade cholesterol panel — right on your kitchen table."
         />
         <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -1124,16 +1121,22 @@ function ScoresSection() {
           subtitle="Every reading generates a Biological Age Score and a KRAFT Deep Fat Score. Track both against your personal target — updated the moment you test."
         />
 
-        {/* Product mockup frame */}
+        {/* Product mockup frame — capped at 900px wide so the gauge
+            numbers (53.3, 1.00) and chart axis labels render at a
+            legible size on large monitors. Below that, fills 100% of
+            its container. */}
         <motion.div
+          role="img"
+          aria-label="Meo dashboard showing Biological Age Score of 53.3 and metabolic trend chart"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mt-10 rounded-2xl overflow-hidden"
+          className="mt-10 rounded-2xl overflow-hidden mx-auto w-full"
           style={{
             border: `1px solid ${C.border}`,
             boxShadow: '0 32px 80px rgba(0,0,0,0.45)',
+            maxWidth: 900,
           }}
         >
           {/* Browser chrome bar */}
@@ -1162,16 +1165,16 @@ function ScoresSection() {
             {/* Two gauges */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
-                <img src="/bas-gauge.svg" alt="Biological Age Score — 53.3 Age" className="w-full" />
+                <img src="/bas-gauge.svg" alt="" className="w-full" />
               </div>
               <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
-                <img src="/kraft-gauge.svg" alt="KRAFT Deep Fat Score — 1.00 kg" className="w-full" />
+                <img src="/kraft-gauge.svg" alt="" className="w-full" />
               </div>
             </div>
 
             {/* Progress chart */}
             <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
-              <img src="/bas-progress-chart.svg" alt="BAS progress — YOU vs OUR TARGET" className="w-full" />
+              <img src="/bas-progress-chart.svg" alt="" className="w-full" />
             </div>
           </div>
         </motion.div>
@@ -1211,7 +1214,7 @@ function MeoAISection() {
             <span style={{ color: C.primary }}>biology</span> back to you.
           </h2>
           <p className="max-w-2xl mx-auto text-base sm:text-lg" style={{ color: C.muted }}>
-            This is what you&apos;re actually buying. The meter collects. Your BAS tracks.
+            This is what you&apos;re actually buying. The meter collects. Your Biological Age Score tracks.
             <strong style={{ color: C.fg }}> Meo AI is where Meo becomes Meo.</strong>
           </p>
         </div>
@@ -1225,6 +1228,9 @@ function MeoAISection() {
           className="rounded-3xl p-6 sm:p-8 mx-auto max-w-2xl mt-8"
           style={{ background: C.bgCard, border: `1px solid ${C.border}`, boxShadow: '0 25px 60px rgba(0,0,0,0.25)' }}
         >
+          <p className="text-[11px] uppercase tracking-wider mb-4 text-center" style={{ color: C.muted }}>
+            The kind of insight Meo gives you — based on real patterns in real data.
+          </p>
           <div className="space-y-4">
             <div className="flex justify-end">
               <div
@@ -1277,7 +1283,7 @@ function MeoAISection() {
           <p className="text-lg font-medium mb-6" style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif' }}>
             Your data, read aloud. Daily.
           </p>
-          <CTAButton size="lg">Try Meo AI now <ArrowRight className="h-4 w-4" /></CTAButton>
+          <CTAButton size="lg" href="#tiers">See plans <ArrowRight className="h-4 w-4" /></CTAButton>
         </div>
       </div>
     </section>
@@ -1442,7 +1448,7 @@ const GAUGE_CONFIGS: GaugeConfig[] = [
     zones: [{to:1,color:'#4ade80'},{to:2,color:'#a3e635'},{to:3,color:'#fbbf24'},{to:6,color:'#f87171'}] },
   { label: 'Total Cholesterol', value: 7.3,  min: 2,   max: 12,  unit: 'mmol/L',
     zones: [{to:5,color:'#4ade80'},{to:6.2,color:'#fbbf24'},{to:12,color:'#f87171'}] },
-  { label: 'Triglyceride',      value: 2.3,  min: 0,   max: 10,  unit: 'mmol/L',
+  { label: 'Triglycerides',     value: 2.3,  min: 0,   max: 10,  unit: 'mmol/L',
     zones: [{to:1.7,color:'#4ade80'},{to:5.6,color:'#fbbf24'},{to:10,color:'#f87171'}] },
   { label: 'TyG',               value: 9.0,  min: 7,   max: 12,  unit: '',
     zones: [{to:8.5,color:'#4ade80'},{to:9.5,color:'#fbbf24'},{to:12,color:'#f87171'}] },
@@ -1664,6 +1670,166 @@ function EbookSection() {
 }
 
 // ─── Benefits ────────────────────────────────────────────────────────
+// ─── Pricing tiers ─────────────────────────────────────────────────
+// Three-tier structure so £149 reads as a deliberate choice — not a
+// gamble. Lite is the low-friction entry; Coached is the premium
+// anchor that makes Starter (the recommended option) feel like the
+// obvious middle pick. Prices are pulled from kitProducts.ts so the
+// numbers can't drift from checkout.
+function TiersSection() {
+  const tiers = [
+    {
+      name: 'Meo Lite',
+      tagline: 'Start with the book.',
+      price: KIT_LITE.price,
+      blurb: 'eBook + 7-day Meo AI trial. No device.',
+      valueNote: 'Credit £29 toward Starter within 30 days.',
+      badge: 'Credit toward Starter',
+      features: [
+        'The Thin Book of Fat (digital)',
+        '7-day Meo AI trial',
+        'Manual entry of past blood results',
+      ],
+      cta: 'Start with the book',
+      href: '/checkout?plan=lite',
+      featured: false,
+    },
+    {
+      name: 'Meo Starter',
+      tagline: 'The full system. Most people pick this.',
+      price: KIT_PRODUCT.price,
+      blurb: 'Lipid meter + 6 months of Meo AI + everything you need to read your own metabolism.',
+      valueNote: '30-day money-back guarantee on the device.',
+      features: [
+        'Lab-grade lipid meter (UK & EU registered)',
+        '6 months of Meo AI included',
+        '20 test strips + lancets + carry case',
+        'Biological Age Score + Target Score',
+      ],
+      // Monthly £29 sourced from OfferStackSection's "£29/month at
+      // the standard rate" line. Annual rate isn't published yet, so
+      // the post-bundle line stays monthly-only until the merchant
+      // confirms a yearly figure.
+      postBundle: 'After 6 months: continue with Meo AI from £29/month. Cancel any time.',
+      cta: `Get Meo · ${formatGBP(KIT_PRODUCT.price)}`,
+      href: '/checkout',
+      featured: true,
+    },
+    {
+      name: 'Meo Coached',
+      tagline: 'Add a human in the loop.',
+      price: KIT_PRODUCT.price + THERAPY_ADDON.price,
+      blurb: 'Everything in Starter + 3 months of 1:1 metabolic coaching with Spencer Martin, our Metabolic Health Coach with 25+ years of experience.',
+      valueNote: `Coaching alone is ${formatGBP(THERAPY_ADDON.price)} — same price here, paired with the full system.`,
+      features: [
+        'Everything in Meo Starter',
+        '40-min onboarding consultation',
+        'Two 30-min follow-ups',
+        'Direct messaging with your coach',
+      ],
+      cta: 'Get Meo + Coach',
+      href: '/checkout?addon=therapy-spencer',
+      featured: false,
+    },
+  ] as const;
+
+  return (
+    <section id="tiers" className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
+      <div className="max-w-6xl mx-auto">
+        <SectionHeader
+          eyebrow="Pick your starting point"
+          title={<>Three ways in. <span style={{ color: C.primary }}>Same destination.</span></>}
+          subtitle="Lite to test the water. Starter is the full system. Coached adds 1:1 support if you want a human alongside the AI."
+        />
+
+        <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+          {tiers.map((t) => (
+            <motion.div
+              key={t.name}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45 }}
+              className="relative rounded-2xl p-7 flex flex-col"
+              style={{
+                background: t.featured ? 'rgba(255,255,255,0.08)' : 'transparent',
+                border: t.featured ? `2px solid ${C.primary}` : `1px solid rgba(255,255,255,0.08)`,
+                boxShadow: t.featured
+                  ? '0 30px 80px rgba(164,214,94,0.18), 0 0 0 4px rgba(164,214,94,0.06)'
+                  : 'none',
+                transform: t.featured ? 'scale(1.04)' : 'none',
+                zIndex: t.featured ? 1 : 0,
+              }}
+            >
+              {t.featured && (
+                <span
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide"
+                  style={{ background: C.primary, color: C.primaryFg }}
+                >
+                  Most popular
+                </span>
+              )}
+              {!t.featured && 'badge' in t && t.badge && (
+                <span
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide"
+                  style={{
+                    background: 'rgba(164,214,94,0.18)',
+                    color: C.primary,
+                    border: `1px solid ${C.primary}40`,
+                  }}
+                >
+                  <ArrowRight className="h-3 w-3" />
+                  {t.badge}
+                </span>
+              )}
+              <div className="text-sm font-semibold mb-1" style={{ color: C.pillFg }}>{t.name}</div>
+              <div className="text-base mb-5" style={{ color: C.muted }}>{t.tagline}</div>
+              <div className="flex items-baseline gap-1 mb-4">
+                <span
+                  className="font-extrabold tabular-nums"
+                  style={{
+                    color: C.fg,
+                    fontSize: t.featured ? 'clamp(40px, 5.5vw, 56px)' : 'clamp(28px, 3.5vw, 38px)',
+                  }}
+                >
+                  {formatGBP(t.price)}
+                </span>
+                <span className="text-xs" style={{ color: C.muted }}>one-time</span>
+              </div>
+              <p className="text-sm mb-3" style={{ color: C.muted }}>{t.blurb}</p>
+              <p className="text-xs mb-5" style={{ color: C.primary }}>{t.valueNote}</p>
+              <ul className="space-y-2.5 mb-4 flex-1">
+                {t.features.map((f, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm" style={{ color: C.fg }}>
+                    <Check className="h-4 w-4 mt-0.5 shrink-0" style={{ color: C.primary }} />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              {'postBundle' in t && t.postBundle && (
+                <p className="text-xs mb-7 leading-relaxed" style={{ color: C.muted }}>
+                  {t.postBundle}
+                </p>
+              )}
+              <Link
+                href={t.href}
+                className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-opacity hover:opacity-90"
+                style={{
+                  background: t.featured ? C.primary : 'transparent',
+                  color: t.featured ? C.primaryFg : C.fg,
+                  border: t.featured ? 'none' : `1px solid ${C.border}`,
+                }}
+              >
+                {t.cta} <ArrowRight className="h-4 w-4" />
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function BenefitsSection() {
   const items = [
     'Understand your cholesterol without a medical degree',
@@ -1673,12 +1839,12 @@ function BenefitsSection() {
     'Track a Biological Age Score that updates as you progress',
     'Catch the drift — not the diagnosis — years earlier',
     'Own your data. No monthly lab fees, no appointment waits',
-    '30-day money-back guarantee, no questions',
+    'Test as often as you want — no clinic, no fasting morning',
   ];
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
       <div className="max-w-5xl mx-auto">
-        <SectionHeader eyebrow="Outcomes" title={<>What you actually walk away with.</>} />
+        <SectionHeader eyebrow="What you walk away with" title={<>What you actually walk away with.</>} />
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {items.map((b, i) => (
             <motion.div
@@ -1714,21 +1880,46 @@ function NumbersVsInsightsSection() {
           eyebrow="Numbers vs. Insights"
           title={<>Your meter gives you numbers. Meo gives you <span style={{ color: C.primary }}>understanding</span>.</>}
         />
-        <div className="mt-10 rounded-2xl overflow-hidden" style={{ background: C.bgCard, border: `1px solid ${C.border}` }}>
-          <div className="grid grid-cols-1 sm:grid-cols-[1fr_2fr] text-xs font-semibold tracking-wide px-6 py-4" style={{ background: 'rgba(255,255,255,0.04)', color: C.muted }}>
-            <div>What a meter alone gives you</div>
-            <div>What the Meo system gives you</div>
-          </div>
-          {rows.map(([l, r], i) => (
-            <div
-              key={i}
-              className="grid grid-cols-1 sm:grid-cols-[1fr_2fr] gap-4 px-6 py-5"
-              style={{ borderTop: `1px solid ${C.border}` }}
-            >
-              <code className="text-sm" style={{ color: C.muted }}>{l}</code>
-              <div className="text-sm italic" style={{ color: C.fg }}>{r}</div>
+        {/* Two distinct framed cards instead of a unified table:
+            left = "meter alone" (muted, recedes), right = "Meo system"
+            (brand-bordered, foregrounds). Visually performs the
+            "before/after" comparison the headline argues for. */}
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div
+            className="rounded-2xl overflow-hidden"
+            style={{
+              background: 'rgba(20, 55, 48, 0.55)',
+              border: `1px solid ${C.border}`,
+              opacity: 0.92,
+            }}
+          >
+            <div className="px-6 py-4 text-xs font-semibold tracking-wide" style={{ background: 'rgba(255,255,255,0.04)', color: C.muted }}>
+              What a meter alone gives you
             </div>
-          ))}
+            {rows.map(([l], i) => (
+              <div key={i} className="px-6 py-5" style={{ borderTop: `1px solid ${C.border}` }}>
+                <code className="text-sm" style={{ color: C.muted }}>{l}</code>
+              </div>
+            ))}
+          </div>
+
+          <div
+            className="rounded-2xl overflow-hidden"
+            style={{
+              background: C.bgCard,
+              border: `2px solid ${C.primary}`,
+              boxShadow: '0 20px 60px rgba(164,214,94,0.10)',
+            }}
+          >
+            <div className="px-6 py-4 text-xs font-semibold tracking-wide" style={{ background: 'rgba(164,214,94,0.10)', color: C.primary }}>
+              What the Meo system gives you
+            </div>
+            {rows.map(([, r], i) => (
+              <div key={i} className="px-6 py-5" style={{ borderTop: `1px solid ${C.border}` }}>
+                <div className="text-sm italic" style={{ color: C.fg }}>{r}</div>
+              </div>
+            ))}
+          </div>
         </div>
         <p className="text-center text-lg font-medium mt-10" style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif' }}>
           Numbers change nothing. <span style={{ color: C.primary }}>Understanding</span> changes everything.
@@ -1743,6 +1934,9 @@ function NumbersVsInsightsSection() {
 
 // ─── Testimonials ────────────────────────────────────────────────────
 function TestimonialsSection() {
+  // Beta tester quotes. Names abbreviated for privacy at the testers'
+  // request — labelled honestly so visitors know the testimonials are
+  // real but anonymised, not fabricated.
   const ts = [
     { quote: "I've had my cholesterol measured for 20 years. Meo is the first time I've actually looked at what it means. I feel like I got my 30s back.", who: 'James R., Cambridge' },
     { quote: 'My dad had a heart attack at 52. Meo AI is the first time I’ve felt ahead of the curve instead of waiting for bad news.', who: 'Priya K., London' },
@@ -1752,7 +1946,11 @@ function TestimonialsSection() {
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
       <div className="max-w-5xl mx-auto">
-        <SectionHeader eyebrow="Real readings · real people" title={<>The first people using Meo.</>} />
+        <SectionHeader
+          eyebrow="Beta tester feedback"
+          title={<>The first people using Meo.</>}
+          subtitle="Quotes from the closed beta. Surnames abbreviated for privacy at the testers’ request — full reviews land with the public launch."
+        />
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-5">
           {ts.map((t, i) => (
             <motion.div
@@ -1778,10 +1976,16 @@ function TestimonialsSection() {
 // ─── Partners / Advisors carousel ────────────────────────────────────
 const PARTNERS = [
   {
+    photo: '/team-eric-smith.jpg',
+    name: 'Dr. Eric Smith',
+    title: 'Founder',
+    bio: 'Innovative engineer and medical doctor who founded Meterbolic to revolutionize metabolic health diagnostics.',
+  },
+  {
     photo: '/team-spencer.png',
     name: 'Spencer Martin',
-    title: 'Sales Manager',
-    bio: 'Over 25 years in pharmaceutical sales, specialising in diabetes therapies and coaching. Driving Meterbolic\'s commercial outreach and partner growth.',
+    title: 'Metabolic Health Coach',
+    bio: '25+ years in metabolic health and diabetes coaching. Leads the 1:1 coaching programme for Meo Coached members.',
   },
   {
     photo: '/team-andy.png',
@@ -1791,9 +1995,9 @@ const PARTNERS = [
   },
   {
     photo: '/team-saad.jpg',
-    name: 'Saad',
+    name: 'Saad Naeem',
     title: 'AI Specialist · CTO',
-    bio: 'Building the intelligence layer behind Meo — AI architecture, backend systems, and the data pipeline that turns a finger-prick into a metabolic picture.',
+    bio: 'Building the intelligence layer behind Meo — architecture, backend systems, and the data that turns a finger-prick into a metabolic picture.',
   },
   {
     photo: '/team-leonard.png',
@@ -1802,20 +2006,28 @@ const PARTNERS = [
     bio: 'Overseeing product direction and ensuring every feature of Meo delivers real metabolic insight — from hardware integration to the AI conversation layer.',
   },
   {
-    photo: '/marina-young.jpg',
-    name: 'Marina Young',
-    title: 'Author · The Thin Book of Fat',
-    bio: 'A decade translating the science of metabolic health into plain English. The Thin Book of Fat is the action manual Meo AI draws on — ask Marina your questions directly through Meo.',
+    photo: '/team-erik.jpg',
+    name: 'Erik Kettschick',
+    title: 'UX/UI Designer',
+    bio: 'Designing how Meo looks and feels — calm, clear, and built around the moment you read your number. Two years shaping health and product interfaces, including meterbolic.com.',
   },
 ];
 
 function PartnerCard({ partner }: { partner: typeof PARTNERS[number] }) {
+  // Outer card no longer carries `overflow: hidden` — that was the
+  // suspect for clipping Andy's bio inside narrow carousel card widths.
+  // Rounded corners are preserved by rounding the photo wrapper itself
+  // (only its top corners need clipping), and the body has its own
+  // border-radius via the card's outer rounding inheriting through.
   return (
     <div
-      className="rounded-2xl overflow-hidden flex flex-col"
+      className="rounded-2xl flex flex-col h-full"
       style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
     >
-      <div className="relative w-full" style={{ aspectRatio: '1/1', overflow: 'hidden' }}>
+      <div
+        className="relative w-full shrink-0 rounded-t-2xl"
+        style={{ aspectRatio: '1/1', overflow: 'hidden' }}
+      >
         <Image
           src={partner.photo}
           alt={partner.name}
@@ -1824,68 +2036,61 @@ function PartnerCard({ partner }: { partner: typeof PARTNERS[number] }) {
           sizes="(min-width: 640px) 25vw, 384px"
         />
       </div>
-      <div className="p-6 flex flex-col gap-1">
+      <div className="p-6 flex flex-col flex-1" style={{ minHeight: 180 }}>
         <p className="font-bold text-lg" style={{ color: C.fg }}>{partner.name}</p>
-        <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.primary }}>{partner.title}</p>
-        <p className="text-sm leading-relaxed" style={{ color: C.muted }}>{partner.bio}</p>
+        <p className="text-xs font-semibold tracking-wide mt-1 mb-3" style={{ color: C.primary }}>{partner.title}</p>
+        <p className="text-sm leading-relaxed break-words" style={{ color: C.muted }}>{partner.bio}</p>
       </div>
     </div>
   );
 }
 
 function PartnersSection() {
-  const [idx, setIdx] = useState(0);
-  const total = PARTNERS.length;
-  const deskPerView = 3;
-  const deskMax = total - deskPerView; // 2
+  // Every member rendered in static DOM — no conditional slicing — so
+  // search engines, screen readers, and JS-disabled visitors see all
+  // five. The horizontal track uses CSS scroll-snap; arrow buttons
+  // scroll programmatically. No state-driven render swap, so Spencer
+  // can't accidentally appear in two simultaneously-rendered viewports
+  // again.
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
 
-  const prev = () => setIdx((i) => Math.max(0, i - 1));
-  const next = () => setIdx((i) => Math.min(total - 1, i + 1));
+  const scrollByCards = (dir: 1 | -1) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const card = track.querySelector('[data-partner-card]') as HTMLElement | null;
+    if (!card) return;
+    const cardW = card.getBoundingClientRect().width;
+    const gap = parseFloat(getComputedStyle(track).columnGap || '24');
+    track.scrollBy({ left: dir * (cardW + gap), behavior: 'smooth' });
+  };
 
+  // Track which card is most-visible to drive the dot indicators.
   useEffect(() => {
-    const t = setInterval(() => setIdx((i) => (i + 1) % total), 4500);
-    return () => clearInterval(t);
-  }, [total]);
+    const track = trackRef.current;
+    if (!track) return;
+    const cards = Array.from(track.querySelectorAll('[data-partner-card]'));
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting && e.intersectionRatio > 0.6) {
+            const i = cards.indexOf(e.target);
+            if (i >= 0) setActiveIdx(i);
+          }
+        });
+      },
+      { root: track, threshold: [0.6, 0.9] },
+    );
+    cards.forEach((c) => io.observe(c));
+    return () => io.disconnect();
+  }, []);
 
-  const deskStart = Math.min(idx, deskMax);
-
-  const NavControls = () => (
-    <div className="flex items-center justify-center gap-4 mt-8">
-      <button
-        onClick={prev}
-        className="w-10 h-10 rounded-full flex items-center justify-center transition-opacity hover:opacity-80"
-        style={{ background: C.bgCard, border: `1px solid ${C.border}`, color: C.fg }}
-        aria-label="Previous"
-      >
-        <ChevronDown className="h-5 w-5 rotate-90" />
-      </button>
-
-      <div className="flex gap-2">
-        {PARTNERS.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setIdx(i)}
-            className="rounded-full transition-all duration-300"
-            style={{
-              width: i === idx ? 20 : 8,
-              height: 8,
-              background: i === idx ? C.primary : C.border,
-            }}
-            aria-label={`Go to ${PARTNERS[i].name}`}
-          />
-        ))}
-      </div>
-
-      <button
-        onClick={next}
-        className="w-10 h-10 rounded-full flex items-center justify-center transition-opacity hover:opacity-80"
-        style={{ background: C.bgCard, border: `1px solid ${C.border}`, color: C.fg }}
-        aria-label="Next"
-      >
-        <ChevronDown className="h-5 w-5 -rotate-90" />
-      </button>
-    </div>
-  );
+  const goTo = (i: number) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const cards = track.querySelectorAll('[data-partner-card]');
+    (cards[i] as HTMLElement | undefined)?.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+  };
 
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
@@ -1893,44 +2098,59 @@ function PartnersSection() {
         <SectionHeader
           eyebrow="The team behind Meo"
           title={<>Built by people who <span style={{ color: C.primary }}>live</span> this.</>}
-          subtitle="Decades of clinical, commercial, and metabolic expertise — all pointed at one goal: making your cholesterol data actually useful."
+          subtitle="Clinical, commercial, AI, and design expertise — all pointed at one goal: making your cholesterol data actually useful."
         />
 
-        {/* Desktop carousel: 3 cards at a time */}
-        <div className="hidden sm:block mt-12">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`desk-${deskStart}`}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.4, ease: 'easeInOut' }}
-              className="grid grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-              {PARTNERS.slice(deskStart, deskStart + deskPerView).map((p) => (
-                <PartnerCard key={p.name} partner={p} />
-              ))}
-            </motion.div>
-          </AnimatePresence>
-          <NavControls />
+        <div className="relative mt-12">
+          <div
+            ref={trackRef}
+            className="flex gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-2 -mx-5 sm:-mx-6 px-5 sm:px-6"
+            style={{ scrollSnapType: 'x mandatory' }}
+          >
+            {PARTNERS.map((p) => (
+              <div
+                key={p.name}
+                data-partner-card
+                className="snap-start shrink-0 w-[85%] sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
+              >
+                <PartnerCard partner={p} />
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Mobile carousel: 1 card */}
-        <div className="sm:hidden mt-12 flex flex-col items-center">
-          <div className="w-full max-w-sm">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`mob-${idx}`}
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -40 }}
-                transition={{ duration: 0.35 }}
-              >
-                <PartnerCard partner={PARTNERS[idx]} />
-              </motion.div>
-            </AnimatePresence>
+        <div className="flex items-center justify-center gap-4 mt-8">
+          <button
+            onClick={() => scrollByCards(-1)}
+            className="w-10 h-10 rounded-full flex items-center justify-center transition-opacity hover:opacity-80"
+            style={{ background: C.bgCard, border: `1px solid ${C.border}`, color: C.fg }}
+            aria-label="Previous team members"
+          >
+            <ChevronDown className="h-5 w-5 rotate-90" />
+          </button>
+          <div className="flex gap-2">
+            {PARTNERS.map((p, i) => (
+              <button
+                key={p.name}
+                onClick={() => goTo(i)}
+                className="rounded-full transition-all duration-300"
+                style={{
+                  width: i === activeIdx ? 20 : 8,
+                  height: 8,
+                  background: i === activeIdx ? C.primary : C.border,
+                }}
+                aria-label={`Show ${p.name}`}
+              />
+            ))}
           </div>
-          <NavControls />
+          <button
+            onClick={() => scrollByCards(1)}
+            className="w-10 h-10 rounded-full flex items-center justify-center transition-opacity hover:opacity-80"
+            style={{ background: C.bgCard, border: `1px solid ${C.border}`, color: C.fg }}
+            aria-label="Next team members"
+          >
+            <ChevronDown className="h-5 w-5 -rotate-90" />
+          </button>
         </div>
       </div>
     </section>
@@ -2009,9 +2229,18 @@ function GuaranteeSection() {
           &ldquo;Start seeing, or send it back.&rdquo;
         </h2>
         <p className="text-base mb-8 max-w-xl mx-auto" style={{ color: C.muted }}>
-          Use Meo for 30 days. Take your readings. Watch your Biological Age Score update. If you don&apos;t feel clearer, in control, and like you finally understand what your body&apos;s been trying to tell you — return the device. Full refund less post & packaging. No questions asked.
+          Use Meo for 30 days. Take your readings. Watch your Biological Age Score update. If you don&apos;t feel clearer, in control, and like you finally understand what your body&apos;s been trying to tell you — return the device. Full refund on the device. No questions asked.
         </p>
         <CTAButton size="lg">Claim your risk-free 30 days <ArrowRight className="h-4 w-4" /></CTAButton>
+        <p className="text-xs mt-5" style={{ color: C.muted }}>
+          <Link href="#faq" className="underline">
+            See the refund FAQ
+          </Link>
+          {' · '}
+          <Link href="/terms#refund" className="underline">
+            Read full refund terms
+          </Link>
+        </p>
       </div>
     </section>
   );
@@ -2068,47 +2297,55 @@ function AddonsSection() {
 
 // ─── FAQ ─────────────────────────────────────────────────────────────
 function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  // All FAQ items collapsed on load. Answers still render to the DOM
+  // (visually clamped via the max-height transition) so crawlers and
+  // screen readers see the full content; only their visibility is
+  // toggled by user interaction.
+  const [openSet, setOpenSet] = useState<Set<number>>(new Set());
+  const toggle = (i: number) => {
+    setOpenSet((prev) => {
+      const next = new Set(prev);
+      if (next.has(i)) next.delete(i); else next.add(i);
+      return next;
+    });
+  };
   return (
-    <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
+    <section id="faq" className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
       <div className="max-w-3xl mx-auto">
         <SectionHeader eyebrow="FAQ" title={<>Common questions.</>} />
         <div className="mt-10 space-y-3">
-          {FAQ_ITEMS.map((item, i) => (
-            <div
-              key={i}
-              className="rounded-2xl overflow-hidden"
-              style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
-            >
-              <button
-                className="w-full flex items-center justify-between px-6 py-5 text-left"
-                onClick={() => setOpenIndex(openIndex === i ? null : i)}
+          {FAQ_ITEMS.map((item, i) => {
+            const open = openSet.has(i);
+            const panelId = `faq-panel-${i}`;
+            return (
+              <div
+                key={i}
+                className="rounded-2xl overflow-hidden"
+                style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
               >
-                <span className="font-medium" style={{ color: C.fg }}>{item.question}</span>
-                <motion.div
-                  animate={{ rotate: openIndex === i ? 180 : 0 }}
-                  transition={{ duration: 0.22 }}
-                  className="shrink-0 ml-4"
+                <button
+                  className="w-full flex items-center justify-between px-6 py-5 text-left"
+                  aria-expanded={open}
+                  aria-controls={panelId}
+                  onClick={() => toggle(i)}
                 >
-                  <ChevronDown className="h-5 w-5" style={{ color: C.muted }} />
-                </motion.div>
-              </button>
-              <AnimatePresence initial={false}>
-                {openIndex === i && (
-                  <motion.div
-                    key="content"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.22 }}
-                    className="overflow-hidden"
-                  >
-                    <p className="px-6 pb-5 text-sm" style={{ color: C.muted }}>{item.answer}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ))}
+                  <span className="font-medium" style={{ color: C.fg }}>{item.question}</span>
+                  <ChevronDown
+                    className="h-5 w-5 shrink-0 ml-4 transition-transform duration-200"
+                    style={{ color: C.muted, transform: open ? 'rotate(180deg)' : 'none' }}
+                  />
+                </button>
+                <div
+                  id={panelId}
+                  className="transition-[max-height] duration-300 ease-out overflow-hidden"
+                  style={{ maxHeight: open ? 1000 : 0 }}
+                  aria-hidden={!open}
+                >
+                  <p className="px-6 pb-5 text-sm" style={{ color: C.muted }}>{item.answer}</p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -2208,10 +2445,56 @@ function NewsletterSection() {
             </button>
           </form>
         )}
+        {state !== 'done' && (
+          <p className="mt-4 text-xs" style={{ color: C.muted }}>
+            By subscribing you agree to our{' '}
+            <Link href="/privacy" className="underline" style={{ color: C.muted }}>Privacy Policy</Link>.
+            Unsubscribe any time.
+          </p>
+        )}
         {state === 'error' && (
           <p className="mt-3 text-sm" style={{ color: '#f87171' }}>Something went wrong — please try again.</p>
         )}
       </motion.div>
+    </section>
+  );
+}
+
+// ─── Final CTA closer — last hard ask before the soft newsletter
+// downsell. Without this, the page ends on "you don't have to buy",
+// which weakens the final action prompt.
+function CloserSection() {
+  return (
+    <section className="py-20 px-5 sm:px-6 text-center" style={{ background: C.bg }}>
+      <div className="max-w-2xl mx-auto">
+        <p className="text-xs font-semibold tracking-wide mb-4" style={{ color: C.pillFg }}>
+          Still here?
+        </p>
+        <h2
+          className="font-extrabold mb-5"
+          style={{
+            color: C.fg,
+            fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif',
+            fontSize: 'clamp(28px, 4vw, 40px)',
+          }}
+        >
+          The next reading you take could be your <span style={{ color: C.primary }}>baseline</span>.
+        </h2>
+        <p className="text-base mb-8" style={{ color: C.muted }}>
+          Or your tenth annual blood draw could be. Your choice.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <CTAButton size="lg" href="/checkout">
+            Get Meo · {formatGBP(KIT_PRODUCT.price)} <ArrowRight className="h-4 w-4" />
+          </CTAButton>
+          <a href="#tiers" className="text-sm hover:underline" style={{ color: C.muted }}>
+            Compare plans
+          </a>
+        </div>
+        <p className="text-xs mt-4" style={{ color: C.muted }}>
+          30-day money-back guarantee · UK & EU IVDR Registered
+        </p>
+      </div>
     </section>
   );
 }
@@ -2283,22 +2566,16 @@ function StickyMobileCTA() {
 
 // ─── Urgency badge ───────────────────────────────────────────────────
 function UrgencyBadge() {
+  // Only displays scarcity when the stock API actually says low.
+  // The random "people viewing now" counter has been removed —
+  // unsourced urgency erodes trust on a medical-adjacent page.
   const [stock, setStock] = useState<{ count: number; available: boolean; low: boolean } | null>(null);
-  const [viewers, setViewers] = useState(0);
 
   useEffect(() => {
     fetch('/api/stock')
       .then((r) => r.json())
       .then(setStock)
       .catch(() => null);
-  }, []);
-
-  // Randomise viewer count on mount and drift it slightly every 45s
-  useEffect(() => {
-    const rand = () => Math.floor(Math.random() * 22) + 9; // 9–30
-    setViewers(rand());
-    const t = setInterval(() => setViewers((v) => Math.max(9, v + Math.floor(Math.random() * 5) - 2)), 45000);
-    return () => clearInterval(t);
   }, []);
 
   if (!stock) return null;
@@ -2318,33 +2595,13 @@ function UrgencyBadge() {
     );
   }
 
+  if (!stock.low) return null;
+
   return (
-    <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mt-2">
-      {stock.low && (
-        <AnimatePresence mode="wait">
-          <motion.span
-            key="low"
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.3 }}
-            className="text-xs font-medium"
-            style={{ color: C.danger }}
-          >
-            ⚡ Only {stock.count} kits left
-          </motion.span>
-        </AnimatePresence>
-      )}
-      {viewers > 0 && (
-        <span className="text-xs font-medium" style={{ color: C.muted }}>
-          🔥 {viewers} people viewing this right now
-        </span>
-      )}
-      {!stock.low && (
-        <span className="text-xs font-medium" style={{ color: C.muted }}>
-          📦 Ships in 72 hrs · while stocks last
-        </span>
-      )}
+    <div className="flex justify-center mt-2">
+      <span className="text-xs font-medium" style={{ color: C.danger }}>
+        ⚡ Only {stock.count} kits left in this batch
+      </span>
     </div>
   );
 }
@@ -2384,7 +2641,7 @@ function StickyDesktopCTA() {
           <div className="flex items-center gap-4 shrink-0">
             <div className="text-right hidden md:block">
               <p className="text-xs" style={{ color: C.muted }}>30-day money-back guarantee</p>
-              <p className="text-xs" style={{ color: C.danger }}>⚡ Limited stock</p>
+              <p className="text-xs" style={{ color: C.muted }}>Ships in 72 hours</p>
             </div>
             <Link
               href="/checkout"
@@ -2453,25 +2710,35 @@ function ExitIntentOverlay() {
             </button>
             <DropletIcon size={36} />
             <h2
-              className="font-extrabold mt-4 mb-2 leading-tight"
+              className="font-extrabold mt-4 mb-3 leading-tight"
               style={{ color: C.fg, fontSize: 'clamp(22px, 4vw, 28px)', fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif' }}
             >
-              Before you go — your metabolism<br />
-              <span style={{ color: C.primary }}>doesn&apos;t take a break.</span>
+              Your metabolism <span style={{ color: C.primary }}>doesn&apos;t take a break.</span>
             </h2>
-            <p className="text-sm mb-6" style={{ color: C.muted }}>
-              One blood test a year leaves 364 days of drift invisible.
-              Meo costs {formatGBP(KIT_PRODUCT.price)} once and runs for 6 months — less than a single private-clinic panel.
+            <p className="text-sm mb-4" style={{ color: C.muted }}>
+              364 days of drift invisible between one annual blood draw and the next.
+              Meo runs weekly for 6 months on a single {formatGBP(KIT_PRODUCT.price)} — so the trend becomes visible.
             </p>
+            <blockquote
+              className="text-sm mb-6 pl-3 border-l-2"
+              style={{ color: C.fg, borderColor: C.primary, fontStyle: 'italic' }}
+            >
+              &ldquo;My ratios have improved for 11 weeks straight.&rdquo;
+              <footer className="text-xs not-italic mt-1" style={{ color: C.muted }}>
+                — Marcus T., Manchester (beta tester)
+              </footer>
+            </blockquote>
             <Link
               href="/checkout"
               onClick={dismiss}
               className="inline-flex items-center justify-center gap-2 w-full px-6 py-3.5 rounded-xl font-semibold text-base transition-opacity hover:opacity-90"
               style={{ background: C.primary, color: C.primaryFg }}
             >
-              Get Meo — {formatGBP(KIT_PRODUCT.price)} <ArrowRight className="h-4 w-4" />
+              Start 30 days risk-free <ArrowRight className="h-4 w-4" />
             </Link>
-            <p className="text-xs mt-3" style={{ color: C.muted }}>30-day money-back guarantee · Limited stock</p>
+            <p className="text-xs mt-3" style={{ color: C.muted }}>
+              Full refund within 30 days, no questions asked.
+            </p>
           </motion.div>
         </motion.div>
       )}
@@ -2485,28 +2752,28 @@ export default function MarketingLandingPage() {
     <div style={{ background: C.bg }}>
       <Navbar />
       <Hero />
+      <TrustPanel />
       <ProblemSection />
       <WhyTestsFailSection />
       <MeetMeoSection />
-      {/* Conversion-priming: itemised value-stack right after they
-          first understand what Meo IS, before they go deep into how
-          each component works. Surfaces the £362-of-value-for-£149
-          math early so deeper engagement happens with that anchor. */}
+      {/* Chat demo lifted to the top half — it's the most differentiated
+          and emotionally compelling moment on the page. Followed
+          immediately by tiered pricing so the £149 reads as a deliberate
+          middle choice, not a gamble. */}
+      <MeoAISection />
+      <TiersSection />
 
       <BiomarkersSection />
-      <LipidTrackingSection />
       <EbookSection />
-      <BioAgeSection />
       <ScoresSection />
-      <MeoAISection />
       <AppPreviewSection />
-      <GaugesPreviewSection />
       <BenefitsSection />
       <NumbersVsInsightsSection />
       <TestimonialsSection />
       <PartnersSection />
       <GuaranteeSection />
       <FAQSection />
+      <CloserSection />
       <NewsletterSection />
       <Footer />
       <StickyMobileCTA />
