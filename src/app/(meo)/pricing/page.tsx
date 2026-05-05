@@ -16,45 +16,50 @@ interface Plan {
   popular?: boolean;
 }
 
+// Plans mirror the master product page's TiersSection so /pricing
+// inside the chatbot shell shows the same Meo Lite / Starter / Coached
+// bundles the marketing site sells. One-time purchases, not
+// subscriptions — the legacy meo-frontend Free/Pro/Clinic SaaS plans
+// have been retired in favour of the unified product offering.
 const PLANS: Plan[] = [
   {
-    id: 'free',
-    name: 'Free',
-    price: 0,
-    features: [
-      'Basic chat with MeO AI',
-      'Limited message history',
-      'View public health resources',
-    ],
-    cta: 'Current Plan',
-  },
-  {
-    id: 'pro',
-    name: 'Pro',
+    id: 'lite',
+    name: 'Meo Lite',
     price: 29,
     features: [
-      'Unlimited chat with MeO AI',
-      'Full message history',
-      'Analysis dashboard (Bio Age, Kraft)',
-      'Personalized recommendations',
-      'Priority support',
+      'The Thin Book of Fat (digital)',
+      '7-day Meo AI trial',
+      'Manual entry of past blood results',
+      'Credit £29 toward Starter within 30 days',
     ],
-    cta: 'Upgrade to Pro',
+    cta: 'Start with the book',
+  },
+  {
+    id: 'starter',
+    name: 'Meo Starter',
+    price: 149,
+    features: [
+      'Lab-grade lipid meter (UK & EU registered)',
+      '6 months of Meo AI included',
+      '20 test strips + lancets + carry case',
+      'Biological Age Score + Target Score',
+      '30-day money-back guarantee on the device',
+    ],
+    cta: 'Get Meo · £149',
     popular: true,
   },
   {
-    id: 'clinic',
-    name: 'Clinic',
-    price: 99,
+    id: 'coached',
+    name: 'Meo Coached',
+    price: 444,
     features: [
-      'Everything in Pro',
-      'Practitioner mode',
-      'Patient management',
-      'Clinical reports & insights',
-      'Multi-provider support',
-      'Dedicated account manager',
+      'Everything in Meo Starter',
+      '3 months of 1:1 metabolic coaching with Spencer Martin',
+      '40-min onboarding consultation',
+      'Two 30-min follow-ups',
+      'Direct messaging between sessions',
     ],
-    cta: 'Upgrade to Clinic',
+    cta: 'Get Meo + Coach',
   },
 ];
 
@@ -144,17 +149,27 @@ export default function PricingPage() {
 
           <div className="text-center mb-12">
             <h1 className="text-3xl font-bold mb-3" style={{ color: colors.foreground }}>
-              Choose Your Plan
+              Pick your starting point
             </h1>
             <p className="text-base" style={{ color: colors.muted }}>
-              Unlock the full power of MeO for your metabolic health journey
+              Three ways in. Same destination.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {PLANS.map((plan) => {
-              const isCurrent = currentPlan === plan.id;
-              const isUpgrade = !isCurrent && plan.id !== 'free';
+              // One-time purchase model: every plan links straight to
+              // the master /checkout with the appropriate plan param.
+              // Legacy subscription "current plan" + manage flows are
+              // retired (currentPlan state still listens to Stripe
+              // status for users who upgraded under the old SaaS
+              // model, but no longer drives button rendering).
+              const checkoutHref =
+                plan.id === 'lite'
+                  ? '/checkout?plan=lite'
+                  : plan.id === 'coached'
+                  ? '/checkout?addon=therapy-spencer'
+                  : '/checkout';
 
               return (
                 <div
@@ -181,10 +196,10 @@ export default function PricingPage() {
 
                   <div className="mb-6">
                     <span className="text-4xl font-bold" style={{ color: colors.foreground }}>
-                      ${plan.price}
+                      £{plan.price}
                     </span>
                     <span className="text-sm" style={{ color: colors.muted }}>
-                      /month
+                      {' '}one-time
                     </span>
                   </div>
 
@@ -202,41 +217,17 @@ export default function PricingPage() {
                     ))}
                   </ul>
 
-                  {isCurrent ? (
-                    <button
-                      onClick={plan.id !== 'free' ? handleManage : undefined}
-                      disabled={loading === 'manage'}
-                      className="w-full rounded-lg py-3 text-sm font-semibold border transition-colors"
-                      style={{
-                        borderColor: colors.primary,
-                        color: colors.primary,
-                        opacity: loading === 'manage' ? 0.7 : 1,
-                      }}
-                    >
-                      {plan.id === 'free' ? 'Current Plan' : loading === 'manage' ? 'Loading...' : 'Manage Subscription'}
-                    </button>
-                  ) : isUpgrade ? (
-                    <button
-                      onClick={() => handleSubscribe(plan.id)}
-                      disabled={loading === plan.id}
-                      className="w-full rounded-lg py-3 text-sm font-semibold transition-colors disabled:opacity-70"
-                      style={{
-                        background: plan.popular ? colors.primary : 'transparent',
-                        color: plan.popular ? colors.primaryForeground : colors.primary,
-                        border: plan.popular ? 'none' : `1px solid ${colors.primary}`,
-                      }}
-                    >
-                      {loading === plan.id ? 'Redirecting...' : plan.cta}
-                    </button>
-                  ) : (
-                    <button
-                      disabled
-                      className="w-full rounded-lg py-3 text-sm font-semibold opacity-50"
-                      style={{ color: colors.muted, border: `1px solid ${colors.cardBorder}` }}
-                    >
-                      Free Tier
-                    </button>
-                  )}
+                  <Link
+                    href={checkoutHref}
+                    className="w-full rounded-lg py-3 text-sm font-semibold transition-colors text-center inline-flex items-center justify-center"
+                    style={{
+                      background: plan.popular ? colors.primary : 'transparent',
+                      color: plan.popular ? colors.primaryForeground : colors.primary,
+                      border: plan.popular ? 'none' : `1px solid ${colors.primary}`,
+                    }}
+                  >
+                    {plan.cta}
+                  </Link>
                 </div>
               );
             })}
