@@ -57,6 +57,18 @@ const PEOPLE: readonly Person[] = [
     bio: "Over 25 years in pharmaceutical sales, specialising in diabetes therapies and coaching. Driving Meterbolic's commercial outreach and partner growth.",
   },
   {
+    photo: '/team-saad.jpg',
+    name: 'Saad Naeem',
+    role: 'AI Specialist · CTO',
+    bio: 'Building the intelligence layer behind Meo — architecture, backend systems, and the data that turns a finger-prick into a metabolic picture.',
+  },
+  {
+    photo: '/team-leonard.png',
+    name: 'Leonard Lin',
+    role: 'Product Supervisor',
+    bio: 'Overseeing product direction and ensuring every feature of Meo delivers real metabolic insight — from hardware integration to the AI conversation layer.',
+  },
+  {
     photo: '/team-gabor.png',
     name: 'Prof. Gabor Erdosi',
     role: 'Chief Metabolic Scientist',
