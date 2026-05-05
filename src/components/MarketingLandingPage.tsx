@@ -68,26 +68,7 @@ import {
   formatGBP,
 } from '@/lib/kitProducts';
 import { BioAgeDial, KraftCurve, EbookCover, LipidDroplet } from './Visuals';
-
-// ─── Brand colours ───────────────────────────────────────────────────
-// Foreground colours per the brand spec. Measured ratios on bg #1c4a40:
-//   fg     #f0ede6 ≈ 10.6 : 1  (AAA on body, AAA on large)
-//   muted  #c4bfb8 ≈  6.0 : 1  (AA on body, AAA on large)
-// Card surfaces lighten the bg slightly, so the same text still passes.
-const C = {
-  bg: '#1c4a40',
-  bgDeep: '#143730',
-  bgCard: 'rgba(30, 70, 60, 0.85)',
-  bgCardHover: 'rgba(38, 80, 68, 0.95)',
-  border: 'rgba(255,255,255,0.14)',
-  primary: '#a4d65e',
-  primaryFg: '#0f2a1f',
-  fg: '#f0ede6',
-  muted: '#c4bfb8',
-  pill: 'rgba(164,214,94,0.18)',
-  pillFg: '#cdf08a',
-  danger: '#f59e0b',
-};
+import { C } from '@/lib/design-tokens';
 
 // ─── Logo mark ───────────────────────────────────────────────────────
 function DropletIcon({ size = 20 }: { size?: number }) {
