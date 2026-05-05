@@ -2590,6 +2590,19 @@ function ExitIntentOverlay() {
             >
               Start 30 days risk-free <ArrowRight className="h-4 w-4" />
             </Link>
+            <Link
+              href="/#newsletter"
+              onClick={dismiss}
+              className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 rounded-xl font-semibold text-sm mt-3 transition-opacity hover:opacity-90"
+              style={{
+                background: 'transparent',
+                color: C.fg,
+                border: `1px solid ${C.border}`,
+              }}
+            >
+              <Mail className="h-4 w-4" />
+              Or subscribe for updates
+            </Link>
             <p className="text-xs mt-3" style={{ color: C.muted }}>
               Full refund within 30 days, no questions asked.
             </p>
