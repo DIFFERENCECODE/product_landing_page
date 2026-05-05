@@ -11,7 +11,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Mail, Twitter, Linkedin, Instagram } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
-import { Navbar } from '@/components/MarketingLandingPage';
+import { Navbar, Footer } from '@/components/MarketingLandingPage';
 import { PeopleCarousel } from '@/components/PeopleCarousel';
 
 export const metadata: Metadata = {
@@ -256,6 +256,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }

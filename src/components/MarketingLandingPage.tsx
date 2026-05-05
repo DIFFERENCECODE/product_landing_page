@@ -2488,37 +2488,66 @@ function CloserSection() {
 }
 
 // ─── Footer (with compliance disclaimer) ────────────────────────────
-function Footer() {
+export function Footer() {
   return (
     <footer
-      className="px-6 pt-8 pb-28 sm:pb-10"
+      className="px-6 pt-12 pb-28 sm:pb-12"
       style={{ background: 'rgba(28,74,64,0.92)', backdropFilter: 'blur(12px)', borderTop: `1px solid ${C.border}` }}
     >
-      {/* Top bar — mirrors navbar layout: logo left, nav links right */}
-      <div className="flex items-center justify-between py-4 mb-6" style={{ borderBottom: `1px solid ${C.border}` }}>
-        <Link href="/" className="flex items-center gap-1.5" aria-label="Meo home">
-          <span
-            className="text-xl font-bold tracking-tight"
-            style={{
-              color: C.fg,
-              fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif',
-            }}
-          >
-            Meo
-          </span>
-          <DropletIcon size={22} />
-          <span className="hidden sm:inline text-xs ml-2 tracking-wide" style={{ color: C.muted }}>
-            Metabolic Intelligence
-          </span>
-        </Link>
-        {/* Legal + contact links */}
-        <nav className="flex items-center gap-5 text-sm" aria-label="Footer navigation">
-          <Link href="/privacy" className="hover:underline" style={{ color: C.muted }}>Privacy</Link>
-          <Link href="/terms" className="hover:underline" style={{ color: C.muted }}>Terms</Link>
-          <Link href="/cookies" className="hover:underline" style={{ color: C.muted }}>Cookies</Link>
-          <a href="mailto:hello@meterbolic.com" className="hover:underline" style={{ color: C.muted }}>Contact</a>
+      {/* Top section: brand + 3 link columns */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10 pb-8" style={{ borderBottom: `1px solid ${C.border}` }}>
+        <div>
+          <Link href="/" className="flex items-center gap-1.5 mb-3" aria-label="Meo home">
+            <span
+              className="text-xl font-bold tracking-tight"
+              style={{
+                color: C.fg,
+                fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif',
+              }}
+            >
+              Meo
+            </span>
+            <DropletIcon size={22} />
+          </Link>
+          <p className="text-xs leading-relaxed" style={{ color: C.muted }}>
+            Metabolic Intelligence by Meterbolic.
+          </p>
+        </div>
+
+        <nav aria-label="Product">
+          <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.fg }}>Product</p>
+          <ul className="space-y-2 text-sm">
+            <li><Link href="/" className="hover:underline" style={{ color: C.muted }}>Home</Link></li>
+            <li><Link href="/how-it-works" className="hover:underline" style={{ color: C.muted }}>How it works</Link></li>
+            <li><Link href="/services" className="hover:underline" style={{ color: C.muted }}>Services</Link></li>
+            <li><Link href="/pricing" className="hover:underline" style={{ color: C.muted }}>Pricing</Link></li>
+            <li><Link href="/quiz" className="hover:underline" style={{ color: C.muted }}>Take the quiz</Link></li>
+            <li><Link href="/chat" className="hover:underline" style={{ color: C.muted }}>Open chat</Link></li>
+          </ul>
+        </nav>
+
+        <nav aria-label="Company">
+          <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.fg }}>Company</p>
+          <ul className="space-y-2 text-sm">
+            <li><Link href="/about" className="hover:underline" style={{ color: C.muted }}>About</Link></li>
+            <li><Link href="/partners" className="hover:underline" style={{ color: C.muted }}>Partners</Link></li>
+            <li><a href="mailto:hello@meterbolic.com" className="hover:underline" style={{ color: C.muted }}>Contact</a></li>
+            <li><a href="mailto:partner@meterbolic.com" className="hover:underline" style={{ color: C.muted }}>Partner enquiries</a></li>
+          </ul>
+        </nav>
+
+        <nav aria-label="Legal">
+          <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.fg }}>Legal</p>
+          <ul className="space-y-2 text-sm">
+            <li><Link href="/privacy" className="hover:underline" style={{ color: C.muted }}>Privacy Policy</Link></li>
+            <li><Link href="/terms" className="hover:underline" style={{ color: C.muted }}>Terms of Service</Link></li>
+            <li><Link href="/cookies" className="hover:underline" style={{ color: C.muted }}>Cookies Policy</Link></li>
+            <li><Link href="/terms#refund" className="hover:underline" style={{ color: C.muted }}>Refund terms</Link></li>
+          </ul>
         </nav>
       </div>
+
+      {/* Compliance + copyright */}
       <p className="text-xs leading-relaxed mb-3 max-w-3xl" style={{ color: C.muted }}>
         Meo is a wellness and monitoring tool. It is not intended to diagnose, treat, cure, or prevent any disease.
         Always consult your GP or a qualified healthcare professional for medical advice. Readings are informational

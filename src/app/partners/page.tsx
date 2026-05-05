@@ -8,7 +8,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, Stethoscope, Activity, Briefcase, Watch, FlaskConical, Mail, ArrowRight } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
-import { Navbar } from '@/components/MarketingLandingPage';
+import { Navbar, Footer } from '@/components/MarketingLandingPage';
 
 export const metadata: Metadata = {
   title: 'Partners — Meterbolic',
@@ -171,6 +171,7 @@ export default function PartnersPage() {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }

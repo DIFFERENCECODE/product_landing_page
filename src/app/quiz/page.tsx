@@ -14,7 +14,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
-import { Navbar } from '@/components/MarketingLandingPage';
+import { Navbar, Footer } from '@/components/MarketingLandingPage';
 
 const TOTAL_STEPS = 7;
 
@@ -523,6 +523,7 @@ export default function QuizPage() {
           )}
         </div>
       </section>
+      <Footer />
     </main>
   );
 }

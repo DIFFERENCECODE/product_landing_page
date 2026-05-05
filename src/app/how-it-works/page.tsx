@@ -21,7 +21,7 @@ import {
   Quote,
 } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
-import { Navbar } from '@/components/MarketingLandingPage';
+import { Navbar, Footer } from '@/components/MarketingLandingPage';
 
 export const metadata: Metadata = {
   title: 'How it works — Meterbolic',
@@ -357,6 +357,7 @@ export default function HowItWorksPage() {
           </Link>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }

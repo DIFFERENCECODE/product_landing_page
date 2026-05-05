@@ -22,7 +22,7 @@ import {
   Cpu,
 } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
-import { Navbar } from '@/components/MarketingLandingPage';
+import { Navbar, Footer } from '@/components/MarketingLandingPage';
 
 export const metadata: Metadata = {
   title: 'Services — Meterbolic',
@@ -215,6 +215,7 @@ export default function ServicesPage() {
           </Link>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }
