@@ -14,6 +14,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
+import { Navbar } from '@/components/MarketingLandingPage';
 
 const TOTAL_STEPS = 7;
 
@@ -232,7 +233,8 @@ export default function QuizPage() {
 
   return (
     <main className="min-h-screen" style={{ background: C.bg, color: C.fg }}>
-      <div className="px-5 sm:px-6 pt-8">
+      <Navbar />
+      <div className="px-5 sm:px-6 pt-24">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-sm hover:underline"

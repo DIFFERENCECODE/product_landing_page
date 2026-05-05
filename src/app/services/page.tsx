@@ -22,6 +22,7 @@ import {
   Cpu,
 } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
+import { Navbar } from '@/components/MarketingLandingPage';
 
 export const metadata: Metadata = {
   title: 'Services — Meterbolic',
@@ -88,8 +89,9 @@ const DIFFERENTIATORS = [
 export default function ServicesPage() {
   return (
     <main className="min-h-screen" style={{ background: C.bg, color: C.fg }}>
+      <Navbar />
       {/* Back to home */}
-      <div className="px-5 sm:px-6 pt-8">
+      <div className="px-5 sm:px-6 pt-24">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-sm hover:underline"

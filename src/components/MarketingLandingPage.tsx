@@ -163,7 +163,7 @@ function SectionHeader({
 }
 
 // ─── Navbar ──────────────────────────────────────────────────────────
-function Navbar() {
+export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -183,10 +183,16 @@ function Navbar() {
     }
   }, [menuOpen]);
 
+  // Real routes. Anchor links (#tiers, #faq) only work when the user
+  // is on /, so the global nav now points at full pages — every link
+  // resolves the same way from anywhere on the site.
   const links = [
-    { label: 'How it works', href: '#how-it-works' },
-    { label: 'Pricing', href: '#tiers' },
-    { label: 'FAQ', href: '#faq' },
+    { label: 'About', href: '/about' },
+    { label: 'How it works', href: '/how-it-works' },
+    { label: 'Services', href: '/services' },
+    { label: 'Partners', href: '/partners' },
+    { label: 'Pricing', href: '/pricing' },
+    { label: 'Chat', href: '/chat' },
   ];
 
   return (
@@ -213,7 +219,7 @@ function Navbar() {
           <DropletIcon size={22} />
         </Link>
 
-        <div className="hidden md:flex items-center gap-7">
+        <div className="hidden lg:flex items-center gap-6">
           {links.map((l) => (
             <a
               key={l.href}
@@ -237,7 +243,7 @@ function Navbar() {
           </Link>
           <button
             onClick={() => setMenuOpen(true)}
-            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg"
+            className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg"
             style={{ color: C.fg, border: `1px solid ${C.border}` }}
             aria-label="Open menu"
           >
@@ -254,7 +260,7 @@ function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden fixed inset-0 z-[60] flex flex-col"
+            className="lg:hidden fixed inset-0 z-[60] flex flex-col"
             style={{ background: 'rgba(10,31,26,0.96)', backdropFilter: 'blur(16px)' }}
           >
             <div className="flex items-center justify-between px-6 py-4">

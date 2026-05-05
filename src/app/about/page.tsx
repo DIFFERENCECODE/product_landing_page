@@ -11,6 +11,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Mail, Twitter, Linkedin, Instagram } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
+import { Navbar } from '@/components/MarketingLandingPage';
 
 export const metadata: Metadata = {
   title: 'About — Meterbolic',
@@ -174,7 +175,8 @@ function PersonCard({ photo, name, role, bio }: { photo: string; name: string; r
 export default function AboutPage() {
   return (
     <main className="min-h-screen" style={{ background: C.bg, color: C.fg }}>
-      <div className="px-5 sm:px-6 pt-8">
+      <Navbar />
+      <div className="px-5 sm:px-6 pt-24">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-sm hover:underline"
