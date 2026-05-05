@@ -69,6 +69,7 @@ import {
 } from '@/lib/kitProducts';
 import { BioAgeDial, KraftCurve, EbookCover, LipidDroplet } from './Visuals';
 import { C } from '@/lib/design-tokens';
+import { PeopleCarousel } from './PeopleCarousel';
 
 // ─── Logo mark ───────────────────────────────────────────────────────
 function DropletIcon({ size = 20 }: { size?: number }) {
@@ -2757,7 +2758,7 @@ export default function MarketingLandingPage() {
       <BenefitsSection />
       <NumbersVsInsightsSection />
       <TestimonialsSection />
-      <PartnersSection />
+      <PeopleCarousel />
       <GuaranteeSection />
       <FAQSection />
       <CloserSection />
