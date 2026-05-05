@@ -115,9 +115,9 @@ export default function AboutPage() {
         <PeopleCarousel />
       </div>
 
-      {/* Investors */}
+      {/* Investors / partners */}
       <section className="px-5 sm:px-6 py-16 sm:py-24">
-        <div className="max-w-3xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center">
           <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>
             Backed by
           </p>
@@ -127,9 +127,25 @@ export default function AboutPage() {
           >
             Leading <span style={{ color: C.primary }}>health innovators</span>.
           </h2>
-          <p className="text-base" style={{ color: C.muted }}>
-            We&apos;re proud to be supported by visionary investors who share our mission.
+          <p className="text-base mb-12" style={{ color: C.muted }}>
+            We&apos;re proud to be supported by visionary investors and partners who share our mission.
           </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5 items-center">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                className="rounded-xl flex items-center justify-center p-5"
+                style={{ background: C.bgCard, border: `1px solid ${C.border}`, minHeight: 90 }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/partner-banner-${i}.png`}
+                  alt={`Partner ${i}`}
+                  className="max-h-12 w-auto object-contain opacity-90"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
