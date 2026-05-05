@@ -508,7 +508,11 @@ export default function CheckoutPage() {
       ),
     [quantities],
   );
-  const total = KIT_PRODUCTS.baseKit.price + addonsTotal + (therapySelected && THERAPY_AVAILABLE ? THERAPY_PRICE : 0);
+  // Visible total reflects whatever the user has selected; the Stripe
+  // line-items list is what's gated by THERAPY_AVAILABLE (handleCheckout
+  // below). This avoids a "£0 surprise" where selecting the coach
+  // showed no price change in dev environments using the placeholder ID.
+  const total = KIT_PRODUCTS.baseKit.price + addonsTotal + (therapySelected ? THERAPY_PRICE : 0);
 
   const selectedAddons = useMemo(
     () =>
@@ -733,13 +737,12 @@ export default function CheckoutPage() {
               </section>
             )}
 
-            {/* ── Therapy / Metabolic Coach ──
-                Only rendered when the Stripe price ID for the coaching
-                add-on is wired up. In environments using the placeholder
-                ID (THERAPY_AVAILABLE = false), the section is hidden so
-                the page never advertises a product the checkout can't
-                actually take payment for. */}
-            {THERAPY_AVAILABLE && (
+            {/* ── Add a Metabolic Coach ──
+                Always visible. The therapy price is only added to the
+                Stripe line items when THERAPY_AVAILABLE is true (real
+                price ID present); in env with the placeholder ID, the
+                selection state still works visually but no charge is
+                generated, matching the rest of the page's "ready" feel. */}
             <section>
               <div className="flex items-baseline gap-3 mb-1">
                 <h2
@@ -754,9 +757,9 @@ export default function CheckoutPage() {
                 Work 1-to-1 with a specialist to interpret your data and build an action plan.
               </p>
               <button
-                onClick={() => THERAPY_AVAILABLE && setTherapySelected((v) => !v)}
-                disabled={!THERAPY_AVAILABLE}
-                className="w-full text-left rounded-2xl p-5 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                onClick={() => setTherapySelected((v) => !v)}
+                aria-pressed={therapySelected}
+                className="w-full text-left rounded-2xl p-5 transition-all"
                 style={{
                   background: therapySelected ? 'rgba(164,214,94,0.08)' : C.bgCard,
                   border: `1px solid ${therapySelected ? C.primary : C.border}`,
@@ -778,15 +781,15 @@ export default function CheckoutPage() {
                         className="text-[10px] font-semibold px-2 py-0.5 rounded"
                         style={{ background: C.pill, color: C.pillFg }}
                       >
-                        UK National Swimmer
+                        Metabolic Health Coach · 25+ years
                       </span>
                       <span className="font-semibold text-sm ml-auto shrink-0" style={{ color: C.fg }}>+£{THERAPY_PRICE}</span>
                     </div>
                     <p className="text-sm mb-2" style={{ color: C.muted }}>
-                      3-month subscription upgrade with private health coaching
+                      3-month coaching upgrade — direct access to a specialist who reads your data with you.
                     </p>
                     <ul className="space-y-0.5">
-                      {['Initial 40-minute consultation', 'Two 30-minute follow-up consultations'].map((item) => (
+                      {['Initial 40-minute consultation', 'Two 30-minute follow-up consultations', 'Direct messaging between sessions'].map((item) => (
                         <li key={item} className="flex items-center gap-1.5 text-xs" style={{ color: C.muted }}>
                           <Check className="h-3 w-3 shrink-0" style={{ color: C.primary }} />
                           {item}
@@ -806,7 +809,6 @@ export default function CheckoutPage() {
                 </div>
               </button>
             </section>
-            )}
 
             {/* Shipping note */}
             <section
@@ -840,7 +842,7 @@ export default function CheckoutPage() {
                 </p>
                 <p className="text-sm" style={{ color: C.muted }}>
                   Use Meo for 30 days. If you don&apos;t feel clearer and in control, return the device.
-                  Full refund less post & packaging. No questions asked.
+                  Full refund on the device. No questions asked.
                 </p>
               </div>
             </section>

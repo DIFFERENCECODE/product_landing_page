@@ -326,11 +326,6 @@ function Navbar() {
 //   - horizontally-scrolling feature strip with checkmarks at the
 //     bottom (radial fade on edges, drag-to-scroll on touch, hidden
 //     native scrollbar)
-// Single brand-green pill gradient. Static (no per-visit randomness)
-// so SSR and CSR render identical markup — fixes the hydration warning
-// the random version was throwing.
-const PILL_GRADIENT = 'linear-gradient(135deg, #a4d65e 0%, #2d6a4f 100%)';
-
 function Hero() {
   const [stockAvailable, setStockAvailable] = useState<boolean | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -395,29 +390,7 @@ function Hero() {
             letterSpacing: '-0.02em',
           }}
         >
-          See what your{' '}
-          <span
-            className="inline-flex align-middle rounded-full overflow-hidden mx-1 sm:mx-2 items-center justify-center"
-            style={{
-              width: 'clamp(80px, 11vw, 140px)',
-              height: 'clamp(50px, 7vw, 86px)',
-              background: PILL_GRADIENT,
-              border: `1px solid ${C.border}`,
-              verticalAlign: '-0.18em',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.25)',
-            }}
-            aria-hidden
-          >
-            <Image
-              src="/lipid-meter.png"
-              alt=""
-              width={183}
-              height={300}
-              className="h-[88%] w-auto object-contain"
-              priority
-            />
-          </span>{' '}
-          cholesterol
+          See what your cholesterol
           <br className="hidden sm:block" />
           <span> is </span>
           <span style={{ color: C.primary }}>actually</span> telling you.
@@ -470,11 +443,13 @@ function Hero() {
           </a>
         </motion.div>
 
-        <p className="text-[12px] mt-4 max-w-md mx-auto" style={{ color: C.muted }}>
-          Meo is a wellness monitoring tool — not a medical device. Always consult your GP.
-        </p>
-        <p className="text-xs mt-3" style={{ color: C.muted }}>
-          Lipid meter included free · 30-day money-back guarantee
+        {/* Wellness disclaimer relocated to footer + FAQ #5; the
+            detailed TrustPanel directly below this hero now carries
+            every regulatory and risk-reversal claim. The compact
+            trust bar that briefly lived here was redundant with that
+            panel — removed in this pass. */}
+        <p className="text-xs mt-5" style={{ color: C.muted }}>
+          Lipid meter included free · Ships in 72 hours
         </p>
         <UrgencyBadge />
       </div>
@@ -500,7 +475,7 @@ function TrustPanel() {
     {
       icon: <Heart className="h-5 w-5" />,
       label: '30-day money-back',
-      sub: 'Send it back, full refund, no questions',
+      sub: 'Full refund on the device, no questions asked',
     },
     {
       icon: <Clock className="h-5 w-5" />,
@@ -510,11 +485,18 @@ function TrustPanel() {
   ];
   return (
     <section className="py-10 px-5 sm:px-6" style={{ background: C.bgDeep, borderBottom: `1px solid ${C.border}` }}>
+      {/* CSS Grid stretches every card in the row to the height of the
+          tallest card (default `align-items: stretch`). Each card is
+          itself a flex row that vertically centres its icon + text
+          group, and the text group is a flex column that centres the
+          heading + subtext as a unit — so cards with 1 line of subtext
+          and cards with 2 lines both centre cleanly inside the shared
+          row height. */}
       <div className="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4">
         {items.map((it, i) => (
           <div
             key={i}
-            className="flex items-start gap-3 rounded-xl px-4 py-3"
+            className="flex flex-row items-center justify-start gap-3 h-full rounded-xl px-4 py-3"
             style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
           >
             <div
@@ -523,7 +505,7 @@ function TrustPanel() {
             >
               {it.icon}
             </div>
-            <div className="min-w-0 leading-tight">
+            <div className="min-w-0 leading-tight flex flex-col justify-center">
               <div className="text-sm font-semibold" style={{ color: C.fg }}>{it.label}</div>
               <div className="text-xs mt-0.5" style={{ color: C.muted }}>{it.sub}</div>
             </div>
@@ -548,10 +530,14 @@ function ProblemSection() {
         <SectionHeader
           eyebrow="The visibility problem"
           title={<>Cholesterol changes daily. Most people check it once a year.</>}
-          subtitle="One reading a year. A 90-second conversation. By the time a number 'trends up', the process behind it has been quietly accelerating for half a decade. Meo brings the lab-grade Kraft-style insulin pattern home so you don't have to wait for the next annual blood draw to see what your metabolism is doing."
+          subtitle="One reading a year. A 90-second conversation. By the time a number 'trends up', the process behind it has been quietly accelerating for half a decade. Meo brings the lab-grade Kraft-style insulin pattern (a 5-stage pattern of insulin response that flags metabolic dysfunction years before standard blood sugar tests) home so you don't have to wait for the next annual blood draw to see what your metabolism is doing."
         />
 
-        <div className="mt-10 grid sm:grid-cols-2 gap-4">
+        {/* Same pattern as the trust bar: grid stretches all cards to
+            the row's tallest content; each card is a flex row with
+            vertically-centred icon + text so 1-line items and 2-line
+            items both sit in the middle of the shared row height. */}
+        <div className="mt-10 grid sm:grid-cols-2 gap-4 items-stretch">
           {items.map((it, i) => (
             <motion.div
               key={i}
@@ -559,11 +545,13 @@ function ProblemSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.07 }}
-              className="flex items-start gap-3 rounded-2xl p-5"
+              className="flex flex-row items-center justify-start gap-3 h-full rounded-2xl p-5"
               style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
             >
-              <AlertCircle className="h-5 w-5 mt-0.5 shrink-0" style={{ color: C.danger }} />
-              <p className="text-sm" style={{ color: C.fg }}>{it}</p>
+              <AlertCircle className="h-5 w-5 shrink-0" style={{ color: C.danger }} />
+              <div className="min-w-0 flex flex-col justify-center">
+                <p className="text-sm" style={{ color: C.fg }}>{it}</p>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -605,7 +593,7 @@ function WhyTestsFailSection() {
     [
       'Arrives as raw numbers',
       'You need to know: getting better, worse, or holding?',
-      'The world’s only metabolic-health AI explains every reading in plain English',
+      'An AI built specifically for metabolic health — explains every reading in plain English, in the context of your own baseline',
     ],
     [
       'Sits in a clinic / a queue / a fasting morning',
@@ -927,7 +915,7 @@ function BiomarkersSection() {
       <div className="max-w-5xl mx-auto text-center">
         <SectionHeader
           eyebrow="What Meo measures"
-          title={<>Six markers — Life Changing Visualisations — One drop of Blood</>}
+          title={<>Six markers · Life-changing visualisations · One drop of blood</>}
           subtitle="A lab-grade cholesterol panel — right on your kitchen table."
         />
         <div className="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -1696,6 +1684,7 @@ function TiersSection() {
       price: KIT_LITE.price,
       blurb: 'eBook + 7-day Meo AI trial. No device.',
       valueNote: 'Credit £29 toward Starter within 30 days.',
+      badge: 'Credit toward Starter',
       features: [
         'The Thin Book of Fat (digital)',
         '7-day Meo AI trial',
@@ -1716,8 +1705,12 @@ function TiersSection() {
         '6 months of Meo AI included',
         '20 test strips + lancets + carry case',
         'Biological Age Score + Target Score',
-        '30-day money-back guarantee',
       ],
+      // Monthly £29 sourced from OfferStackSection's "£29/month at
+      // the standard rate" line. Annual rate isn't published yet, so
+      // the post-bundle line stays monthly-only until the merchant
+      // confirms a yearly figure.
+      postBundle: 'After 6 months: continue with Meo AI from £29/month. Cancel any time.',
       cta: `Get Meo · ${formatGBP(KIT_PRODUCT.price)}`,
       href: '/checkout',
       featured: true,
@@ -1726,7 +1719,7 @@ function TiersSection() {
       name: 'Meo Coached',
       tagline: 'Add a human in the loop.',
       price: KIT_PRODUCT.price + THERAPY_ADDON.price,
-      blurb: 'Everything in Starter + 3 months of 1:1 metabolic coaching with Spencer Martin.',
+      blurb: 'Everything in Starter + 3 months of 1:1 metabolic coaching with Spencer Martin, our Metabolic Health Coach with 25+ years of experience.',
       valueNote: `Coaching alone is ${formatGBP(THERAPY_ADDON.price)} — same price here, paired with the full system.`,
       features: [
         'Everything in Meo Starter',
@@ -1748,7 +1741,8 @@ function TiersSection() {
           title={<>Three ways in. <span style={{ color: C.primary }}>Same destination.</span></>}
           subtitle="Lite to test the water. Starter is the full system. Coached adds 1:1 support if you want a human alongside the AI."
         />
-        <div className="mt-16 grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+
+        <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
           {tiers.map((t) => (
             <motion.div
               key={t.name}
@@ -1775,6 +1769,19 @@ function TiersSection() {
                   Most popular
                 </span>
               )}
+              {!t.featured && 'badge' in t && t.badge && (
+                <span
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide"
+                  style={{
+                    background: 'rgba(164,214,94,0.18)',
+                    color: C.primary,
+                    border: `1px solid ${C.primary}40`,
+                  }}
+                >
+                  <ArrowRight className="h-3 w-3" />
+                  {t.badge}
+                </span>
+              )}
               <div className="text-sm font-semibold mb-1" style={{ color: C.pillFg }}>{t.name}</div>
               <div className="text-base mb-5" style={{ color: C.muted }}>{t.tagline}</div>
               <div className="flex items-baseline gap-1 mb-4">
@@ -1791,7 +1798,7 @@ function TiersSection() {
               </div>
               <p className="text-sm mb-3" style={{ color: C.muted }}>{t.blurb}</p>
               <p className="text-xs mb-5" style={{ color: C.primary }}>{t.valueNote}</p>
-              <ul className="space-y-2.5 mb-7 flex-1">
+              <ul className="space-y-2.5 mb-4 flex-1">
                 {t.features.map((f, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm" style={{ color: C.fg }}>
                     <Check className="h-4 w-4 mt-0.5 shrink-0" style={{ color: C.primary }} />
@@ -1799,6 +1806,11 @@ function TiersSection() {
                   </li>
                 ))}
               </ul>
+              {'postBundle' in t && t.postBundle && (
+                <p className="text-xs mb-7 leading-relaxed" style={{ color: C.muted }}>
+                  {t.postBundle}
+                </p>
+              )}
               <Link
                 href={t.href}
                 className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-opacity hover:opacity-90"
@@ -1827,12 +1839,12 @@ function BenefitsSection() {
     'Track a Biological Age Score that updates as you progress',
     'Catch the drift — not the diagnosis — years earlier',
     'Own your data. No monthly lab fees, no appointment waits',
-    '30-day money-back guarantee, no questions',
+    'Test as often as you want — no clinic, no fasting morning',
   ];
   return (
     <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bg }}>
       <div className="max-w-5xl mx-auto">
-        <SectionHeader eyebrow="Outcomes" title={<>What you actually walk away with.</>} />
+        <SectionHeader eyebrow="What you walk away with" title={<>What you actually walk away with.</>} />
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {items.map((b, i) => (
             <motion.div
@@ -1972,8 +1984,8 @@ const PARTNERS = [
   {
     photo: '/team-spencer.png',
     name: 'Spencer Martin',
-    title: 'Sales Manager',
-    bio: 'Over 25 years in pharmaceutical sales, specialising in diabetes therapies and coaching. Driving Meterbolic\'s commercial outreach and partner growth.',
+    title: 'Metabolic Health Coach',
+    bio: '25+ years in metabolic health and diabetes coaching. Leads the 1:1 coaching programme for Meo Coached members.',
   },
   {
     photo: '/team-andy.png',
@@ -1983,9 +1995,9 @@ const PARTNERS = [
   },
   {
     photo: '/team-saad.jpg',
-    name: 'Saad',
+    name: 'Saad Naeem',
     title: 'AI Specialist · CTO',
-    bio: 'Building the intelligence layer behind Meo — AI architecture, backend systems, and the data pipeline that turns a finger-prick into a metabolic picture.',
+    bio: 'Building the intelligence layer behind Meo — architecture, backend systems, and the data that turns a finger-prick into a metabolic picture.',
   },
   {
     photo: '/team-leonard.png',
@@ -2217,9 +2229,18 @@ function GuaranteeSection() {
           &ldquo;Start seeing, or send it back.&rdquo;
         </h2>
         <p className="text-base mb-8 max-w-xl mx-auto" style={{ color: C.muted }}>
-          Use Meo for 30 days. Take your readings. Watch your Biological Age Score update. If you don&apos;t feel clearer, in control, and like you finally understand what your body&apos;s been trying to tell you — return the device. Full refund less post & packaging. No questions asked.
+          Use Meo for 30 days. Take your readings. Watch your Biological Age Score update. If you don&apos;t feel clearer, in control, and like you finally understand what your body&apos;s been trying to tell you — return the device. Full refund on the device. No questions asked.
         </p>
         <CTAButton size="lg">Claim your risk-free 30 days <ArrowRight className="h-4 w-4" /></CTAButton>
+        <p className="text-xs mt-5" style={{ color: C.muted }}>
+          <Link href="#faq" className="underline">
+            See the refund FAQ
+          </Link>
+          {' · '}
+          <Link href="/terms#refund" className="underline">
+            Read full refund terms
+          </Link>
+        </p>
       </div>
     </section>
   );
@@ -2276,19 +2297,11 @@ function AddonsSection() {
 
 // ─── FAQ ─────────────────────────────────────────────────────────────
 function FAQSection() {
-  // Default-open the three highest-anxiety questions: AI trust,
-  // medical-device classification, and the "what if it doesn't work"
-  // refund question. Indices are pinned to FAQ_ITEMS in kitProducts.ts;
-  // all 11 answers are rendered to the DOM regardless of open state
-  // (collapsed via grid-template-rows: 0fr/1fr) so crawlers and screen
-  // readers get the full content.
-  const findIdx = (q: string) => FAQ_ITEMS.findIndex((i) => i.question === q);
-  const defaultOpen = [
-    findIdx('Can I trust the AI?'),
-    findIdx('Is this a medical device?'),
-    findIdx("What if it doesn't work for me?"),
-  ].filter((i) => i >= 0);
-  const [openSet, setOpenSet] = useState<Set<number>>(new Set(defaultOpen));
+  // All FAQ items collapsed on load. Answers still render to the DOM
+  // (visually clamped via the max-height transition) so crawlers and
+  // screen readers see the full content; only their visibility is
+  // toggled by user interaction.
+  const [openSet, setOpenSet] = useState<Set<number>>(new Set());
   const toggle = (i: number) => {
     setOpenSet((prev) => {
       const next = new Set(prev);
