@@ -213,10 +213,7 @@ export function Navbar() {
             src="/meterbolic-logo.png"
             alt="Meterbolic"
             className="h-5 w-auto"
-            style={{
-              display: 'block',
-              filter: 'brightness(1.25) saturate(1.15) drop-shadow(0 0 1px rgba(0,0,0,0.4))',
-            }}
+            style={{ display: 'block' }}
           />
         </Link>
 
@@ -2509,10 +2506,7 @@ export function Footer() {
               src="/meterbolic-logo.png"
               alt="Meterbolic"
               className="h-5 w-auto"
-              style={{
-                display: 'block',
-                filter: 'brightness(1.25) saturate(1.15) drop-shadow(0 0 1px rgba(0,0,0,0.4))',
-              }}
+              style={{ display: 'block' }}
             />
           </Link>
           <p className="text-xs leading-relaxed" style={{ color: C.muted }}>
