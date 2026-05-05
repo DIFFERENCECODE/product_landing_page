@@ -52,81 +52,60 @@ export interface VendorTheme {
   cssVariables: Record<string, string>;
 }
 
-// Meterbolic Theme - Default teal/lime theme
+// Meterbolic Theme — aligned to the master C palette in
+// src/lib/design-tokens.ts so the chatbot UI inherits the same
+// brand colors as the marketing pages. Light + dark modes are
+// intentionally identical here: the master design has one mode,
+// dark, and the chatbot now follows suit when the Meterbolic
+// vendor is selected. Other vendor themes (Eos, etc.) keep their
+// independent palettes for white-label deployments.
+const _MASTER = {
+  primary: '#a4d65e',
+  primaryHover: '#8bc34a',
+  primaryForeground: '#0f2a1f',
+
+  background: '#1c4a40',
+  backgroundGradientStart: '#143730',
+  backgroundGradientMid: '#1c4a40',
+  backgroundGradientEnd: '#1c4a40',
+
+  card: 'rgba(30, 70, 60, 0.85)',
+  cardHover: 'rgba(38, 80, 68, 0.95)',
+  cardBorder: 'rgba(255, 255, 255, 0.14)',
+
+  foreground: '#f0ede6',
+  muted: '#c4bfb8',
+
+  accent: 'rgba(164, 214, 94, 0.18)',
+  accentHover: 'rgba(164, 214, 94, 0.28)',
+
+  success: '#22c55e',
+  warning: '#f59e0b',
+  error: '#ef4444',
+
+  chartPrimary: '#a4d65e',
+  chartSecondary: '#f59e0b',
+  chartTertiary: '#cdf08a',
+} as const;
+
 export const meterbolicTheme: VendorTheme = {
   id: 'meterbolic',
   name: 'Meterbolic',
   header: 'MeO',
   tagline: 'Your Metabolic Health AI Assistant',
-  // Light mode - Meterbolic branding (teal gradient)
-  colors: {
-    primary: '#a4d65e',
-    primaryHover: '#8bc34a',
-    primaryForeground: '#1a3a3a',
-    
-    background: '#1a3a3a',
-    backgroundGradientStart: '#1a3a3a',
-    backgroundGradientMid: '#264545',
-    backgroundGradientEnd: '#2a5555',
-    
-    card: 'rgba(40, 70, 70, 0.8)',
-    cardHover: 'rgba(50, 80, 80, 0.9)',
-    cardBorder: 'rgba(255, 255, 255, 0.1)',
-    
-    foreground: '#ffffff',
-    muted: 'rgba(255, 255, 255, 0.6)',
-    
-    accent: 'rgba(164, 214, 94, 0.15)',
-    accentHover: 'rgba(164, 214, 94, 0.25)',
-    
-    success: '#22c55e',
-    warning: '#f97316',
-    error: '#ef4444',
-    
-    chartPrimary: '#3b82f6',
-    chartSecondary: '#f97316',
-    chartTertiary: '#a4d65e',
-  },
-  // Dark mode - Gemini/GPT style (dark gray)
-  darkColors: {
-    primary: '#a4d65e',
-    primaryHover: '#8bc34a',
-    primaryForeground: '#1a1a1a',
-    
-    background: '#1a1a1a',
-    backgroundGradientStart: '#1a1a1a',
-    backgroundGradientMid: '#1a1a1a',
-    backgroundGradientEnd: '#1a1a1a',
-    
-    card: '#2f2f2f',
-    cardHover: '#3a3a3a',
-    cardBorder: 'rgba(255, 255, 255, 0.1)',
-    
-    foreground: '#e3e3e3',
-    muted: 'rgba(255, 255, 255, 0.5)',
-    
-    accent: 'rgba(164, 214, 94, 0.15)',
-    accentHover: 'rgba(164, 214, 94, 0.25)',
-    
-    success: '#22c55e',
-    warning: '#f97316',
-    error: '#ef4444',
-    
-    chartPrimary: '#3b82f6',
-    chartSecondary: '#f97316',
-    chartTertiary: '#a4d65e',
-  },
+  colors: { ..._MASTER },
+  darkColors: { ..._MASTER },
   cssVariables: {
-    '--vendor-primary': '#a4d65e',
-    '--vendor-primary-hover': '#8bc34a',
-    '--vendor-primary-foreground': '#1a3a3a',
-    '--vendor-background': '#2C5858',
-    '--vendor-background-gradient': 'linear-gradient(180deg, #2a5555 0%, #1e4444 40%, #1a3a3a 100%)',
-    '--vendor-card': 'rgba(40, 70, 70, 0.8)',
-    '--vendor-card-border': 'rgba(255, 255, 255, 0.1)',
-    '--vendor-foreground': '#ffffff',
-    '--vendor-muted': 'rgba(255, 255, 255, 0.6)',
-    '--vendor-accent': 'rgba(164, 214, 94, 0.15)',
+    '--vendor-primary': _MASTER.primary,
+    '--vendor-primary-hover': _MASTER.primaryHover,
+    '--vendor-primary-foreground': _MASTER.primaryForeground,
+    '--vendor-background': _MASTER.background,
+    '--vendor-background-gradient': `linear-gradient(180deg, ${_MASTER.backgroundGradientStart} 0%, ${_MASTER.backgroundGradientMid} 50%, ${_MASTER.backgroundGradientEnd} 100%)`,
+    '--vendor-card': _MASTER.card,
+    '--vendor-card-border': _MASTER.cardBorder,
+    '--vendor-foreground': _MASTER.foreground,
+    '--vendor-muted': _MASTER.muted,
+    '--vendor-accent': _MASTER.accent,
   },
 };
 
