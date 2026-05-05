@@ -222,10 +222,35 @@ export default function QuizPage() {
     }
   })();
 
-  const next = () => {
+  const next = async () => {
     if (!stepValid) return;
-    if (step < TOTAL_STEPS) setStep((s) => s + 1);
-    else setDone(true);
+    if (step < TOTAL_STEPS) {
+      setStep((s) => s + 1);
+      return;
+    }
+    // Final step: post to waitlist endpoint with the email + the
+    // structured answers as the source. Fire-and-forget — UI shows
+    // the thank-you state regardless of whether the API succeeds, so
+    // a transient backend hiccup doesn't trap the user mid-flow.
+    setDone(true);
+    fetch('/api/waitlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: data.email,
+        source: 'quiz',
+        meta: {
+          first_name: data.first_name,
+          sex: data.sex,
+          hormone_stage: data.hormone_stage,
+          primary_goal: data.primary_goal,
+          symptoms: data.symptoms,
+          eating_pattern: data.eating_pattern,
+          emotional_context: data.emotional_context,
+          collection_preference: data.collection_preference,
+        },
+      }),
+    }).catch(() => {/* swallowed — UI already moved on */});
   };
   const back = () => setStep((s) => Math.max(1, s - 1));
 

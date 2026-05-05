@@ -11,6 +11,13 @@ export default function robots(): MetadataRoute.Robots {
         disallow: [
           '/api/',
           '/checkout/success', // session_id query param, no SEO value
+          '/admin',            // admin shell — gated client-side, never indexable
+          '/admin/',
+          '/auth-callback',    // post-auth landing, no SEO value
+          '/chat',              // chatbot UI — needs sign-in, not crawl-friendly
+          '/profile',
+          '/personalize',
+          '/activity',
         ],
       },
     ],

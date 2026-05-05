@@ -107,12 +107,27 @@ const PEOPLE: readonly Person[] = [
 ];
 
 function PersonCard({ p }: { p: Person }) {
+  // "Advisor" / "Team" chip — visitors should be able to tell at a
+  // glance whether someone runs the company or advises it. Inferred
+  // from the role string (any role containing "Advisor" is an advisor).
+  const isAdvisor = /Advisor/i.test(p.role);
   return (
     <div
       className="rounded-2xl flex flex-col h-full overflow-hidden"
       style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
     >
       <div className="relative w-full shrink-0" style={{ aspectRatio: '1/1', overflow: 'hidden' }}>
+        <span
+          className="absolute top-3 left-3 text-[10px] font-bold tracking-wide px-2 py-1 rounded-full z-10"
+          style={{
+            background: isAdvisor ? 'rgba(28, 74, 64, 0.85)' : C.primary,
+            color: isAdvisor ? C.fg : C.primaryFg,
+            border: isAdvisor ? `1px solid ${C.primary}` : 'none',
+            backdropFilter: 'blur(4px)',
+          }}
+        >
+          {isAdvisor ? 'Advisor' : 'Team'}
+        </span>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={p.photo}

@@ -207,7 +207,7 @@ export function Navbar() {
           borderBottom: scrolled ? `1px solid ${C.border}` : '1px solid transparent',
         }}
       >
-        <Link href="/" className="flex items-center" aria-label="Meterbolic home">
+        <Link href="/" className="flex items-center gap-2.5" aria-label="Meo by Meterbolic — home">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/meterbolic-logo.png"
@@ -215,6 +215,12 @@ export function Navbar() {
             className="h-5 w-auto"
             style={{ display: 'block' }}
           />
+          <span
+            className="text-xs px-2 py-0.5 rounded-full font-semibold tracking-wide"
+            style={{ background: C.pill, color: C.pillFg, border: `1px solid ${C.primary}40` }}
+          >
+            Meo
+          </span>
         </Link>
 
         <div className="hidden lg:flex items-center gap-6">
@@ -262,13 +268,21 @@ export function Navbar() {
             style={{ background: 'rgba(10,31,26,0.96)', backdropFilter: 'blur(16px)' }}
           >
             <div className="flex items-center justify-between px-6 py-4">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/meterbolic-logo.png"
-                alt="Meterbolic"
-                className="h-7 w-auto"
-                style={{ display: 'block' }}
-              />
+              <div className="flex items-center gap-2.5">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/meterbolic-logo.png"
+                  alt="Meterbolic"
+                  className="h-5 w-auto"
+                  style={{ display: 'block' }}
+                />
+                <span
+                  className="text-xs px-2 py-0.5 rounded-full font-semibold tracking-wide"
+                  style={{ background: C.pill, color: C.pillFg, border: `1px solid ${C.primary}40` }}
+                >
+                  Meo
+                </span>
+              </div>
               <button
                 onClick={() => setMenuOpen(false)}
                 className="flex items-center justify-center w-10 h-10 rounded-lg"
@@ -456,7 +470,7 @@ function TrustPanel() {
     {
       icon: <Shield className="h-5 w-5" />,
       label: 'UK & EU IVDR Registered',
-      sub: '1 of only 3 lipid meters cleared for home use',
+      sub: 'Cleared for home use in the UK & EU',
     },
     {
       icon: <Activity className="h-5 w-5" />,
@@ -2500,7 +2514,7 @@ export function Footer() {
       {/* Top section: brand + 3 link columns */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10 pb-8" style={{ borderBottom: `1px solid ${C.border}` }}>
         <div>
-          <Link href="/" className="inline-flex items-center mb-3" aria-label="Meterbolic home">
+          <Link href="/" className="inline-flex items-center gap-2.5 mb-3" aria-label="Meo by Meterbolic — home">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/meterbolic-logo.png"
@@ -2508,9 +2522,15 @@ export function Footer() {
               className="h-5 w-auto"
               style={{ display: 'block' }}
             />
+            <span
+              className="text-xs px-2 py-0.5 rounded-full font-semibold tracking-wide"
+              style={{ background: C.pill, color: C.pillFg, border: `1px solid ${C.primary}40` }}
+            >
+              Meo
+            </span>
           </Link>
           <p className="text-xs leading-relaxed" style={{ color: C.muted }}>
-            Metabolic Intelligence by Meterbolic.
+            Meo — the Metabolic Intelligence System by Meterbolic.
           </p>
         </div>
 
