@@ -109,24 +109,14 @@ const TEAM = [
     bio: 'Molecular biologist focused on metabolic dysfunction and sweetener science, advancing evidence-based innovation in diagnostics.',
   },
   {
-    name: 'Georgina Bostock',
-    role: 'Product Lead',
-    bio: "Leading product strategy, marketing, and partnerships to deliver growth and expand Meterbolic's impact in preventative health.",
-  },
-  {
     name: 'Prof Justin Tondt',
     role: 'Chief Medical Officer',
     bio: "Medical professional guiding Meterbolic's clinical protocols and ensuring scientific rigour in metabolic health interventions.",
   },
   {
     name: 'Erik Kettschick',
-    role: 'UX/UI and Product Designer',
+    role: 'UX/UI Designer',
     bio: 'Specialises in visual identity and product design, creating user-friendly digital experiences and graphics that bring the Meterbolic brand to life.',
-  },
-  {
-    name: 'Luigi Maretto',
-    role: 'Web UI/UX Developer',
-    bio: 'Specialist in designing and developing intuitive user interfaces and digital experiences, building seamless web platforms for health and wellness applications.',
   },
   {
     name: 'Lechenu Iyoko',
