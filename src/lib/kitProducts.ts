@@ -161,7 +161,7 @@ export const BIOMARKERS = [
   { abbr: 'Total Cholesterol', label: 'Overall lipid load' },
   { abbr: 'LDL', label: 'Atherogenic cholesterol' },
   { abbr: 'HDL', label: 'Protective cholesterol' },
-  { abbr: 'Triglyceride', label: 'Blood fat from diet & liver' },
+  { abbr: 'Triglycerides', label: 'Blood fat from diet & liver' },
   { abbr: 'TG:HDL', label: 'Insulin resistance marker' },
   { abbr: 'BAS', label: 'Biological Age Score' },
 ] as const;

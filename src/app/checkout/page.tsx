@@ -471,7 +471,10 @@ function MobilePayBar({ total, onPay, isPending, glucoseSelected }: { total: num
 
 // ─── Page ─────────────────────────────────────────────────────────────
 export default function CheckoutPage() {
-  const [glucoseSelection, setGlucoseSelection] = useState<string | null>(null);
+  // Default to "own" — the no-add-on path. Pay button is therefore
+  // active on first paint. Choosing MultiMeter or CGM still works
+  // (handleGlucoseSelect swaps the addon and re-flags selection).
+  const [glucoseSelection, setGlucoseSelection] = useState<string | null>('own');
   const [quantities, setQuantities] = useState<Record<string, number>>(
     Object.fromEntries(KIT_PRODUCTS.addons.map((a) => [a.id, 0])),
   );
@@ -604,8 +607,7 @@ export default function CheckoutPage() {
           Complete your order
         </h1>
         <p className="text-base mb-8 sm:mb-10 max-w-2xl" style={{ color: C.muted }}>
-          Pay with card. We&apos;ll automatically add you to the Meo AI waitlist —
-          you&apos;ll be first to know when your account is ready.
+          Pay with card. Your Meo AI account is set up the moment your order ships, and your kit arrives within 72 hours.
         </p>
 
         <div className="mb-6 sm:mb-8">
@@ -731,7 +733,13 @@ export default function CheckoutPage() {
               </section>
             )}
 
-            {/* ── Therapy / Metabolic Coach ── */}
+            {/* ── Therapy / Metabolic Coach ──
+                Only rendered when the Stripe price ID for the coaching
+                add-on is wired up. In environments using the placeholder
+                ID (THERAPY_AVAILABLE = false), the section is hidden so
+                the page never advertises a product the checkout can't
+                actually take payment for. */}
+            {THERAPY_AVAILABLE && (
             <section>
               <div className="flex items-baseline gap-3 mb-1">
                 <h2
@@ -772,11 +780,7 @@ export default function CheckoutPage() {
                       >
                         UK National Swimmer
                       </span>
-                      {THERAPY_AVAILABLE ? (
-                        <span className="font-semibold text-sm ml-auto shrink-0" style={{ color: C.fg }}>+£{THERAPY_PRICE}</span>
-                      ) : (
-                        <span className="text-xs font-semibold px-2 py-0.5 rounded ml-auto shrink-0" style={{ background: 'rgba(255,255,255,0.08)', color: C.muted }}>Coming Soon</span>
-                      )}
+                      <span className="font-semibold text-sm ml-auto shrink-0" style={{ color: C.fg }}>+£{THERAPY_PRICE}</span>
                     </div>
                     <p className="text-sm mb-2" style={{ color: C.muted }}>
                       3-month subscription upgrade with private health coaching
@@ -802,6 +806,7 @@ export default function CheckoutPage() {
                 </div>
               </button>
             </section>
+            )}
 
             {/* Shipping note */}
             <section

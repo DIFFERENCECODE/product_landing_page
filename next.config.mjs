@@ -2,6 +2,8 @@
 const nextConfig = {
   images: {
     remotePatterns: [],
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
   // No auth redirects — this is a public storefront only.

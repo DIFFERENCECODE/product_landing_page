@@ -36,11 +36,20 @@
 .marquee:hover .marquee-track {
   animation-play-state: paused;
 }
-/* Respect reduced-motion preferences. */
+/* Respect reduced-motion preferences globally — neutralises CSS
+   animations/transitions and pauses background video so visitors with
+   vestibular sensitivities aren't ambushed by autoplay motion. Framer
+   Motion entrance animations also fall back to instant when this is
+   set (handled per-component via `useReducedMotion`-friendly defaults). */
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track {
-    animation: none;
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
+  .marquee-track { animation: none; }
+  video[autoplay] { animation-play-state: paused; }
 }
 
 /* ─── Base typography scale ────────────────────────────────── */
@@ -98,11 +107,22 @@
 
   /* All headings use Bricolage Grotesque (--font-serif). Body keeps
      Cabinet Grotesk (--font-sans). Heavier weights + tight tracking
-     preserve hierarchy across the size scale. */
+     preserve hierarchy across the size scale.
+     `text-wrap: balance` distributes words evenly across heading lines
+     so we never strand a single word on the last line. */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-serif);
     font-weight: 700;
     letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  /* `text-wrap: pretty` prevents single-word widows on the last line
+     of body paragraphs (and avoids ugly hyphenation). Browsers that
+     don't recognise the value (older Firefox) fall back to `wrap`,
+     which is the previous behaviour — no regression. */
+  p, li, blockquote, figcaption {
+    text-wrap: pretty;
   }
 
   h1 {
