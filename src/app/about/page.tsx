@@ -66,21 +66,25 @@ const TIMELINE = [
 
 const ADVISORS = [
   {
+    photo: '/team-tim-noakes.png',
     name: 'Prof. Tim Noakes',
     role: 'Scientific Advisor',
     bio: "Emeritus Professor at UCT's Division of Exercise Science and Sports Medicine. Renowned for pioneering research in exercise physiology, nutrition, and low-carbohydrate science. Author and endurance athlete with 70+ marathons and ultramarathons.",
   },
   {
+    photo: '/team-robbert-slingerland.png',
     name: 'Dr. Robbert Slingerland',
     role: 'Scientific Advisor',
     bio: 'Chair of Clinical Chemistry Laboratories at Isala Klinieken, Zwolle (Netherlands) and Chair of the European Reference Laboratory. Specialist in clinical chemistry and biostatistics with extensive research into metabolic biomarkers.',
   },
   {
+    photo: '/team-david-jehring.png',
     name: 'David Jehring',
     role: 'Technology Advisor',
     bio: 'CEO and Founder of Black Pear Software. Healthcare technology leader with a background as CTO at Apollo Medical Systems Ltd, specialising in digital health integration.',
   },
   {
+    photo: '/team-isabella-cooper.png',
     name: 'Dr. Isabella Cooper',
     role: 'Research Advisor',
     bio: 'PhD in Biochemistry, Physiology and Pathophysiology. Researcher in hyperinsulinemia and ketogenic science, advising on metabolic disease mechanisms and nutritional interventions.',
@@ -89,61 +93,80 @@ const ADVISORS = [
 
 const TEAM = [
   {
+    photo: '/team-eric-smith.jpg',
     name: 'Dr. Eric Smith',
     role: 'Founder',
     bio: 'Innovative engineer and medical doctor who founded Meterbolic to revolutionize metabolic health diagnostics.',
   },
   {
+    photo: '/team-andy.png',
     name: 'Andy Taylor',
     role: 'Clinic Lead',
     bio: 'Former professional footballer turned metabolic health expert and UKSCA-accredited coach.',
   },
   {
+    photo: '/team-spencer.png',
     name: 'Spencer Martin',
     role: 'Sales Manager',
     bio: "Over 25 years in pharmaceutical sales, specialising in diabetes therapies and coaching. Driving Meterbolic's commercial outreach and partner growth.",
   },
   {
+    photo: '/team-gabor.png',
     name: 'Prof. Gabor Erdosi',
     role: 'Chief Metabolic Scientist',
     bio: 'Molecular biologist focused on metabolic dysfunction and sweetener science, advancing evidence-based innovation in diagnostics.',
   },
   {
+    photo: '/team-justin.png',
     name: 'Prof Justin Tondt',
     role: 'Chief Medical Officer',
     bio: "Medical professional guiding Meterbolic's clinical protocols and ensuring scientific rigour in metabolic health interventions.",
   },
   {
+    photo: '/team-erik.jpg',
     name: 'Erik Kettschick',
     role: 'UX/UI Designer',
     bio: 'Specialises in visual identity and product design, creating user-friendly digital experiences and graphics that bring the Meterbolic brand to life.',
   },
   {
+    photo: '/team-lech.jpeg',
     name: 'Lechenu Iyoko',
     role: 'AI Engineer',
     bio: 'Expert in machine learning algorithms and IT infrastructure, developing scalable AI solutions for personalised metabolic health.',
   },
   {
+    photo: '/team-bhanu.jpeg',
     name: 'Bhanu Rangavazzala',
     role: 'DevSecOps',
     bio: "Improving data infrastructure, rebuilding dashboards and developing AI training pipelines to support the company's analytics and product innovation.",
   },
   {
+    photo: '/team-helen.png',
     name: 'Helen MacGregor',
     role: 'Finance',
     bio: 'Trusted advisor who provides strategic insights, financial analysis, and risk management solutions to help organisations optimise performance and ensure compliance.',
   },
 ] as const;
 
-function PersonCard({ name, role, bio }: { name: string; role: string; bio: string }) {
+function PersonCard({ photo, name, role, bio }: { photo: string; name: string; role: string; bio: string }) {
   return (
     <div
-      className="rounded-2xl p-6 flex flex-col"
+      className="rounded-2xl flex flex-col h-full overflow-hidden"
       style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
     >
-      <h3 className="font-bold text-lg mb-1" style={{ color: C.fg, fontFamily: FONT_SERIF }}>{name}</h3>
-      <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.primary }}>{role}</p>
-      <p className="text-sm leading-relaxed" style={{ color: C.muted }}>{bio}</p>
+      <div className="relative w-full shrink-0" style={{ aspectRatio: '1/1', overflow: 'hidden' }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={photo}
+          alt={name}
+          className="absolute inset-0 w-full h-full object-cover object-top"
+        />
+      </div>
+      <div className="p-6 flex flex-col flex-1">
+        <h3 className="font-bold text-lg mb-1" style={{ color: C.fg, fontFamily: FONT_SERIF }}>{name}</h3>
+        <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.primary }}>{role}</p>
+        <p className="text-sm leading-relaxed" style={{ color: C.muted }}>{bio}</p>
+      </div>
     </div>
   );
 }
