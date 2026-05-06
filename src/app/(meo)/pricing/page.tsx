@@ -166,7 +166,7 @@ export default function PricingPage() {
               // model, but no longer drives button rendering).
               const checkoutHref =
                 plan.id === 'lite'
-                  ? '/checkout?plan=lite'
+                  ? '/checkout/lite'
                   : plan.id === 'coached'
                   ? '/checkout?addon=therapy-spencer'
                   : '/checkout';

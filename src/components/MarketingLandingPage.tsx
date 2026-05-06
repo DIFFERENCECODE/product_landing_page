@@ -1696,7 +1696,7 @@ function TiersSection() {
         'Manual entry of past blood results',
       ],
       cta: 'Start with the book',
-      href: '/checkout?plan=lite',
+      href: '/checkout/lite',
       featured: false,
     },
     {
