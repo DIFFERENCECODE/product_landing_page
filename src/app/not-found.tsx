@@ -2,7 +2,7 @@
 // 404 — Migrated from legacy diff/site/public_html/404.html.
 // Original behaviour: 3-second auto-redirect to /, with a countdown
 // and an Escape-key shortcut. Same behaviour preserved here, rebuilt
-// in the master design system (C palette + Bricolage type + brand
+// in the master design system (C palette + Manrope type + brand
 // trust voice). No legacy CSS, no Meta Pixel — those live in the
 // site-wide layout where appropriate.
 // ─────────────────────────────────────────────────────────────────────

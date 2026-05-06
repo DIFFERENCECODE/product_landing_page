@@ -81,19 +81,19 @@ export default function HowItWorksPage() {
   return (
     <main className="min-h-screen flex flex-col" style={{ background: C.bg, color: C.fg }}>
       <Navbar />
-      <div className="px-5 sm:px-6 pt-24">
+      <div className="px-5 sm:px-6 pt-20">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-sm hover:underline"
           style={{ color: C.muted }}
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Meo
+          Back to home
         </Link>
       </div>
 
       {/* Hero */}
-      <section className="px-5 sm:px-6 pt-16 sm:pt-24 pb-16 text-center">
+      <section className="px-5 sm:px-6 pt-4 sm:pt-6 pb-8 text-center">
         <p className="text-xs font-semibold tracking-wide mb-4" style={{ color: C.pillFg }}>
           How Meo works
         </p>

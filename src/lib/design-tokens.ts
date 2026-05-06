@@ -38,7 +38,7 @@ export const C = {
 } as const;
 
 export const FONT_SERIF =
-  'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif';
+  'var(--font-serif), -apple-system, BlinkMacSystemFont, sans-serif';
 
 export const FONT_SANS =
-  'var(--font-sans), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif';
+  'var(--font-sans), -apple-system, BlinkMacSystemFont, sans-serif';

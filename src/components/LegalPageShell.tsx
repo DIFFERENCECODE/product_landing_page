@@ -39,7 +39,7 @@ export function LegalPageShell({
           style={{ color: C.muted }}
         >
           <ArrowLeft className="h-3.5 w-3.5" />
-          Back to Meo
+          Back to home
         </Link>
         {eyebrow && (
           <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>

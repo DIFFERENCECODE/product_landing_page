@@ -177,7 +177,7 @@ export default function ProfilePage() {
       <div className="flex-1 p-6 overflow-auto">
         <div className="max-w-lg mx-auto">
           <Link href="/" className="inline-block mb-6 text-sm underline" style={{ color: colors.primary }}>
-            ← Back to MeO
+            ← Back to home
           </Link>
         <div
           className="rounded-2xl p-8 border"

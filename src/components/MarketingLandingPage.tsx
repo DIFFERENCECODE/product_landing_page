@@ -35,6 +35,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowRight,
@@ -45,7 +46,7 @@ import {
   BookOpen,
   MessageCircle,
   ChevronDown,
-  ShoppingCart,
+  LogIn,
   Mail,
   Brain,
   Clock,
@@ -147,7 +148,7 @@ function SectionHeader({
         className="font-extrabold mb-4 leading-tight"
         style={{
           color: C.fg,
-          fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif',
+          fontFamily: 'var(--font-serif), -apple-system, BlinkMacSystemFont, sans-serif',
           fontSize: 'clamp(28px, 4vw, 40px)',
           textWrap: 'balance',
         }}
@@ -167,9 +168,15 @@ function SectionHeader({
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.8);
+    // Trigger the blurred dark backdrop almost immediately on scroll
+    // so the nav text always sits on a legible background. Previous
+    // 0.8 × viewport-height threshold left the bar transparent through
+    // most of the hero, where content behind it kept changing colour
+    // and the white nav links became hard to read.
+    const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -188,6 +195,7 @@ export function Navbar() {
   // is on /, so the global nav now points at full pages — every link
   // resolves the same way from anywhere on the site.
   const links = [
+    { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
     { label: 'How it works', href: '/how-it-works' },
     { label: 'Services', href: '/services' },
@@ -196,12 +204,17 @@ export function Navbar() {
     { label: 'Chat', href: '/chat' },
   ];
 
+  // Match exact for "/" so it doesn't light up on every page; prefix-
+  // match for nested routes (e.g. /how-it-works/anything still counts).
+  const isActive = (href: string) =>
+    href === '/' ? pathname === '/' : pathname === href || pathname?.startsWith(href + '/');
+
   return (
     <>
       <nav
         className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 transition-all duration-300"
         style={{
-          background: scrolled ? 'rgba(28,74,64,0.72)' : 'transparent',
+          background: scrolled ? 'rgba(20,55,48,0.88)' : 'transparent',
           backdropFilter: scrolled ? 'blur(12px)' : 'none',
           WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
           borderBottom: scrolled ? `1px solid ${C.border}` : '1px solid transparent',
@@ -223,27 +236,57 @@ export function Navbar() {
           </span>
         </Link>
 
-        <div className="hidden lg:flex items-center gap-6">
-          {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="text-sm hover:opacity-80 transition-opacity"
-              style={{ color: C.fg }}
-            >
-              {l.label}
-            </a>
-          ))}
+        <div className="hidden lg:flex items-center gap-1">
+          {links.map((l) => {
+            const active = isActive(l.href);
+            return (
+              <Link
+                key={l.href}
+                href={l.href}
+                aria-current={active ? 'page' : undefined}
+                className="relative text-sm px-3 py-2 rounded-lg transition-colors hover:bg-white/5"
+                style={{
+                  color: active ? C.primary : C.fg,
+                  fontWeight: active ? 600 : 400,
+                }}
+              >
+                {l.label}
+                {active && (
+                  <motion.span
+                    layoutId="nav-active-underline"
+                    className="absolute left-2 right-2 -bottom-0.5 h-0.5 rounded-full"
+                    style={{
+                      background: C.primary,
+                      boxShadow: `0 0 12px ${C.primary}`,
+                    }}
+                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </Link>
+            );
+          })}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Secondary CTA — sends users to the Meo web app at
+              app.meterbolic.com (Cognito Hosted-UI handles login +
+              signup there). Hidden on small screens to avoid crowding
+              the primary "Get Meo" CTA; the mobile drawer carries it. */}
+          <a
+            href="https://app.meterbolic.com/"
+            className="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-xl font-semibold text-sm transition-colors hover:bg-white/5"
+            style={{ color: C.fg, border: `1px solid ${C.border}` }}
+          >
+            <LogIn className="h-4 w-4" />
+            <span>Sign in</span>
+          </a>
           <Link
-            href="/checkout"
+            href="/pricing"
             className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-opacity hover:opacity-90"
             style={{ background: C.primary, color: C.primaryFg }}
           >
-            <ShoppingCart className="h-4 w-4" />
-            <span className="hidden sm:inline">Get Meo</span>
+            <span>Get Meo</span>
+            <ArrowRight className="h-4 w-4" />
           </Link>
           <button
             onClick={() => setMenuOpen(true)}
@@ -292,22 +335,45 @@ export function Navbar() {
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="flex flex-col px-6 pt-8 gap-6">
-              {links.map((l) => (
-                <a
-                  key={l.href}
-                  href={l.href}
-                  onClick={() => setMenuOpen(false)}
-                  className="text-2xl font-semibold"
-                  style={{ color: C.fg }}
-                >
-                  {l.label}
-                </a>
-              ))}
+            <div className="flex flex-col px-6 pt-8 gap-2">
+              {links.map((l) => {
+                const active = isActive(l.href);
+                return (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    onClick={() => setMenuOpen(false)}
+                    aria-current={active ? 'page' : undefined}
+                    className="relative text-2xl font-semibold py-2 pl-4 rounded-lg transition-colors"
+                    style={{
+                      color: active ? C.primary : C.fg,
+                      background: active ? 'rgba(164,214,94,0.10)' : 'transparent',
+                    }}
+                  >
+                    {active && (
+                      <span
+                        className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full"
+                        style={{ background: C.primary, boxShadow: `0 0 10px ${C.primary}` }}
+                        aria-hidden
+                      />
+                    )}
+                    {l.label}
+                  </Link>
+                );
+              })}
+              <a
+                href="https://app.meterbolic.com/"
+                onClick={() => setMenuOpen(false)}
+                className="mt-6 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-base"
+                style={{ color: C.fg, border: `1px solid ${C.primary}` }}
+              >
+                <LogIn className="h-4 w-4" />
+                Sign in
+              </a>
               <Link
                 href="/checkout"
                 onClick={() => setMenuOpen(false)}
-                className="mt-6 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-base"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-base"
                 style={{ background: C.primary, color: C.primaryFg }}
               >
                 Get Meo · {formatGBP(KIT_PRODUCT.price)} <ArrowRight className="h-4 w-4" />
@@ -333,6 +399,7 @@ export function Navbar() {
 //     native scrollbar)
 function Hero() {
   const [stockAvailable, setStockAvailable] = useState<boolean | null>(null);
+  const [showScrollCue, setShowScrollCue] = useState(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
@@ -356,6 +423,14 @@ function Hero() {
     );
     io.observe(v);
     return () => io.disconnect();
+  }, []);
+
+  // Hide the scroll cue once the user has started scrolling — it's a
+  // first-paint hint, not persistent chrome.
+  useEffect(() => {
+    const onScroll = () => setShowScrollCue(window.scrollY < 80);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
@@ -395,10 +470,10 @@ function Hero() {
             letterSpacing: '-0.02em',
           }}
         >
-          See what your cholesterol
+          Most chronic disease starts with
           <br className="hidden sm:block" />
-          <span> is </span>
-          <span style={{ color: C.primary }}>actually</span> telling you.
+          <span> </span>
+          <span style={{ color: C.primary }}>something invisible</span>.
         </motion.h1>
 
         {/* Subhead */}
@@ -406,11 +481,12 @@ function Hero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.15 }}
-          className="text-base sm:text-lg mx-auto mb-8 sm:mb-10 max-w-xl"
+          className="text-base sm:text-lg mx-auto mb-8 sm:mb-10 max-w-2xl"
           style={{ color: C.muted }}
         >
-          Meo turns a finger-prick into a complete metabolic picture —
-          interpreted by AI, framed for your longevity, and actionable the same day.
+          Meterbolic makes metabolic health measurable at home — so the trend is visible early,
+          not after a diagnosis. We build the meter, the AI that reads each result in plain English,
+          and the score that tracks your progress over time.
         </motion.p>
 
         {/* CTAs — primary button takes prominence; the secondary
@@ -432,32 +508,54 @@ function Hero() {
             </button>
           ) : (
             <Link
-              href="/checkout"
+              href="/how-it-works"
               className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl font-semibold transition-opacity hover:opacity-90 px-10 py-4 text-base"
               style={{ background: C.primary, color: C.primaryFg }}
             >
-              Get Meo · {formatGBP(KIT_PRODUCT.price)} <ArrowRight className="h-4 w-4" />
+              See how it works <ArrowRight className="h-4 w-4" />
             </Link>
           )}
-          <a
-            href="#tiers"
+          <Link
+            href="/about"
             className="hover:underline"
             style={{ color: C.muted, fontSize: 13 }}
           >
-            or compare all plans from {formatGBP(KIT_LITE.price)} →
-          </a>
+            or read about Meterbolic →
+          </Link>
         </motion.div>
-
-        {/* Wellness disclaimer relocated to footer + FAQ #5; the
-            detailed TrustPanel directly below this hero now carries
-            every regulatory and risk-reversal claim. The compact
-            trust bar that briefly lived here was redundant with that
-            panel — removed in this pass. */}
-        <p className="text-xs mt-5" style={{ color: C.muted }}>
-          Lipid meter included free · Ships in 72 hours
-        </p>
-        <UrgencyBadge />
       </div>
+
+      {/* Scroll cue — bouncing chevron that fades out after the user
+          scrolls past 80px. Click smooth-scrolls past the hero. */}
+      <AnimatePresence>
+        {showScrollCue && (
+          <motion.button
+            type="button"
+            onClick={() =>
+              window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })
+            }
+            aria-label="Scroll to next section"
+            className="absolute left-1/2 -translate-x-1/2 bottom-6 sm:bottom-10 z-10 flex flex-col items-center gap-1.5 rounded-full px-3 py-2 transition-colors hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a4d65e] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c4a40]"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
+            transition={{ duration: 0.3 }}
+            style={{ color: C.fg }}
+          >
+            <span className="text-[10px] uppercase tracking-[0.18em] opacity-70">
+              Scroll
+            </span>
+            <motion.span
+              animate={{ y: [0, 6, 0] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+              className="flex"
+              aria-hidden
+            >
+              <ChevronDown className="h-5 w-5" />
+            </motion.span>
+          </motion.button>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
@@ -561,7 +659,7 @@ function ProblemSection() {
           ))}
         </div>
 
-        <p className="mt-10 text-center text-lg font-medium" style={{ color: C.primary, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif' }}>
+        <p className="mt-10 text-center text-lg font-medium" style={{ color: C.primary, fontFamily: 'var(--font-serif), -apple-system, BlinkMacSystemFont, sans-serif' }}>
           That isn&apos;t a willpower problem. That&apos;s a visibility problem — and Meo fixes it.
         </p>
       </div>
@@ -684,7 +782,7 @@ function WhyTestsFailSection() {
           ))}
         </div>
         <p className="mt-10 text-center font-medium text-lg max-w-2xl mx-auto" style={{ color: C.fg }}>
-          The core problem isn&apos;t the test. It&apos;s the gap between <span style={{ color: C.primary }}>data</span> and <span style={{ color: C.primary }}>decision</span> — and that gap is what £149 of Meo closes.
+          The core problem isn&apos;t the test. It&apos;s the gap between <span style={{ color: C.primary }}>data</span> and <span style={{ color: C.primary }}>decision</span> — and that gap is what Meo closes.
         </p>
       </div>
     </section>
@@ -883,7 +981,7 @@ function OfferStackSection() {
             <div className="text-sm font-medium" style={{ color: C.fg }}>You pay</div>
             <div
               className="text-3xl font-extrabold tabular-nums"
-              style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif' }}
+              style={{ color: C.fg, fontFamily: 'var(--font-serif), -apple-system, BlinkMacSystemFont, sans-serif' }}
             >
               {formatGBP(price)}
             </div>
@@ -976,7 +1074,7 @@ function LipidTrackingSection() {
           <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>
             The device
           </p>
-          <h2 className="font-extrabold mb-5" style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(28px, 4vw, 36px)' }}>
+          <h2 className="font-extrabold mb-5" style={{ color: C.fg, fontFamily: 'var(--font-serif), -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(28px, 4vw, 36px)' }}>
             A lab&apos;s precision. Your kitchen table&apos;s convenience.
           </h2>
           <p className="text-base mb-8" style={{ color: C.muted }}>
@@ -1213,7 +1311,7 @@ function MeoAISection() {
           </div>
           <h2
             className="font-extrabold mb-4"
-            style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(32px, 5vw, 48px)' }}
+            style={{ color: C.fg, fontFamily: 'var(--font-serif), -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(32px, 5vw, 48px)' }}
           >
             An intelligence that speaks your<br />
             <span style={{ color: C.primary }}>biology</span> back to you.
@@ -1285,7 +1383,7 @@ function MeoAISection() {
         </div>
 
         <div className="text-center mt-14">
-          <p className="text-lg font-medium mb-6" style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif' }}>
+          <p className="text-lg font-medium mb-6" style={{ color: C.fg, fontFamily: 'var(--font-serif), -apple-system, BlinkMacSystemFont, sans-serif' }}>
             Your data, read aloud. Daily.
           </p>
           <CTAButton size="lg" href="#tiers">See plans <ArrowRight className="h-4 w-4" /></CTAButton>
@@ -1319,7 +1417,7 @@ function AppPreviewSection() {
           </p>
           <h2
             className="font-extrabold"
-            style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(26px, 4vw, 38px)' }}
+            style={{ color: C.fg, fontFamily: 'var(--font-serif), -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(26px, 4vw, 38px)' }}
           >
             Everything in one place — readings,<br className="hidden sm:block" />
             patterns, and your <span style={{ color: C.primary }}>AI coach</span>.
@@ -1557,7 +1655,7 @@ function GaugesPreviewSection() {
           </p>
           <h2
             className="font-extrabold mb-4"
-            style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(26px, 4vw, 38px)' }}
+            style={{ color: C.fg, fontFamily: 'var(--font-serif), -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(26px, 4vw, 38px)' }}
           >
             Every marker. All at once.<br className="hidden sm:block" />
             <span style={{ color: C.primary }}>Colour-coded to your range.</span>
@@ -1601,7 +1699,7 @@ function EbookSection() {
             <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>
               The action manual
             </p>
-            <h2 className="font-extrabold mb-5" style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(28px, 4vw, 36px)' }}>
+            <h2 className="font-extrabold mb-5" style={{ color: C.fg, fontFamily: 'var(--font-serif), -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(28px, 4vw, 36px)' }}>
               Insight without action is just <span style={{ color: C.primary }}>anxiety</span>.
             </h2>
             <p className="text-base mb-3" style={{ color: C.muted }}>
@@ -1696,7 +1794,7 @@ function TiersSection() {
         'Manual entry of past blood results',
       ],
       cta: 'Start with the book',
-      href: '/checkout/lite',
+      href: '/checkout?plan=lite',
       featured: false,
     },
     {
@@ -1930,7 +2028,7 @@ function NumbersVsInsightsSection() {
             ))}
           </div>
         </div>
-        <p className="text-center text-lg font-medium mt-10" style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif' }}>
+        <p className="text-center text-lg font-medium mt-10" style={{ color: C.fg, fontFamily: 'var(--font-serif), -apple-system, BlinkMacSystemFont, sans-serif' }}>
           Numbers change nothing. <span style={{ color: C.primary }}>Understanding</span> changes everything.
         </p>
         <div className="text-center mt-8">
@@ -2050,7 +2148,7 @@ function GuaranteeSection() {
         </p>
         <h2
           className="font-extrabold mb-4"
-          style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(28px, 4vw, 36px)' }}
+          style={{ color: C.fg, fontFamily: 'var(--font-serif), -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(28px, 4vw, 36px)' }}
         >
           &ldquo;Start seeing, or send it back.&rdquo;
         </h2>
@@ -2219,7 +2317,7 @@ function NewsletterSection() {
         </div>
         <h2
           className="font-extrabold mb-3"
-          style={{ color: C.fg, fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(26px, 4vw, 34px)' }}
+          style={{ color: C.fg, fontFamily: 'var(--font-serif), -apple-system, BlinkMacSystemFont, sans-serif', fontSize: 'clamp(26px, 4vw, 34px)' }}
         >
           Not ready to buy? Get the first chapter free.
         </h2>
@@ -2301,7 +2399,7 @@ function CloserSection() {
           className="font-extrabold mb-5"
           style={{
             color: C.fg,
-            fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif',
+            fontFamily: 'var(--font-serif), -apple-system, BlinkMacSystemFont, sans-serif',
             fontSize: 'clamp(28px, 4vw, 40px)',
           }}
         >
@@ -2570,7 +2668,7 @@ function ExitIntentOverlay() {
             <DropletIcon size={36} />
             <h2
               className="font-extrabold mt-4 mb-3 leading-tight"
-              style={{ color: C.fg, fontSize: 'clamp(22px, 4vw, 28px)', fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif' }}
+              style={{ color: C.fg, fontSize: 'clamp(22px, 4vw, 28px)', fontFamily: 'var(--font-serif), -apple-system, BlinkMacSystemFont, sans-serif' }}
             >
               Your metabolism <span style={{ color: C.primary }}>doesn&apos;t take a break.</span>
             </h2>

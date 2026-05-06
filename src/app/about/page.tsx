@@ -17,7 +17,7 @@ import { PeopleCarousel } from '@/components/PeopleCarousel';
 export const metadata: Metadata = {
   title: 'About — Meterbolic',
   description:
-    "Learn about Meterbolic's mission to prevent chronic disease through metabolic health optimization.",
+    "Learn about Meterbolic's mission to prevent chronic disease through metabolic health optimisation.",
 };
 
 const STATS = [
@@ -34,19 +34,19 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen" style={{ background: C.bg, color: C.fg }}>
       <Navbar />
-      <div className="px-5 sm:px-6 pt-24">
+      <div className="px-5 sm:px-6 pt-20">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-sm hover:underline"
           style={{ color: C.muted }}
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Meo
+          Back to home
         </Link>
       </div>
 
       {/* Hero */}
-      <section className="px-5 sm:px-6 pt-16 sm:pt-24 pb-16 text-center">
+      <section className="px-5 sm:px-6 pt-4 sm:pt-6 pb-8 text-center">
         <p className="text-xs font-semibold tracking-wide mb-4" style={{ color: C.pillFg }}>
           About Meterbolic
         </p>
@@ -83,7 +83,7 @@ export default function AboutPage() {
               Meterbolic was founded on the belief that metabolic dysfunction is at the root of most chronic diseases, and that by optimizing metabolism, we can prevent these conditions before they take hold.
             </p>
             <p>
-              Our platform combines continuous glucose monitoring, advanced AI, and personalized coaching to help people understand and improve their metabolic health in real-time.
+              Our platform combines continuous glucose monitoring, advanced AI, and personalised coaching to help people understand and improve their metabolic health in real-time.
             </p>
           </div>
         </div>
@@ -157,7 +157,7 @@ export default function AboutPage() {
             Join the metabolic health <span style={{ color: C.primary }}>revolution</span>.
           </h2>
           <p className="text-base mb-8" style={{ color: C.muted }}>
-            Be part of the movement to prevent chronic disease through early detection and personalized optimization.
+            Be part of the movement to prevent chronic disease through early detection and personalised optimisation.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link

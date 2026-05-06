@@ -2,15 +2,11 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-// Cabinet Grotesk is the primary face for the whole site. It is
-// hosted on Fontshare (not Google Fonts), so we load it via an
-// @import inside globals.css rather than next/font/google.
-//
-// Geist stays loaded as a system fallback that next/font sets up
-// behind the scenes — used if Cabinet Grotesk fails to load and the
-// system fallback chain in globals.css's :root rule is still
-// crawling. Geist Mono is reserved for any future numeric/monospaced
-// runs.
+// Manrope is the single primary face for the whole site (loaded via
+// the <link> tag in <head> so we can pick exact weights). Geist /
+// Geist Mono stay loaded as next/font system fallbacks behind the
+// scenes — used if Manrope fails to load before the system chain
+// in globals.css resolves.
 const geist = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -179,21 +175,14 @@ export default function RootLayout({
             />
           </>
         )}
-        {/* Typography — two faces, two CDNs:
-              - Cabinet Grotesk (Fontshare) for body
-              - Bricolage Grotesque (Google Fonts) for headings
-            Preconnect first so each TLS handshake is paid once. */}
-        <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://cdn.fontshare.com" crossOrigin="anonymous" />
+        {/* Typography — single-face Manrope (Google Fonts, OFL). Used
+            for both body and headings via the --font-sans/--font-serif
+            CSS variables in globals.css. */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           rel="stylesheet"
-          href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800&display=swap"
-        />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
         />
 
         {/* Meta Pixel — fires PageView on every navigation */}

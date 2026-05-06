@@ -266,7 +266,7 @@ export default function QuizPage() {
           style={{ color: C.muted }}
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Meo
+          Back to home
         </Link>
       </div>
 
@@ -284,7 +284,7 @@ export default function QuizPage() {
             Let&apos;s personalise your <span style={{ color: C.primary }}>test</span>.
           </h1>
           <p className="text-base mb-10" style={{ color: C.muted }}>
-            Answer a few quick questions so we can recommend the right kit and collection method.
+            Answer a few quick questions so we can recommend the right kit.
           </p>
 
           {!done ? (

@@ -69,19 +69,19 @@ export default function ServicesPage() {
   return (
     <main className="min-h-screen flex flex-col" style={{ background: C.bg, color: C.fg }}>
       <Navbar />
-      <div className="px-5 sm:px-6 pt-24">
+      <div className="px-5 sm:px-6 pt-20">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-sm hover:underline"
           style={{ color: C.muted }}
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Meo
+          Back to home
         </Link>
       </div>
 
       {/* Hero */}
-      <section className="px-5 sm:px-6 pt-16 sm:pt-24 pb-16 text-center">
+      <section className="px-5 sm:px-6 pt-4 sm:pt-6 pb-8 text-center">
         <p className="text-xs font-semibold tracking-wide mb-4" style={{ color: C.pillFg }}>
           What you get for £149
         </p>
@@ -134,25 +134,28 @@ export default function ServicesPage() {
       </section>
 
       {/* CTA */}
-      <section className="px-5 sm:px-6 py-20 text-center">
-        <div className="max-w-2xl mx-auto">
+      <section className="px-5 sm:px-6 py-20">
+        <div className="max-w-2xl mx-auto flex flex-col items-center text-center">
           <h2
-            className="font-extrabold mb-4 leading-tight"
+            className="font-extrabold mb-4 leading-tight text-center w-full"
             style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 40px)', textWrap: 'balance' }}
           >
             Six months. <span style={{ color: C.primary }}>One bundle</span>.
           </h2>
-          <p className="text-base mb-8" style={{ color: C.muted }}>
+          <p className="text-base mb-8 text-center w-full" style={{ color: C.muted }}>
             See the trend, not just the number.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="w-full flex flex-col items-center justify-center gap-3">
             <Link
               href="/checkout"
-              className="inline-flex items-center justify-center gap-2 rounded-xl font-semibold px-10 py-4 text-base transition-opacity hover:opacity-90"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl font-semibold px-10 py-4 text-base transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a4d65e] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c4a40]"
               style={{ background: C.primary, color: C.primaryFg }}
             >
               Get Meo · £149 <ArrowRight className="h-4 w-4" />
             </Link>
+            <p className="text-xs" style={{ color: C.muted, opacity: 0.75 }}>
+              30-day money-back · Free returns
+            </p>
             <Link
               href="/pricing"
               className="text-sm hover:underline"

@@ -16,7 +16,7 @@
 // ─────────────────────────────────────────────────────────────────────
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, MessageCircle, Mail } from 'lucide-react';
+import { ArrowLeft, ArrowRight, MessageCircle, Mail, LogIn, UserPlus } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 
@@ -27,11 +27,40 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
+// Build a Cognito Hosted-UI URL for the requested action. If the env
+// vars aren't configured we fall back to /auth-callback (which itself
+// gracefully redirects home), so the button is never broken.
+function buildAuthUrl(action: 'login' | 'signup'): string {
+  const domain = process.env.NEXT_PUBLIC_COGNITO_DOMAIN;
+  const clientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID;
+  const redirectUri = process.env.NEXT_PUBLIC_COGNITO_REDIRECT_URI;
+  if (!domain || !clientId || !redirectUri) return '/auth-callback';
+  const params = new URLSearchParams({
+    client_id: clientId,
+    response_type: 'code',
+    scope: 'openid email profile',
+    redirect_uri: redirectUri,
+  });
+  return `https://${domain}/${action}?${params.toString()}`;
+}
+
 export default function ChatPage() {
+  const loginHref = buildAuthUrl('login');
+  const signupHref = buildAuthUrl('signup');
   return (
     <main className="min-h-screen flex flex-col" style={{ background: C.bg, color: C.fg }}>
       <Navbar />
-      <section className="flex-1 flex items-center justify-center px-5 sm:px-6 py-24">
+      <div className="px-5 sm:px-6 pt-20">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-sm hover:underline"
+          style={{ color: C.muted }}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to home
+        </Link>
+      </div>
+      <section className="flex-1 flex flex-col items-center px-5 sm:px-6 pt-4 pb-16">
         <div className="max-w-2xl w-full text-center">
           <div
             className="w-14 h-14 rounded-2xl mx-auto mb-6 flex items-center justify-center"
@@ -54,8 +83,35 @@ export default function ChatPage() {
           >
             Meo AI is <span style={{ color: C.primary }}>opening up gradually</span>.
           </h1>
-          <p className="text-base sm:text-lg max-w-xl mx-auto mb-10" style={{ color: C.muted }}>
-            Right now, Meo&apos;s metabolic-health chat ships with the Meo Starter kit and to coached members. Pick any of these to get going:
+
+          {/* Primary auth CTAs — kit owners and coached members sign in
+              here; new visitors can create an account to be ready when
+              public access lands. URLs route to Cognito Hosted UI when
+              env vars are set, otherwise to /auth-callback. */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
+            <a
+              href={loginHref}
+              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl font-semibold px-8 py-3.5 text-sm transition-opacity hover:opacity-90"
+              style={{ background: C.primary, color: C.primaryFg }}
+            >
+              <LogIn className="h-4 w-4" />
+              Log in
+            </a>
+            <a
+              href={signupHref}
+              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl font-semibold px-8 py-3.5 text-sm transition-opacity hover:opacity-90"
+              style={{ color: C.fg, border: `1px solid ${C.primary}` }}
+            >
+              <UserPlus className="h-4 w-4" />
+              Sign up
+            </a>
+          </div>
+          <p className="text-xs mb-10" style={{ color: C.muted }}>
+            Already a kit owner or coached member? Log in. New here? Create an account.
+          </p>
+
+          <p className="text-sm font-semibold mb-4" style={{ color: C.fg }}>
+            Or get going another way:
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">

@@ -66,7 +66,7 @@ const PEOPLE: readonly Person[] = [
     photo: '/team-leonard.png',
     name: 'Leonard Lin',
     role: 'Product Supervisor',
-    bio: 'Overseeing product direction and ensuring every feature of Meo delivers real metabolic insight — from hardware integration to the AI conversation layer.',
+    bio: 'Overseeing product direction and ensuring every feature of Meo delivers real metabolic insight — from hardware integration to the AI conversation layer. Leonard is the man behind the world\'s leading Japanese translation AI model https://shisa.ai/ja/about/',
   },
   {
     photo: '/team-gabor.png',
@@ -143,7 +143,25 @@ function PersonCard({ p }: { p: Person }) {
           {p.role}
         </p>
         <p className="text-sm leading-relaxed" style={{ color: C.muted }}>
-          {p.bio}
+          {/* Auto-link any http(s) URLs inside a bio string so links
+              like the Shisa AI reference render as clickable anchors
+              instead of plain text. */}
+          {p.bio.split(/(https?:\/\/[^\s]+)/g).map((part, i) =>
+            /^https?:\/\//.test(part) ? (
+              <a
+                key={i}
+                href={part}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline break-all hover:text-white"
+                style={{ color: C.primary }}
+              >
+                {part}
+              </a>
+            ) : (
+              <span key={i}>{part}</span>
+            ),
+          )}
         </p>
       </div>
     </div>

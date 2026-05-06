@@ -10,6 +10,43 @@
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
 
+/* Page scrollbar styling.
+   Long landing pages collapse the scroll thumb to a tiny sliver — we
+   force a minimum height so the thumb always reads as a substantial
+   handle, and tint it to the brand lime so it sits in palette. macOS
+   Safari overlay scrollbars only honour width/height when permanently
+   visible, hence `scrollbar-gutter: stable` on the html element. */
+html {
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(164, 214, 94, 0.55) rgba(255, 255, 255, 0.04);
+}
+
+/* WebKit (Chrome / Safari / Edge) — fine-grained control. */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(164, 214, 94, 0.55);
+  border-radius: 999px;
+  /* Force the thumb to be a substantial handle, even on very long
+     pages where the natural proportional height would shrink to a
+     few pixels. */
+  min-height: 120px;
+  /* Inset border creates a thinner visible bar inside the track,
+     matching the modern "pill" scrollbar look. */
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(164, 214, 94, 0.85);
+  background-clip: content-box;
+}
+
 /* Marquee — infinite horizontal scroll for the hero feature strips.
    The inner row contains the items duplicated, so when the
    animation reaches -50% (half the duplicated track) it loops
@@ -78,20 +115,15 @@
     text-size-adjust: 100%;
   }
 
-  /* Two faces, semantic split:
-       - --font-sans  = Cabinet Grotesk (Fontshare) — body, UI, links
-       - --font-serif = Bricolage Grotesque (Google Fonts) — headings
-     The variable name '--font-serif' is kept so existing inline
-     styles in JSX resolve correctly without rename churn; Bricolage
-     Grotesque is a sans-serif display face, not literally a serif.
-     The fallback chain ends in 'sans-serif' to match its actual
-     style if both CDNs fail. */
+  /* Single-face Manrope system. Both `--font-sans` (body/UI) and
+     `--font-serif` (headings — variable name kept for backwards-compat
+     with JSX inline `fontFamily: 'var(--font-serif), …'` styles)
+     resolve to Manrope. */
   :root {
-    --font-sans: "Cabinet Grotesk", -apple-system, BlinkMacSystemFont,
+    --font-sans: "Manrope", -apple-system, BlinkMacSystemFont,
                  "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    --font-serif: "Bricolage Grotesque", "Cabinet Grotesk",
-                  -apple-system, BlinkMacSystemFont, "Segoe UI",
-                  Roboto, Helvetica, Arial, sans-serif;
+    --font-serif: "Manrope", -apple-system, BlinkMacSystemFont,
+                  "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
 
   body {
@@ -105,9 +137,9 @@
     font-family: var(--font-sans);
   }
 
-  /* All headings use Bricolage Grotesque (--font-serif). Body keeps
-     Cabinet Grotesk (--font-sans). Heavier weights + tight tracking
-     preserve hierarchy across the size scale.
+  /* All headings use Manrope via --font-serif (body uses --font-sans,
+     also Manrope — single-face system). Heavier weights + tight
+     tracking preserve hierarchy across the size scale.
      `text-wrap: balance` distributes words evenly across heading lines
      so we never strand a single word on the last line. */
   h1, h2, h3, h4, h5, h6 {
@@ -137,7 +169,7 @@
     font-weight: 600;
   }
 
-  /* h3-h5 inherit font-family from the h1..h6 rule above (Bricolage).
+  /* h3-h5 inherit font-family from the h1..h6 rule above (Manrope).
      Just adjust the per-size weight + tracking here. */
 
   h3 {

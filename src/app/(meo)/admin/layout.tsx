@@ -102,7 +102,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             style={{ color: colors.muted }}
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to MeO
+            Back to home
           </Link>
         </div>
       </aside>

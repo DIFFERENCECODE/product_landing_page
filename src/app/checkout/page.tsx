@@ -11,7 +11,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState, useTransition, useEffect } from 'react';
 import {
-  ShoppingCart,
   ArrowLeft,
   Minus,
   Plus,
@@ -30,12 +29,17 @@ import {
 } from 'lucide-react';
 import {
   KIT_PRODUCTS,
+  KIT_LITE,
   THERAPY_ADDON,
   type AddonProduct,
 } from '@/lib/kitProducts';
+import { Navbar, Footer } from '@/components/MarketingLandingPage';
 
 const THERAPY_PRICE = THERAPY_ADDON.price / 100; // £295
 const THERAPY_AVAILABLE = !THERAPY_ADDON.priceId.includes('placeholder');
+const LITE_PRICE = KIT_LITE.price / 100; // £29
+
+type Plan = 'lite' | 'starter' | 'coached';
 
 // ─── Brand colour tokens ──────────────────────────────────────────────
 const C = {
@@ -194,7 +198,31 @@ function HeroProductCard() {
     { icon: <Brain className="h-4 w-4" />, text: '6 months of Meo AI' },
     { icon: <Activity className="h-4 w-4" />, text: 'Lipid meter — bundled' },
     { icon: <Droplets className="h-4 w-4" />, text: '20 lipid test strips + lancets + carry case' },
-    { icon: <img src="/bas-logo.svg" alt="BAS" className="h-4 w-4" />, text: 'Biological Age Score included' },
+    {
+      // BAS PNG rendered as a CSS mask so it picks up currentColor
+      // from the wrapping span (C.primary). Sized h-5 w-5 so its
+      // tall 1.6:1 aspect renders to a width close to the lucide
+      // stroke icons next to it.
+      icon: (
+        <span
+          aria-label="BAS"
+          role="img"
+          className="inline-block h-5 w-5"
+          style={{
+            backgroundColor: 'currentColor',
+            WebkitMaskImage: 'url(/bas-icon.png)',
+            maskImage: 'url(/bas-icon.png)',
+            WebkitMaskSize: 'contain',
+            maskSize: 'contain',
+            WebkitMaskRepeat: 'no-repeat',
+            maskRepeat: 'no-repeat',
+            WebkitMaskPosition: 'center',
+            maskPosition: 'center',
+          }}
+        />
+      ),
+      text: 'Biological Age Score included',
+    },
     { icon: <BarChart2 className="h-4 w-4" />, text: 'Metabolic Data Visualisation Dashboard' },
     { icon: <FileText className="h-4 w-4" />, text: 'Reports & guidance to improve your vitality' },
   ];
@@ -210,23 +238,45 @@ function HeroProductCard() {
             className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
             style={{ background: C.pill, color: C.pillFg }}
           >
-            <DropletIcon size={12} /> Included in your order
+            <DropletIcon size={12} /> What Meo is
           </span>
           <h2
             className="mt-3 mb-2"
             style={{ color: C.fg, fontFamily: 'var(--font-serif)', fontSize: 'clamp(24px, 3vw, 30px)' }}
           >
-            {KIT_PRODUCTS.baseKit.name}
+            A metabolic intelligence system.
           </h2>
           <p className="text-sm" style={{ color: C.muted }}>
-            {KIT_PRODUCTS.baseKit.description}
+            A finger-prick at home, AI that reads each result in plain English, and a Biological
+            Age Score that updates with every reading — six months of metabolic visibility you can
+            actually act on.
+          </p>
+          <p className="text-xs mt-3 font-semibold tracking-wide" style={{ color: C.pillFg }}>
+            What&apos;s included
           </p>
         </div>
-        <ul className="space-y-2">
+        <ul className="space-y-2.5">
           {features.map((f, i) => (
-            <li key={i} className="flex items-center gap-2.5 text-sm" style={{ color: C.fg }}>
-              <span style={{ color: C.primary }}>{f.icon}</span>
-              {f.text}
+            // items-center keeps the icon on the visual midline of
+            // single-line copy (the dominant case here). A 24×24 icon
+            // column gives every glyph the same footprint, so the
+            // lucide stroke icons and the taller BAS mask read with
+            // matched optical weight even though their intrinsic
+            // shapes differ. shrink-0 stops the column collapsing
+            // when the text wraps on narrow widths.
+            <li
+              key={i}
+              className="flex items-center gap-3 text-sm leading-snug"
+              style={{ color: C.fg }}
+            >
+              <span
+                className="flex h-6 w-6 shrink-0 items-center justify-center"
+                style={{ color: C.primary }}
+                aria-hidden
+              >
+                {f.icon}
+              </span>
+              <span className="flex-1">{f.text}</span>
             </li>
           ))}
         </ul>
@@ -347,6 +397,7 @@ function AddonRow({
 
 // ─── Order summary ────────────────────────────────────────────────────
 function OrderSummary({
+  plan,
   selectedAddons,
   therapySelected,
   total,
@@ -355,6 +406,7 @@ function OrderSummary({
   error,
   glucoseSelected,
 }: {
+  plan: Plan;
   selectedAddons: { addon: AddonProduct; qty: number }[];
   therapySelected: boolean;
   total: number;
@@ -363,6 +415,26 @@ function OrderSummary({
   error: string | null;
   glucoseSelected: boolean;
 }) {
+  const isLite = plan === 'lite';
+  const isCoached = plan === 'coached';
+  // Coached presents as a single bundled line at £444 — the user sees
+  // the plan price, not a Starter + Spencer breakdown. Optional addons
+  // (e.g. CGM) still itemise below.
+  const headlinePrice = isLite
+    ? LITE_PRICE
+    : isCoached
+    ? KIT_PRODUCTS.baseKit.price + THERAPY_PRICE
+    : KIT_PRODUCTS.baseKit.price;
+  const headlineName = isLite
+    ? 'Meo Lite'
+    : isCoached
+    ? 'Meo Coached'
+    : KIT_PRODUCTS.baseKit.name;
+  const headlineSub = isLite
+    ? 'eBook + 7-day AI trial'
+    : isCoached
+    ? 'Complete bundle + 3-month coaching'
+    : 'Complete bundle';
   return (
     <div
       className="rounded-2xl p-5 sm:p-6 w-full overflow-hidden"
@@ -372,13 +444,15 @@ function OrderSummary({
 
       <div className="flex justify-between gap-3 mb-3 pb-3" style={{ borderBottom: `1px solid ${C.border}` }}>
         <div className="min-w-0">
-          <p className="font-semibold text-sm" style={{ color: C.fg }}>{KIT_PRODUCTS.baseKit.name}</p>
-          <p className="text-xs" style={{ color: C.muted }}>Complete bundle</p>
+          <p className="font-semibold text-sm" style={{ color: C.fg }}>{headlineName}</p>
+          <p className="text-xs" style={{ color: C.muted }}>{headlineSub}</p>
         </div>
-        <span className="font-semibold text-sm shrink-0" style={{ color: C.fg }}>£{KIT_PRODUCTS.baseKit.price}</span>
+        <span className="font-semibold text-sm shrink-0" style={{ color: C.fg }}>
+          £{headlinePrice}
+        </span>
       </div>
 
-      {(selectedAddons.length > 0 || therapySelected) && (
+      {!isLite && selectedAddons.length > 0 && (
         <div className="space-y-2 mb-3 pb-3" style={{ borderBottom: `1px solid ${C.border}` }}>
           {selectedAddons.map(({ addon, qty }) => (
             <div key={addon.id} className="flex justify-between gap-3 text-sm">
@@ -388,12 +462,22 @@ function OrderSummary({
               <span className="shrink-0" style={{ color: C.fg }}>£{addon.price * qty}</span>
             </div>
           ))}
-          {therapySelected && (
+          {!isCoached && therapySelected && (
             <div className="flex justify-between gap-3 text-sm">
               <span className="min-w-0" style={{ color: C.muted }}>Metabolic Coach — Spencer Martin</span>
               <span className="shrink-0" style={{ color: C.fg }}>£{THERAPY_PRICE}</span>
             </div>
           )}
+        </div>
+      )}
+      {/* Edge case: no glucose addon, but Spencer toggled on Starter
+          (without any other addon) — show Spencer on its own row. */}
+      {!isLite && !isCoached && therapySelected && selectedAddons.length === 0 && (
+        <div className="space-y-2 mb-3 pb-3" style={{ borderBottom: `1px solid ${C.border}` }}>
+          <div className="flex justify-between gap-3 text-sm">
+            <span className="min-w-0" style={{ color: C.muted }}>Metabolic Coach — Spencer Martin</span>
+            <span className="shrink-0" style={{ color: C.fg }}>£{THERAPY_PRICE}</span>
+          </div>
         </div>
       )}
 
@@ -413,7 +497,7 @@ function OrderSummary({
         <span className="text-2xl font-bold" style={{ color: C.fg }}>£{total}</span>
       </div>
 
-      {!glucoseSelected && (
+      {!isLite && !glucoseSelected && (
         <p className="text-xs text-center mb-3" style={{ color: C.muted }}>
           Select a glucose option above to continue
         </p>
@@ -421,7 +505,7 @@ function OrderSummary({
 
       <button
         onClick={onPay}
-        disabled={isPending || !glucoseSelected}
+        disabled={isPending || (!isLite && !glucoseSelected)}
         className="w-full inline-flex items-center justify-center gap-2 rounded-xl font-semibold text-base py-3.5 transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
         style={{ background: C.primary, color: C.primaryFg }}
       >
@@ -443,7 +527,8 @@ function OrderSummary({
 }
 
 // ─── Mobile Pay bar ───────────────────────────────────────────────────
-function MobilePayBar({ total, onPay, isPending, glucoseSelected }: { total: number; onPay: () => void; isPending: boolean; glucoseSelected: boolean }) {
+function MobilePayBar({ plan, total, onPay, isPending, glucoseSelected }: { plan: Plan; total: number; onPay: () => void; isPending: boolean; glucoseSelected: boolean }) {
+  const isLite = plan === 'lite';
   return (
     <div
       className="md:hidden fixed bottom-0 left-0 right-0 z-40 p-3 flex items-center gap-3"
@@ -459,7 +544,7 @@ function MobilePayBar({ total, onPay, isPending, glucoseSelected }: { total: num
       </div>
       <button
         onClick={onPay}
-        disabled={isPending || !glucoseSelected}
+        disabled={isPending || (!isLite && !glucoseSelected)}
         className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl font-semibold text-sm py-3 transition-opacity disabled:opacity-40"
         style={{ background: C.primary, color: C.primaryFg }}
       >
@@ -474,6 +559,7 @@ export default function CheckoutPage() {
   // Default to "own" — the no-add-on path. Pay button is therefore
   // active on first paint. Choosing MultiMeter or CGM still works
   // (handleGlucoseSelect swaps the addon and re-flags selection).
+  const [plan, setPlan] = useState<Plan>('starter');
   const [glucoseSelection, setGlucoseSelection] = useState<string | null>('own');
   const [quantities, setQuantities] = useState<Record<string, number>>(
     Object.fromEntries(KIT_PRODUCTS.addons.map((a) => [a.id, 0])),
@@ -482,17 +568,32 @@ export default function CheckoutPage() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  // Pre-select Spencer's coaching add-on when the user lands here
-  // from the "Meo Coached" tier card (which navigates with
-  // ?addon=therapy-spencer). Reads the URL directly to avoid forcing
-  // a Suspense boundary on the whole page for a single search param.
+  // Read URL query params on mount: `?plan=lite` → Lite downsell;
+  // `?plan=coached` (or legacy `?addon=therapy-spencer` from the
+  // Coached tier card) → Coached preset (Starter + Spencer locked-on).
+  // Reads window.location directly to avoid forcing a Suspense
+  // boundary on the whole page.
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const addon = new URLSearchParams(window.location.search).get('addon');
-    if (addon === 'therapy-spencer') {
+    const params = new URLSearchParams(window.location.search);
+    const planParam = params.get('plan');
+    if (planParam === 'lite') setPlan('lite');
+    else if (planParam === 'coached' || params.get('addon') === 'therapy-spencer') {
+      setPlan('coached');
       setTherapySelected(true);
     }
   }, []);
+
+  const isLite = plan === 'lite';
+  const isCoached = plan === 'coached';
+
+  // Coached plan force-locks the Spencer addon on. If the user toggles
+  // away from Coached we leave therapySelected as-is so they can keep
+  // it manually if they like. Switching INTO Coached force-enables it.
+  const handlePlanChange = (next: Plan) => {
+    setPlan(next);
+    if (next === 'coached') setTherapySelected(true);
+  };
 
   const handleGlucoseSelect = (optionId: string, addonId: string | null) => {
     // Remove previous glucose addon if switching
@@ -524,7 +625,10 @@ export default function CheckoutPage() {
   // line-items list is what's gated by THERAPY_AVAILABLE (handleCheckout
   // below). This avoids a "£0 surprise" where selecting the coach
   // showed no price change in dev environments using the placeholder ID.
-  const total = KIT_PRODUCTS.baseKit.price + addonsTotal + (therapySelected ? THERAPY_PRICE : 0);
+  // Lite is a flat £29 downsell — no addons, no glucose, no coach.
+  const total = isLite
+    ? LITE_PRICE
+    : KIT_PRODUCTS.baseKit.price + addonsTotal + (therapySelected ? THERAPY_PRICE : 0);
 
   const selectedAddons = useMemo(
     () =>
@@ -545,16 +649,20 @@ export default function CheckoutPage() {
     startTransition(async () => {
       setError(null);
       try {
-        const addons = KIT_PRODUCTS.addons
-          .filter((a) => (quantities[a.id] ?? 0) > 0)
-          .map((a) => ({ priceId: a.priceId, quantity: quantities[a.id] }));
-        if (therapySelected && THERAPY_AVAILABLE) {
-          addons.push({ priceId: THERAPY_ADDON.priceId, quantity: 1 });
+        const body: { plan?: 'lite'; addons: { priceId: string; quantity: number }[] } = isLite
+          ? { plan: 'lite', addons: [] }
+          : {
+              addons: KIT_PRODUCTS.addons
+                .filter((a) => (quantities[a.id] ?? 0) > 0)
+                .map((a) => ({ priceId: a.priceId, quantity: quantities[a.id] })),
+            };
+        if (!isLite && therapySelected && THERAPY_AVAILABLE) {
+          body.addons.push({ priceId: THERAPY_ADDON.priceId, quantity: 1 });
         }
         const res = await fetch('/api/kit-checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ addons }),
+          body: JSON.stringify(body),
         });
         if (!res.ok) {
           const j = await res.json().catch(() => ({}));
@@ -572,39 +680,11 @@ export default function CheckoutPage() {
 
   return (
     <div style={{ background: C.bg, minHeight: '100vh' }}>
-      {/* Navbar */}
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 sm:px-6 py-4"
-        style={{
-          background: 'rgba(28,74,64,0.92)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: `1px solid ${C.border}`,
-        }}
-      >
-        <Link href="/" className="flex items-center gap-1.5" aria-label="Meo home">
-          <span
-            className="text-xl font-bold tracking-tight"
-            style={{
-              color: C.fg,
-              fontFamily: 'var(--font-serif), "Cabinet Grotesk", -apple-system, BlinkMacSystemFont, sans-serif',
-            }}
-          >
-            Meo
-          </span>
-          <DropletIcon size={22} />
-          <span className="hidden sm:inline text-xs ml-2 tracking-wide" style={{ color: C.muted }}>
-            Metabolic Intelligence
-          </span>
-        </Link>
-        <Link
-          href="/checkout"
-          aria-label="Go to checkout"
-          className="flex items-center justify-center p-2.5 rounded-xl transition-opacity hover:opacity-90"
-          style={{ background: C.primary, color: C.primaryFg }}
-        >
-          <ShoppingCart className="h-5 w-5" />
-        </Link>
-      </nav>
+      {/* Global navbar — same Home / About / How it works / Services /
+          Partners / Pricing / Chat links the rest of the site uses,
+          plus Sign in + Get Meo CTAs. Replaces the previous custom
+          checkout-only nav. */}
+      <Navbar />
 
       {/* Body */}
       <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 pt-20 sm:pt-24 pb-32 md:pb-16">
@@ -622,13 +702,112 @@ export default function CheckoutPage() {
         >
           Complete your order
         </h1>
-        <p className="text-base mb-8 sm:mb-10 max-w-2xl" style={{ color: C.muted }}>
-          Pay with card. Your Meo AI account is set up the moment your order ships, and your kit arrives within 72 hours.
+        <p className="text-base mb-6 max-w-2xl" style={{ color: C.muted }}>
+          {isLite
+            ? 'Start with the eBook and a 7-day Meo AI trial. Upgrade to the full system within 30 days and we credit the £29 toward it.'
+            : 'Pay with card. Your Meo AI account is set up the moment your order ships, and your kit arrives within 72 hours.'}
         </p>
 
-        <div className="mb-6 sm:mb-8">
-          <HeroProductCard />
+        {/* Tier toggle — three-pill switch matching /pricing tiers.
+            Lite (£29) is the downsell, Starter (£149) is the default,
+            Coached (£444) is Starter + Spencer's coaching locked on.
+            Order is cheapest → most premium so the eye reads naturally. */}
+        <div
+          className="inline-flex flex-wrap items-center p-1 rounded-full mb-8 sm:mb-10"
+          style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+          role="tablist"
+          aria-label="Choose your plan"
+        >
+          {([
+            { id: 'lite' as const, label: 'Meo Lite', price: '£29' },
+            { id: 'starter' as const, label: 'Meo Starter', price: '£149' },
+            { id: 'coached' as const, label: 'Meo Coached', price: '£444' },
+          ]).map((opt) => {
+            const active = plan === opt.id;
+            return (
+              <button
+                key={opt.id}
+                role="tab"
+                aria-selected={active}
+                onClick={() => handlePlanChange(opt.id)}
+                className="px-4 py-2 rounded-full text-sm font-semibold transition-colors"
+                style={{
+                  background: active ? C.primary : 'transparent',
+                  color: active ? C.primaryFg : C.muted,
+                }}
+              >
+                {opt.label} <span className="opacity-70">· {opt.price}</span>
+              </button>
+            );
+          })}
         </div>
+
+        {!isLite && (
+          <div className="mb-6 sm:mb-8">
+            <HeroProductCard />
+          </div>
+        )}
+
+        {isLite && (
+          <div
+            className="mb-6 sm:mb-8 rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-[260px_1fr]"
+            style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+          >
+            <div
+              className="flex items-center justify-center p-6"
+              style={{ background: 'rgba(255,255,255,0.04)' }}
+            >
+              <Image
+                src="/ebook-cover.jpg"
+                alt="The Thin Book of Fat — Marina Young"
+                width={200}
+                height={280}
+                className="h-[200px] w-auto object-cover rounded-xl shadow-2xl"
+                priority
+              />
+            </div>
+            <div className="p-5 sm:p-7 flex flex-col justify-between gap-5">
+              <div>
+                <span
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
+                  style={{ background: C.pill, color: C.pillFg }}
+                >
+                  <DropletIcon size={12} /> Start with the book
+                </span>
+                <h2
+                  className="mt-3 mb-2"
+                  style={{ color: C.fg, fontFamily: 'var(--font-serif)', fontSize: 'clamp(24px, 3vw, 30px)' }}
+                >
+                  Meo Lite
+                </h2>
+                <p className="text-sm" style={{ color: C.muted }}>
+                  eBook + 7-day Meo AI trial. No device — manual entry of past blood results.
+                  Credit £29 toward Starter within 30 days.
+                </p>
+              </div>
+              <ul className="space-y-2">
+                {[
+                  { icon: <FileText className="h-4 w-4" />, text: 'The Thin Book of Fat (digital)' },
+                  { icon: <Brain className="h-4 w-4" />, text: '7-day Meo AI trial' },
+                  { icon: <BarChart2 className="h-4 w-4" />, text: 'Manual entry of past blood results' },
+                  { icon: <Check className="h-4 w-4" />, text: 'Credit £29 toward Starter within 30 days' },
+                ].map((f, i) => (
+                  <li key={i} className="flex items-center gap-2.5 text-sm" style={{ color: C.fg }}>
+                    <span style={{ color: C.primary }}>{f.icon}</span>
+                    {f.text}
+                  </li>
+                ))}
+              </ul>
+              <div
+                className="flex items-baseline justify-between pt-3"
+                style={{ borderTop: `1px solid ${C.border}` }}
+              >
+                <span className="text-sm" style={{ color: C.muted }}>One-time</span>
+                <span className="text-2xl font-bold" style={{ color: C.fg }}>£{LITE_PRICE}</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="mb-8 sm:mb-10">
           <TrustStrip />
@@ -637,6 +816,8 @@ export default function CheckoutPage() {
         <div className="grid md:grid-cols-[1fr_minmax(320px,380px)] gap-6 md:gap-10 items-start">
           <div className="space-y-8">
 
+            {!isLite && (
+            <>
             {/* ── Glucose selection (required) ── */}
             <section>
               <div className="flex items-baseline gap-3 mb-1">
@@ -749,80 +930,141 @@ export default function CheckoutPage() {
               </section>
             )}
 
-            {/* ── Add a Metabolic Coach ──
-                Always visible. The therapy price is only added to the
-                Stripe line items when THERAPY_AVAILABLE is true (real
-                price ID present); in env with the placeholder ID, the
-                selection state still works visually but no charge is
-                generated, matching the rest of the page's "ready" feel. */}
+            {/* ── Metabolic Coach (Spencer Martin) ──
+                Optional add-on for the Starter plan; locked-on and
+                presented as "Included" when Coached is active so the
+                user has a single source of truth (the plan toggle). */}
             <section>
               <div className="flex items-baseline gap-3 mb-1">
                 <h2
                   className="m-0"
                   style={{ color: C.fg, fontFamily: 'var(--font-serif)', fontSize: 'clamp(22px, 2.5vw, 26px)' }}
                 >
-                  Add a Metabolic Coach
+                  {isCoached ? 'Your Metabolic Coach' : 'Add a Metabolic Coach'}
                 </h2>
-                <span className="text-xs" style={{ color: C.muted }}>Optional</span>
+                <span
+                  className="text-xs font-semibold px-2 py-0.5 rounded"
+                  style={{
+                    background: isCoached ? C.pill : 'transparent',
+                    color: isCoached ? C.pillFg : C.muted,
+                  }}
+                >
+                  {isCoached ? 'Included with Coached' : 'Optional'}
+                </span>
               </div>
               <p className="text-sm mb-5" style={{ color: C.muted }}>
-                Work 1-to-1 with a specialist to interpret your data and build an action plan.
+                {isCoached
+                  ? "Spencer's 3-month coaching upgrade is bundled with the Coached plan — no extra step needed."
+                  : 'Work 1-to-1 with a specialist to interpret your data and build an action plan.'}
               </p>
-              <button
-                onClick={() => setTherapySelected((v) => !v)}
-                aria-pressed={therapySelected}
-                className="w-full text-left rounded-2xl p-5 transition-all"
-                style={{
-                  background: therapySelected ? 'rgba(164,214,94,0.08)' : C.bgCard,
-                  border: `1px solid ${therapySelected ? C.primary : C.border}`,
-                }}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0">
-                    <Image
-                      src="/spencer-martin.jpg"
-                      alt="Spencer Martin"
-                      fill
-                      className="object-cover object-top"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap mb-1">
-                      <span className="font-semibold text-base" style={{ color: C.fg }}>Spencer Martin</span>
-                      <span
-                        className="text-[10px] font-semibold px-2 py-0.5 rounded"
-                        style={{ background: C.pill, color: C.pillFg }}
-                      >
-                        Metabolic Health Coach · 25+ years
-                      </span>
-                      <span className="font-semibold text-sm ml-auto shrink-0" style={{ color: C.fg }}>+£{THERAPY_PRICE}</span>
+              {isCoached ? (
+                // Coached: render as a static "included" panel — no
+                // toggle, no extra price line (the £444 plan price
+                // already covers it). Switching the plan toggle off
+                // Coached is the way to remove it.
+                <div
+                  className="w-full text-left rounded-2xl p-5"
+                  style={{
+                    background: 'rgba(164,214,94,0.08)',
+                    border: `1px solid ${C.primary}`,
+                  }}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0">
+                      <Image
+                        src="/spencer-martin.jpg"
+                        alt="Spencer Martin"
+                        fill
+                        className="object-cover object-top"
+                      />
                     </div>
-                    <p className="text-sm mb-2" style={{ color: C.muted }}>
-                      3-month coaching upgrade — direct access to a specialist who reads your data with you.
-                    </p>
-                    <ul className="space-y-0.5">
-                      {['Initial 40-minute consultation', 'Two 30-minute follow-up consultations', 'Direct messaging between sessions'].map((item) => (
-                        <li key={item} className="flex items-center gap-1.5 text-xs" style={{ color: C.muted }}>
-                          <Check className="h-3 w-3 shrink-0" style={{ color: C.primary }} />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div
-                    className="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-1"
-                    style={{
-                      borderColor: therapySelected ? C.primary : C.border,
-                      background: therapySelected ? C.primary : 'transparent',
-                    }}
-                  >
-                    {therapySelected && <Check className="h-3 w-3" style={{ color: C.primaryFg }} />}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                        <span className="font-semibold text-base" style={{ color: C.fg }}>Spencer Martin</span>
+                        <span
+                          className="text-[10px] font-semibold px-2 py-0.5 rounded"
+                          style={{ background: C.pill, color: C.pillFg }}
+                        >
+                          Metabolic Health Coach · 25+ years
+                        </span>
+                        <span className="text-xs ml-auto shrink-0 font-semibold" style={{ color: C.primary }}>
+                          Included
+                        </span>
+                      </div>
+                      <p className="text-sm mb-2" style={{ color: C.muted }}>
+                        3-month coaching upgrade — direct access to a specialist who reads your data with you.
+                      </p>
+                      <ul className="space-y-0.5">
+                        {['Initial 40-minute consultation', 'Two 30-minute follow-up consultations', 'Direct messaging between sessions'].map((item) => (
+                          <li key={item} className="flex items-center gap-1.5 text-xs" style={{ color: C.muted }}>
+                            <Check className="h-3 w-3 shrink-0" style={{ color: C.primary }} />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </div>
-              </button>
+              ) : (
+                <button
+                  onClick={() => setTherapySelected((v) => !v)}
+                  aria-pressed={therapySelected}
+                  className="w-full text-left rounded-2xl p-5 transition-all"
+                  style={{
+                    background: therapySelected ? 'rgba(164,214,94,0.08)' : C.bgCard,
+                    border: `1px solid ${therapySelected ? C.primary : C.border}`,
+                  }}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0">
+                      <Image
+                        src="/spencer-martin.jpg"
+                        alt="Spencer Martin"
+                        fill
+                        className="object-cover object-top"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                        <span className="font-semibold text-base" style={{ color: C.fg }}>Spencer Martin</span>
+                        <span
+                          className="text-[10px] font-semibold px-2 py-0.5 rounded"
+                          style={{ background: C.pill, color: C.pillFg }}
+                        >
+                          Metabolic Health Coach · 25+ years
+                        </span>
+                        <span className="font-semibold text-sm ml-auto shrink-0" style={{ color: C.fg }}>+£{THERAPY_PRICE}</span>
+                      </div>
+                      <p className="text-sm mb-2" style={{ color: C.muted }}>
+                        3-month coaching upgrade — direct access to a specialist who reads your data with you.
+                      </p>
+                      <ul className="space-y-0.5">
+                        {['Initial 40-minute consultation', 'Two 30-minute follow-up consultations', 'Direct messaging between sessions'].map((item) => (
+                          <li key={item} className="flex items-center gap-1.5 text-xs" style={{ color: C.muted }}>
+                            <Check className="h-3 w-3 shrink-0" style={{ color: C.primary }} />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div
+                      className="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-1"
+                      style={{
+                        borderColor: therapySelected ? C.primary : C.border,
+                        background: therapySelected ? C.primary : 'transparent',
+                      }}
+                    >
+                      {therapySelected && <Check className="h-3 w-3" style={{ color: C.primaryFg }} />}
+                    </div>
+                  </div>
+                </button>
+              )}
             </section>
 
-            {/* Shipping note */}
+            </>
+            )}
+
+            {!isLite && (
             <section
               className="rounded-2xl p-5 sm:p-6"
               style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
@@ -833,8 +1075,22 @@ export default function CheckoutPage() {
                 We ship from London within 72 hours · £9.99 shipping · tracked delivery.
               </p>
             </section>
+            )}
 
-            {/* 30-day guarantee */}
+            {isLite && (
+            <section
+              className="rounded-2xl p-5 sm:p-6"
+              style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+            >
+              <h3 className="mb-1.5" style={{ color: C.fg }}>What you get</h3>
+              <p className="text-sm" style={{ color: C.muted }}>
+                Instant download of the eBook + a 7-day trial of Meo AI activated on the email
+                you provide at Stripe Checkout. No physical shipment.
+              </p>
+            </section>
+            )}
+
+            {!isLite && (
             <section
               className="rounded-2xl p-5 sm:p-6 flex items-start gap-4"
               style={{
@@ -858,11 +1114,13 @@ export default function CheckoutPage() {
                 </p>
               </div>
             </section>
+            )}
           </div>
 
           {/* Right — sticky order summary */}
           <aside className="md:sticky md:top-24 md:max-h-[calc(100vh-7rem)] md:overflow-y-auto">
             <OrderSummary
+              plan={plan}
               selectedAddons={selectedAddons}
               therapySelected={therapySelected}
               total={total}
@@ -875,7 +1133,8 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      <MobilePayBar total={total} onPay={handleCheckout} isPending={isPending} glucoseSelected={glucoseSelected} />
+      <MobilePayBar plan={plan} total={total} onPay={handleCheckout} isPending={isPending} glucoseSelected={glucoseSelected} />
+      <Footer />
     </div>
   );
 }
