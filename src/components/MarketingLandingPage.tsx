@@ -1758,7 +1758,11 @@ function TiersSection() {
               className="relative rounded-2xl p-7 flex flex-col"
               style={{
                 background: t.featured ? 'rgba(255,255,255,0.08)' : 'transparent',
-                border: t.featured ? `2px solid ${C.primary}` : `1px solid rgba(255,255,255,0.08)`,
+                // Non-featured tiers use the interactive border (~3:1 on
+                // bgDeep) so the card outline is perceivable for sighted
+                // users and screen-magnification tools alike. Previously
+                // 0.08 alpha = 1.3:1, fails WCAG 1.4.11.
+                border: t.featured ? `2px solid ${C.primary}` : `1px solid ${C.borderInteractive}`,
                 boxShadow: t.featured
                   ? '0 30px 80px rgba(164,214,94,0.18), 0 0 0 4px rgba(164,214,94,0.06)'
                   : 'none',
@@ -2250,11 +2254,12 @@ function NewsletterSection() {
               placeholder="your@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="flex-1 rounded-xl px-4 py-3 text-sm focus:outline-none"
+              className="flex-1 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2"
               style={{
                 background: 'rgba(255,255,255,0.08)',
-                border: `1px solid ${C.border}`,
+                border: `1px solid ${C.borderInteractive}`,
                 color: C.fg,
+                ['--tw-ring-color' as string]: C.primary,
               }}
             />
             <button

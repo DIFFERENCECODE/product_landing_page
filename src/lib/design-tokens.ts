@@ -18,7 +18,16 @@ export const C = {
   bgDeep: '#143730',
   bgCard: 'rgba(30, 70, 60, 0.85)',
   bgCardHover: 'rgba(38, 80, 68, 0.95)',
+  // Decorative card borders — visual rhythm only, not functional UI.
+  // 14% alpha sits at ~1.5:1 against bg (decorative borders are exempt
+  // from WCAG 1.4.11). Don't use this for form inputs or anything
+  // that conveys interactive state — use `borderInteractive` instead.
   border: 'rgba(255,255,255,0.14)',
+  // Functional UI border — form inputs, buttons that aren't filled,
+  // selected card states, anything that conveys "this is interactive
+  // / this is the current focus". 40% alpha hits ~3.0:1 on bg, the
+  // WCAG 1.4.11 minimum for non-text UI contrast.
+  borderInteractive: 'rgba(255,255,255,0.40)',
   primary: '#a4d65e',
   primaryFg: '#0f2a1f',
   fg: '#f0ede6',

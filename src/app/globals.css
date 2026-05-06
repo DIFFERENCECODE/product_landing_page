@@ -164,6 +164,19 @@
     max-width: 100%;
     height: auto;
   }
+
+  /* Visible focus indicator for keyboard navigation. WCAG 2.4.7
+     requires every interactive element to have a perceivable focus
+     state. The brand lime ring on dark green hits ~5.9:1 against
+     the bg, well above the 3:1 minimum. Tailwind's `focus:outline-
+     none` is used in many places to suppress the browser default,
+     so this rule is the safety net — applies to anything that
+     receives focus and doesn't already provide its own ring. */
+  *:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 
 /* ─── Reusable component classes ────────────────────────────── */

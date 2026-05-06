@@ -321,8 +321,13 @@ export default function QuizPage() {
                       type="email"
                       value={data.email}
                       onChange={(e) => update('email', e.target.value)}
-                      className="w-full rounded-xl px-4 py-3 text-sm focus:outline-none"
-                      style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${C.border}`, color: C.fg }}
+                      className="w-full rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2"
+                      style={{
+                        background: 'rgba(255,255,255,0.06)',
+                        border: `1px solid ${C.borderInteractive}`,
+                        color: C.fg,
+                        ['--tw-ring-color' as string]: C.primary,
+                      }}
                       required
                     />
                   </div>
@@ -332,8 +337,13 @@ export default function QuizPage() {
                       type="text"
                       value={data.first_name}
                       onChange={(e) => update('first_name', e.target.value)}
-                      className="w-full rounded-xl px-4 py-3 text-sm focus:outline-none"
-                      style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${C.border}`, color: C.fg }}
+                      className="w-full rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2"
+                      style={{
+                        background: 'rgba(255,255,255,0.06)',
+                        border: `1px solid ${C.borderInteractive}`,
+                        color: C.fg,
+                        ['--tw-ring-color' as string]: C.primary,
+                      }}
                       required
                     />
                   </div>
