@@ -1,9 +1,9 @@
 // ─────────────────────────────────────────────────────────────────────
-// /services — Migrated from legacy diff/site/public_html/services.html.
-// Original copy preserved verbatim. Legacy CSS, FontAwesome, Meta Pixel
-// scripts and decorative SVG/PNG icons stripped — replaced with lucide
-// icons in the master design system. Image references could be wired
-// in later; for now the content (titles, descriptions) is what matters.
+// /services — what's actually included in a Meo Starter purchase.
+// Replaces the previous content (migrated from diff/site) which sold
+// 6 generic metabolic-health services that don't correspond to the
+// £149 storefront product. Visitors clicking "Services" in the nav
+// now see the concrete deliverables that ship with their order.
 // ─────────────────────────────────────────────────────────────────────
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -11,86 +11,64 @@ import {
   ArrowLeft,
   ArrowRight,
   Activity,
-  Apple,
-  MessageCircle,
-  FlaskConical,
-  Pill,
-  Moon,
-  Microscope,
-  Sparkles,
-  Shield,
-  Cpu,
+  Brain,
+  BookOpen,
+  BarChart2,
+  RefreshCw,
+  Heart,
 } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 
 export const metadata: Metadata = {
-  title: 'Services — Meterbolic',
+  title: "What's included",
   description:
-    'Comprehensive metabolic health solutions tailored to your needs. Continuous Glucose Monitoring, Personalized Nutrition, Health Coaching, Advanced Lab Analysis, Supplement Protocols, and Lifestyle Optimization.',
+    "Every Meo Starter ships with the lipid meter, six months of Meo AI access, the action manual, your Biological Age Score, a free retest at month six, and a 30-day money-back guarantee.",
 };
 
-const SERVICES = [
+const INCLUDED = [
   {
     icon: Activity,
-    title: 'Continuous Glucose Monitoring',
-    body: 'Real-time tracking of your glucose levels with professional interpretation and actionable insights.',
+    title: 'Digital Lipid Meter',
+    body:
+      'Lab-grade at-home meter cleared for Home Use in the UK & EU. Reads Total Cholesterol, HDL, LDL, Triglycerides, the TC/HDL ratio, and a Kraft-style insulin response from a single finger-prick. Ships with 20 strips, lancets, and a carry case.',
   },
   {
-    icon: Apple,
-    title: 'Personalized Nutrition',
-    body: 'Custom meal plans designed to stabilize your blood sugar and optimize metabolic function.',
+    icon: Brain,
+    title: '6 months of Meo AI',
+    body:
+      'Plain-English interpretation of every reading. Compares to your own baseline, surfaces patterns across sleep / diet / travel logs, flags drift before it becomes a trend. The piece that turns numbers into next steps.',
   },
   {
-    icon: MessageCircle,
-    title: 'Health Coaching',
-    body: 'One-on-one guidance from certified metabolic health specialists.',
+    icon: BookOpen,
+    title: 'The Thin Book of Fat (digital)',
+    body:
+      "Marina Young's action manual — the source Meo AI references when it talks to you. Ask the author your questions directly through Meo; answers come back in chat. Yours to keep.",
   },
   {
-    icon: FlaskConical,
-    title: 'Advanced Lab Analysis',
-    body: 'Comprehensive interpretation of blood work with personalized recommendations.',
+    icon: BarChart2,
+    title: 'Biological Age Score + Target',
+    body:
+      "Calculated from your fasting lipid panel + your age, sex, weight, height and waist. Also surfaces a Kraft Deep Fat Score in kg. Both update with every reading; your Target Score is set alongside so the direction of travel is always visible.",
   },
   {
-    icon: Pill,
-    title: 'Supplement Protocols',
-    body: 'Evidence-based supplement recommendations tailored to your metabolic profile.',
+    icon: RefreshCw,
+    title: 'Free retest at month 6',
+    body:
+      'A second fasting reading at month six to measure progress against your baseline. Personalised report with findings and lifestyle recommendations.',
   },
   {
-    icon: Moon,
-    title: 'Lifestyle Optimization',
-    body: 'Sleep, stress, and exercise plans to support metabolic health.',
-  },
-] as const;
-
-const DIFFERENTIATORS = [
-  {
-    icon: Microscope,
-    title: 'Science-Backed',
-    body: 'Our recommendations are based on the latest metabolic research and clinical evidence.',
-  },
-  {
-    icon: Sparkles,
-    title: 'Personalized',
-    body: 'No one-size-fits-all approaches. Your plan is tailored to your unique biology.',
-  },
-  {
-    icon: Shield,
-    title: 'Preventive Focus',
-    body: 'We help prevent metabolic disorders before they develop into serious conditions.',
-  },
-  {
-    icon: Cpu,
-    title: 'Technology-Enabled',
-    body: 'Our platform makes advanced metabolic health accessible and easy to understand.',
+    icon: Heart,
+    title: '30-day money-back guarantee',
+    body:
+      "Use Meo for 30 days. If the system isn't for you, send the device back for a full refund on the device, no questions asked. Statutory rights within 14 days are unaffected by this voluntary guarantee.",
   },
 ] as const;
 
 export default function ServicesPage() {
   return (
-    <main className="min-h-screen" style={{ background: C.bg, color: C.fg }}>
+    <main className="min-h-screen flex flex-col" style={{ background: C.bg, color: C.fg }}>
       <Navbar />
-      {/* Back to home */}
       <div className="px-5 sm:px-6 pt-24">
         <Link
           href="/"
@@ -105,7 +83,7 @@ export default function ServicesPage() {
       {/* Hero */}
       <section className="px-5 sm:px-6 pt-16 sm:pt-24 pb-16 text-center">
         <p className="text-xs font-semibold tracking-wide mb-4" style={{ color: C.pillFg }}>
-          What we offer
+          What you get for £149
         </p>
         <h1
           className="font-extrabold mb-5 leading-tight max-w-3xl mx-auto"
@@ -116,77 +94,38 @@ export default function ServicesPage() {
             textWrap: 'balance',
           }}
         >
-          Our <span style={{ color: C.primary }}>services</span>
+          Everything in the <span style={{ color: C.primary }}>Meo Starter</span>.
         </h1>
         <p className="text-base sm:text-lg max-w-2xl mx-auto" style={{ color: C.muted }}>
-          Comprehensive metabolic health solutions tailored to your needs.
+          One bundle, one price. The hardware, the AI, the action manual, and the score — six months of weekly metabolic visibility.
         </p>
       </section>
 
-      {/* Solutions grid */}
+      {/* Six included items */}
       <section className="px-5 sm:px-6 py-16 sm:py-24" style={{ background: C.bgDeep }}>
         <div className="max-w-6xl mx-auto">
-          <h2
-            className="font-extrabold mb-3 text-center leading-tight"
-            style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 38px)', textWrap: 'balance' }}
-          >
-            Metabolic health <span style={{ color: C.primary }}>solutions</span>
-          </h2>
-          <p className="text-center text-base mb-12 max-w-2xl mx-auto" style={{ color: C.muted }}>
-            We offer a range of services to help you optimize your metabolic health.
-          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {SERVICES.map((s) => {
-              const Icon = s.icon;
+            {INCLUDED.map((it) => {
+              const Icon = it.icon;
               return (
                 <div
-                  key={s.title}
-                  className="rounded-2xl p-6"
+                  key={it.title}
+                  className="rounded-2xl p-7"
                   style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
                 >
                   <div
-                    className="w-10 h-10 rounded-xl mb-4 flex items-center justify-center"
+                    className="w-11 h-11 rounded-xl mb-4 flex items-center justify-center"
                     style={{ background: 'rgba(164,214,94,0.12)', color: C.primary }}
                     aria-hidden
                   >
                     <Icon className="h-5 w-5" />
                   </div>
-                  <h3 className="font-bold text-lg mb-2" style={{ color: C.fg }}>{s.title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: C.muted }}>{s.body}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Differentiators */}
-      <section className="px-5 sm:px-6 py-16 sm:py-24">
-        <div className="max-w-6xl mx-auto">
-          <h2
-            className="font-extrabold mb-12 text-center leading-tight"
-            style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 38px)', textWrap: 'balance' }}
-          >
-            What makes Meterbolic <span style={{ color: C.primary }}>different</span>
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {DIFFERENTIATORS.map((d) => {
-              const Icon = d.icon;
-              return (
-                <div
-                  key={d.title}
-                  className="rounded-2xl p-6"
-                  style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
-                >
-                  <div
-                    className="w-10 h-10 rounded-xl mb-4 flex items-center justify-center"
-                    style={{ background: 'rgba(164,214,94,0.12)', color: C.primary }}
-                    aria-hidden
-                  >
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="font-bold text-base mb-2" style={{ color: C.fg }}>{d.title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: C.muted }}>{d.body}</p>
+                  <h2 className="font-bold text-lg mb-3" style={{ color: C.fg, fontFamily: FONT_SERIF }}>
+                    {it.title}
+                  </h2>
+                  <p className="text-sm leading-relaxed" style={{ color: C.muted }}>
+                    {it.body}
+                  </p>
                 </div>
               );
             })}
@@ -195,26 +134,36 @@ export default function ServicesPage() {
       </section>
 
       {/* CTA */}
-      <section className="px-5 sm:px-6 py-20 text-center" style={{ background: C.bgDeep }}>
+      <section className="px-5 sm:px-6 py-20 text-center">
         <div className="max-w-2xl mx-auto">
           <h2
             className="font-extrabold mb-4 leading-tight"
             style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 40px)', textWrap: 'balance' }}
           >
-            Ready to transform your <span style={{ color: C.primary }}>metabolic health?</span>
+            Six months. <span style={{ color: C.primary }}>One bundle</span>.
           </h2>
           <p className="text-base mb-8" style={{ color: C.muted }}>
-            Get started with Meterbolic today and take control of your wellbeing.
+            See the trend, not just the number.
           </p>
-          <Link
-            href="/quiz"
-            className="inline-flex items-center justify-center gap-2 rounded-xl font-semibold px-10 py-4 text-base transition-opacity hover:opacity-90"
-            style={{ background: C.primary, color: C.primaryFg }}
-          >
-            Begin your journey <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href="/checkout"
+              className="inline-flex items-center justify-center gap-2 rounded-xl font-semibold px-10 py-4 text-base transition-opacity hover:opacity-90"
+              style={{ background: C.primary, color: C.primaryFg }}
+            >
+              Get Meo · £149 <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/pricing"
+              className="text-sm hover:underline"
+              style={{ color: C.muted }}
+            >
+              or compare plans
+            </Link>
+          </div>
         </div>
       </section>
+
       <Footer />
     </main>
   );
