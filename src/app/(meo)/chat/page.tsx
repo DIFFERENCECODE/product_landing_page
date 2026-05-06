@@ -23,7 +23,7 @@ import { Navbar, Footer } from '@/components/MarketingLandingPage';
 export const metadata: Metadata = {
   title: 'Meo AI — Early access',
   description:
-    "Meo's metabolic-health AI chat is in closed access for kit owners. Buy a Meo Starter, take the quiz, or join the newsletter for sign-in details when the public chat opens.",
+    "Meo's metabolic-health AI chat is in closed access for kit owners. Buy a Meo Starter or join the newsletter for sign-in details when the public chat opens.",
   robots: { index: false, follow: true },
 };
 
@@ -114,7 +114,7 @@ export default function ChatPage() {
             Or get going another way:
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-left">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
             <Link
               href="/checkout"
               className="rounded-2xl p-6 transition-opacity hover:opacity-90"
@@ -131,24 +131,6 @@ export default function ChatPage() {
               </p>
               <span className="inline-flex items-center gap-1 mt-3 text-xs font-semibold" style={{ color: C.primary }}>
                 Buy a kit <ArrowRight className="h-3.5 w-3.5" />
-              </span>
-            </Link>
-            <Link
-              href="/quiz"
-              className="rounded-2xl p-6 transition-opacity hover:opacity-90"
-              style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
-            >
-              <p className="text-xs font-semibold tracking-wide mb-2" style={{ color: C.pillFg }}>
-                Take the quiz
-              </p>
-              <p className="text-sm font-semibold mb-1" style={{ color: C.fg }}>
-                7 questions, 2 minutes
-              </p>
-              <p className="text-xs" style={{ color: C.muted }}>
-                We&apos;ll match you to the right starting kit.
-              </p>
-              <span className="inline-flex items-center gap-1 mt-3 text-xs font-semibold" style={{ color: C.muted }}>
-                Start <ArrowRight className="h-3.5 w-3.5" />
               </span>
             </Link>
             <a

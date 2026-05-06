@@ -2461,7 +2461,6 @@ export function Footer() {
             <li><Link href="/how-it-works" className="hover:underline" style={{ color: C.muted }}>How it works</Link></li>
             <li><Link href="/services" className="hover:underline" style={{ color: C.muted }}>Services</Link></li>
             <li><Link href="/pricing" className="hover:underline" style={{ color: C.muted }}>Pricing</Link></li>
-            <li><Link href="/quiz" className="hover:underline" style={{ color: C.muted }}>Take the quiz</Link></li>
             <li><Link href="/chat" className="hover:underline" style={{ color: C.muted }}>Open chat</Link></li>
           </ul>
         </nav>
