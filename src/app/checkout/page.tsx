@@ -482,6 +482,18 @@ export default function CheckoutPage() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
+  // Pre-select Spencer's coaching add-on when the user lands here
+  // from the "Meo Coached" tier card (which navigates with
+  // ?addon=therapy-spencer). Reads the URL directly to avoid forcing
+  // a Suspense boundary on the whole page for a single search param.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const addon = new URLSearchParams(window.location.search).get('addon');
+    if (addon === 'therapy-spencer') {
+      setTherapySelected(true);
+    }
+  }, []);
+
   const handleGlucoseSelect = (optionId: string, addonId: string | null) => {
     // Remove previous glucose addon if switching
     const prev = GLUCOSE_OPTIONS.find((o) => o.id === glucoseSelection);
