@@ -1,127 +1,85 @@
 // ─────────────────────────────────────────────────────────────────────
-// /how-it-works — Migrated from legacy diff/site/public_html/how-it-
-// works.html. Original copy preserved verbatim. Legacy CSS, FontAwesome,
-// Meta Pixel scripts, and decorative SVG/PNG icons stripped — replaced
-// with lucide icons. Image references intentionally not wired in this
-// pass (assets live in diff/site/public_html/assets/ and would need
-// to be copied into product_landing_page/public/ separately).
+// /how-it-works — focused walkthrough of how Meo specifically works.
+// Replaces the previous content (migrated from diff/site) which sold
+// generic "6 metabolic-health services" (CGM, nutrition, coaching,
+// lab analysis, supplements, lifestyle) — none of which is what
+// shop.meterbolic.com actually sells. Visitors clicking "How it works"
+// in the nav now learn the actual Meo loop: meter → AI → BAS score.
 // ─────────────────────────────────────────────────────────────────────
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
   ArrowLeft,
   ArrowRight,
-  Eye,
-  Sparkles,
-  TrendingUp,
-  Microscope,
-  ClipboardList,
+  Activity,
   Brain,
-  RefreshCw,
+  BarChart2,
   Quote,
+  Check,
 } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 
 export const metadata: Metadata = {
-  title: 'How it works — Meterbolic',
+  title: 'How Meo works',
   description:
-    'Discover our science-backed approach to preventing chronic disease. Continuous glucose monitoring + advanced AI for real-time insights into how your body responds to food, exercise, sleep and stress.',
+    'A finger-prick draws six metabolic markers. Meo AI interprets every reading in plain English. Your Biological Age Score updates with every test. Here is the full loop.',
 };
-
-const TECH = [
-  {
-    icon: Eye,
-    title: 'Advanced Pattern Recognition',
-    body:
-      'Our algorithms detect subtle metabolic patterns humans often miss, identifying your unique responses to different foods and activities.',
-  },
-  {
-    icon: Sparkles,
-    title: 'Hyper-Personalization',
-    body:
-      'We go beyond generic advice to provide recommendations tailored to your biology, lifestyle, and goals.',
-  },
-  {
-    icon: TrendingUp,
-    title: 'Predictive Analytics',
-    body:
-      'Our system forecasts how different choices will likely affect your metabolic health before you make them.',
-  },
-  {
-    icon: Microscope,
-    title: 'Research-Backed',
-    body:
-      'Every recommendation is grounded in the latest peer-reviewed metabolic science from leading institutions.',
-  },
-] as const;
 
 const STEPS = [
   {
-    icon: ClipboardList,
     n: 1,
-    title: 'Comprehensive Assessment',
-    items: [
-      'Detailed health questionnaire covering medical history, lifestyle, and goals',
-      'Integration with wearables (Apple Health, Fitbit, Oura, etc.)',
-      'Optional lab work analysis (HbA1c, lipid panel, etc.)',
-      'Baseline metabolic health score calculation',
-    ],
+    icon: Activity,
+    title: 'Test at home',
+    body:
+      'A finger-prick onto a strip. The Digital Lipid Meter reads Total Cholesterol, HDL, LDL, Triglycerides, the TC/HDL ratio, and a Kraft-style insulin response. Three minutes, no clinic, no fasting morning.',
   },
   {
-    icon: Brain,
     n: 2,
-    title: 'Personalized Plan Creation',
-    items: [
-      'AI analysis of 100+ metabolic markers',
-      'Custom nutrition recommendations tailored to your glucose responses',
-      'Personalized exercise and activity guidance',
-      'Sleep and stress optimization strategies',
-      'Optional continuous glucose monitoring integration',
-    ],
+    icon: Brain,
+    title: 'AI explains the reading',
+    body:
+      'Meo AI takes the raw numbers and translates them into plain English — what each value means against YOUR baseline (not a population average), how it compares to your last 30 days, and whether anything in your sleep / travel / diet logs correlates with the move.',
   },
   {
-    icon: RefreshCw,
     n: 3,
-    title: 'Continuous Optimization',
-    items: [
-      'Real-time feedback on your metabolic responses',
-      'Weekly check-ins with your health coach',
-      'Monthly comprehensive progress reports',
-      'Ongoing plan adjustments based on your data',
-      'Access to latest metabolic research updates',
-    ],
+    icon: BarChart2,
+    title: 'Your scores update',
+    body:
+      'Every reading recalculates your Biological Age Score and KRAFT Deep Fat Score. You watch them drift toward (or away from) your Target Score over weeks and months — not years between annual blood draws.',
   },
 ] as const;
 
-const RESULTS = [
-  { value: '2.3%', label: 'Average reduction in HbA1c levels' },
-  { value: '87%', label: 'Of users improve key metabolic markers' },
-  { value: '3.6×', label: 'More effective than standard approaches' },
-  { value: '94%', label: 'User satisfaction rating' },
+const MARKERS = [
+  { abbr: 'TC', label: 'Total Cholesterol — overall lipid load' },
+  { abbr: 'HDL', label: 'Protective cholesterol' },
+  { abbr: 'LDL', label: 'Atherogenic cholesterol' },
+  { abbr: 'TG', label: 'Triglycerides — blood fat from diet & liver' },
+  { abbr: 'TG:HDL', label: 'Insulin-resistance marker' },
+  { abbr: 'BAS', label: 'Biological Age Score — your composite metric' },
 ] as const;
 
-const TESTIMONIALS = [
+const WHY = [
   {
-    name: 'Sarah K.',
-    quote:
-      "Meterbolic helped me understand how different foods affect my energy levels. I've lost 25 pounds and reversed my prediabetes in just 4 months.",
+    title: 'Daily visibility, not yearly',
+    body:
+      "An annual blood test gives you one snapshot per year — 364 days of metabolic drift between readings. Meo runs as often as you want, so the trend is visible early, not after a diagnosis.",
   },
   {
-    name: 'Michael T.',
-    quote:
-      "As a busy executive, I needed solutions that fit my lifestyle. Meterbolic's personalized approach gave me back control of my health without drastic changes.",
+    title: 'Your baseline, not the median',
+    body:
+      "A standard panel benchmarks you against the median 50-year-old. Meo benchmarks every reading against YOUR own previous readings — what's normal for you, what's not.",
   },
   {
-    name: 'Priya M.',
-    quote:
-      'After years of struggling with energy crashes, Meterbolic identified the specific foods causing my glucose spikes. Life-changing insights!',
+    title: 'Pattern detection across context',
+    body:
+      'Meo AI cross-references your lipid trends with anything else you log — sleep, steps, diet, travel, stress. It flags when LDL drifts in step with a sleep collapse or a restaurant-heavy week, before either reading looks alarming on its own.',
   },
 ] as const;
 
 export default function HowItWorksPage() {
   return (
-    <main className="min-h-screen" style={{ background: C.bg, color: C.fg }}>
+    <main className="min-h-screen flex flex-col" style={{ background: C.bg, color: C.fg }}>
       <Navbar />
       <div className="px-5 sm:px-6 pt-24">
         <Link
@@ -137,7 +95,7 @@ export default function HowItWorksPage() {
       {/* Hero */}
       <section className="px-5 sm:px-6 pt-16 sm:pt-24 pb-16 text-center">
         <p className="text-xs font-semibold tracking-wide mb-4" style={{ color: C.pillFg }}>
-          How it works
+          How Meo works
         </p>
         <h1
           className="font-extrabold mb-5 leading-tight max-w-3xl mx-auto"
@@ -148,91 +106,25 @@ export default function HowItWorksPage() {
             textWrap: 'balance',
           }}
         >
-          Your metabolic health, <span style={{ color: C.primary }}>optimized</span>.
+          A finger-prick. <span style={{ color: C.primary }}>AI interpretation.</span> A score that tracks over time.
         </h1>
         <p className="text-base sm:text-lg max-w-2xl mx-auto" style={{ color: C.muted }}>
-          Discover our science-backed approach to preventing chronic disease.
+          The full loop, end to end — what you do, what you get back, and why the trend matters more than any single number.
         </p>
       </section>
 
-      {/* Science */}
-      <section className="px-5 sm:px-6 py-16 sm:py-24" style={{ background: C.bgDeep }}>
-        <div className="max-w-4xl mx-auto">
-          <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>
-            The science
-          </p>
-          <h2
-            className="font-extrabold mb-6 leading-tight"
-            style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 38px)', textWrap: 'balance' }}
-          >
-            How metabolic optimization <span style={{ color: C.primary }}>works</span>.
-          </h2>
-          <div className="space-y-5 text-base sm:text-lg" style={{ color: C.muted }}>
-            <p>
-              Meterbolic combines continuous glucose monitoring with advanced AI to provide real-time insights into how your body responds to food, exercise, sleep and stress. Our platform identifies your unique metabolic patterns and provides personalized recommendations to optimize your health.
-            </p>
-            <p>
-              Unlike traditional one-size-fits-all approaches, we create a customized plan based on your individual biology and lifestyle. Our methods are grounded in the latest peer-reviewed research from leading metabolic scientists.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Technology */}
-      <section className="px-5 sm:px-6 py-16 sm:py-24">
-        <div className="max-w-6xl mx-auto">
-          <p className="text-xs font-semibold tracking-wide mb-3 text-center" style={{ color: C.pillFg }}>
-            Our technology
-          </p>
-          <h2
-            className="font-extrabold mb-3 text-center leading-tight"
-            style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 38px)', textWrap: 'balance' }}
-          >
-            Cutting-edge metabolic <span style={{ color: C.primary }}>AI</span>.
-          </h2>
-          <p className="text-center text-base mb-12 max-w-2xl mx-auto" style={{ color: C.muted }}>
-            Meterbolic&apos;s proprietary platform combines the latest metabolic research with machine learning to deliver insights no other system can provide.
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {TECH.map((t) => {
-              const Icon = t.icon;
-              return (
-                <div
-                  key={t.title}
-                  className="rounded-2xl p-6"
-                  style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
-                >
-                  <div
-                    className="w-10 h-10 rounded-xl mb-4 flex items-center justify-center"
-                    style={{ background: 'rgba(164,214,94,0.12)', color: C.primary }}
-                    aria-hidden
-                  >
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="font-bold text-lg mb-2" style={{ color: C.fg }}>{t.title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: C.muted }}>{t.body}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Process — 3 steps */}
+      {/* 3-step process */}
       <section className="px-5 sm:px-6 py-16 sm:py-24" style={{ background: C.bgDeep }}>
         <div className="max-w-5xl mx-auto">
           <p className="text-xs font-semibold tracking-wide mb-3 text-center" style={{ color: C.pillFg }}>
-            Our process
+            The 3-step loop
           </p>
           <h2
-            className="font-extrabold mb-3 text-center leading-tight"
+            className="font-extrabold mb-12 text-center leading-tight"
             style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 38px)', textWrap: 'balance' }}
           >
-            Simple yet <span style={{ color: C.primary }}>powerful</span>.
+            Test → <span style={{ color: C.primary }}>interpret</span> → track.
           </h2>
-          <p className="text-center text-base mb-12" style={{ color: C.muted }}>
-            Three steps to better metabolic health.
-          </p>
           <div className="space-y-5">
             {STEPS.map((s) => {
               const Icon = s.icon;
@@ -242,7 +134,7 @@ export default function HowItWorksPage() {
                   className="rounded-2xl p-7"
                   style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
                 >
-                  <div className="flex items-center gap-4 mb-5">
+                  <div className="flex items-center gap-4 mb-4">
                     <div
                       className="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-xl shrink-0"
                       style={{ background: C.primary, color: C.primaryFg }}
@@ -255,14 +147,9 @@ export default function HowItWorksPage() {
                     </h3>
                     <Icon className="h-5 w-5 ml-auto shrink-0" style={{ color: C.primary }} aria-hidden />
                   </div>
-                  <ul className="space-y-2 pl-2">
-                    {s.items.map((item) => (
-                      <li key={item} className="flex items-start gap-2 text-sm" style={{ color: C.muted }}>
-                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: C.primary }} aria-hidden />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="text-sm sm:text-base leading-relaxed" style={{ color: C.muted }}>
+                    {s.body}
+                  </p>
                 </div>
               );
             })}
@@ -270,93 +157,121 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      {/* Results */}
+      {/* What Meo measures */}
       <section className="px-5 sm:px-6 py-16 sm:py-24">
         <div className="max-w-5xl mx-auto">
           <p className="text-xs font-semibold tracking-wide mb-3 text-center" style={{ color: C.pillFg }}>
-            Proven results
+            One drop of blood
           </p>
           <h2
             className="font-extrabold mb-3 text-center leading-tight"
             style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 38px)', textWrap: 'balance' }}
           >
-            Real people, real <span style={{ color: C.primary }}>transformations</span>.
+            Six markers, every reading.
           </h2>
-          <p className="text-center text-base mb-12" style={{ color: C.muted }}>
-            The measurable impact of metabolic optimization.
+          <p className="text-center text-base mb-12 max-w-2xl mx-auto" style={{ color: C.muted }}>
+            Lab-grade accuracy from one finger-prick — every test gives Meo enough signal to update your full metabolic picture.
           </p>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-            {RESULTS.map((r) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {MARKERS.map((m) => (
               <div
-                key={r.label}
-                className="rounded-2xl p-6 text-center"
+                key={m.abbr}
+                className="rounded-2xl p-5 flex items-start gap-3"
                 style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
               >
                 <div
-                  className="font-extrabold mb-2 tabular-nums"
-                  style={{ color: C.primary, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 44px)' }}
+                  className="px-2.5 py-1 rounded-md text-xs font-bold tracking-wide shrink-0"
+                  style={{ background: C.pill, color: C.pillFg }}
                 >
-                  {r.value}
+                  {m.abbr}
                 </div>
-                <p className="text-xs leading-relaxed" style={{ color: C.muted }}>{r.label}</p>
+                <p className="text-sm leading-relaxed" style={{ color: C.muted }}>
+                  {m.label}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Why this beats annual blood draws */}
       <section className="px-5 sm:px-6 py-16 sm:py-24" style={{ background: C.bgDeep }}>
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <p className="text-xs font-semibold tracking-wide mb-3 text-center" style={{ color: C.pillFg }}>
-            Success stories
+            Why this matters
           </p>
           <h2
-            className="font-extrabold mb-3 text-center leading-tight"
+            className="font-extrabold mb-12 text-center leading-tight"
             style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 38px)', textWrap: 'balance' }}
           >
-            Hear from our <span style={{ color: C.primary }}>community</span>.
+            What an annual blood draw <span style={{ color: C.primary }}>can&apos;t do</span>.
           </h2>
-          <p className="text-center text-base mb-12" style={{ color: C.muted }}>
-            What members say about their experience.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {TESTIMONIALS.map((t) => (
+          <div className="space-y-5">
+            {WHY.map((w) => (
               <div
-                key={t.name}
-                className="rounded-2xl p-6 flex flex-col"
+                key={w.title}
+                className="rounded-2xl p-6 flex items-start gap-4"
                 style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
               >
-                <Quote className="h-5 w-5 mb-3" style={{ color: C.primary }} aria-hidden />
-                <p className="text-sm italic mb-4 flex-1" style={{ color: C.fg }}>{t.quote}</p>
-                <p className="text-xs font-semibold" style={{ color: C.pillFg }}>— {t.name}</p>
+                <Check className="h-5 w-5 mt-1 shrink-0" style={{ color: C.primary }} aria-hidden />
+                <div>
+                  <h3 className="font-bold text-lg mb-2" style={{ color: C.fg, fontFamily: FONT_SERIF }}>
+                    {w.title}
+                  </h3>
+                  <p className="text-sm sm:text-base leading-relaxed" style={{ color: C.muted }}>
+                    {w.body}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Voice from the beta */}
+      <section className="px-5 sm:px-6 py-16 sm:py-24">
+        <div className="max-w-3xl mx-auto text-center">
+          <Quote className="h-6 w-6 mx-auto mb-5" style={{ color: C.primary }} aria-hidden />
+          <p className="text-lg sm:text-xl italic mb-4 leading-relaxed" style={{ color: C.fg, fontFamily: FONT_SERIF }}>
+            &ldquo;My ratios have improved for 11 weeks straight. It&apos;s not the device — it&apos;s finally seeing what I&apos;m doing.&rdquo;
+          </p>
+          <p className="text-sm font-semibold" style={{ color: C.pillFg }}>
+            — Marcus T., Manchester (beta tester)
+          </p>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="px-5 sm:px-6 py-20 text-center">
+      <section className="px-5 sm:px-6 py-20 text-center" style={{ background: C.bgDeep }}>
         <div className="max-w-2xl mx-auto">
           <h2
             className="font-extrabold mb-4 leading-tight"
             style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 40px)', textWrap: 'balance' }}
           >
-            Ready to transform your <span style={{ color: C.primary }}>metabolic health?</span>
+            Start your <span style={{ color: C.primary }}>own loop</span>.
           </h2>
           <p className="text-base mb-8" style={{ color: C.muted }}>
-            Join thousands who&apos;ve taken control of their health with our science-backed approach.
+            Six months of weekly readings is enough for the trend to be visible — and yours to act on.
           </p>
-          <Link
-            href="/quiz"
-            className="inline-flex items-center justify-center gap-2 rounded-xl font-semibold px-10 py-4 text-base transition-opacity hover:opacity-90"
-            style={{ background: C.primary, color: C.primaryFg }}
-          >
-            Start your journey today <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href="/checkout"
+              className="inline-flex items-center justify-center gap-2 rounded-xl font-semibold px-10 py-4 text-base transition-opacity hover:opacity-90"
+              style={{ background: C.primary, color: C.primaryFg }}
+            >
+              Get Meo · £149 <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/pricing"
+              className="text-sm hover:underline"
+              style={{ color: C.muted }}
+            >
+              or compare plans
+            </Link>
+          </div>
         </div>
       </section>
+
       <Footer />
     </main>
   );
