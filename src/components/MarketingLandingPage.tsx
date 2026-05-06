@@ -409,7 +409,7 @@ function Hero() {
           className="text-base sm:text-lg mx-auto mb-8 sm:mb-10 max-w-xl"
           style={{ color: C.muted }}
         >
-          Meo turns a 3-minute finger-prick into a complete metabolic picture —
+          Meo turns a finger-prick into a complete metabolic picture —
           interpreted by AI, framed for your longevity, and actionable the same day.
         </motion.p>
 
