@@ -58,7 +58,7 @@ export const KIT_PRODUCT: KitProduct = {
       icon: 'message',
       title: 'Meo AI — 6 months full access',
       description:
-        'The world\'s only metabolic-health conversational AI. Plain-English interpretation of every reading, trend tracking, Kraft-style insulin pattern insight, and a Biological Age Score that updates as you go. This is the core of the system.',
+        'An AI built specifically for metabolic health. Plain-English interpretation of every reading, trend tracking, Kraft-style insulin pattern insight, and a Biological Age Score that updates as you go. This is the core of the system.',
     },
     {
       icon: 'activity',
@@ -161,7 +161,7 @@ export const BIOMARKERS = [
   { abbr: 'Total Cholesterol', label: 'Overall lipid load' },
   { abbr: 'LDL', label: 'Atherogenic cholesterol' },
   { abbr: 'HDL', label: 'Protective cholesterol' },
-  { abbr: 'Triglyceride', label: 'Blood fat from diet & liver' },
+  { abbr: 'Triglycerides', label: 'Blood fat from diet & liver' },
   { abbr: 'TG:HDL', label: 'Insulin resistance marker' },
   { abbr: 'BAS', label: 'Biological Age Score' },
 ] as const;
@@ -197,7 +197,7 @@ export const FAQ_ITEMS = [
   {
     question: 'What can Meo AI actually do?',
     answer:
-      'Meo AI is the world\'s only conversational AI dedicated to metabolic health. It interprets each reading in plain English against your own baseline, connects lipid trends with anything else you share (sleep, steps, diet, stress, travel), and surfaces patterns before they become trends. Built on ten years of industrialising the gold-standard Kraft Test. It does not diagnose, prescribe, or replace your doctor — when a reading is outside expected bounds, it will recommend you see a healthcare professional.',
+      'Meo AI is an AI built specifically for metabolic health. It interprets each reading in plain English against your own baseline, connects lipid trends with anything else you share (sleep, steps, diet, stress, travel), and surfaces patterns before they become trends. It does not diagnose, prescribe, or replace your doctor — when a reading is outside expected bounds, it will recommend you see a healthcare professional.',
   },
   {
     question: 'What happens after my 6 months of Meo AI ends?',
@@ -207,7 +207,7 @@ export const FAQ_ITEMS = [
   {
     question: 'What if it doesn\'t work for me?',
     answer:
-      '30-day money-back guarantee on the device. Send it back for a full refund — no questions, no upsell calls. Shipped discreetly in secure packaging.',
+      '30-day money-back guarantee on the device. Send it back for a full refund — no questions, no upsell calls. Shipped discreetly in secure packaging. Your statutory right to a full refund (including delivery) within 14 days under the UK Consumer Contracts Regulations 2013 is unaffected by this guarantee.',
   },
   {
     question: 'Why does the bundle include a 6-month retest?',
