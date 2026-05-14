@@ -429,7 +429,7 @@ export default function HomePage() {
             <p className="text-xs" style={{ color: C.muted }}>
               In clinical alignment with{' '}
               <Link href="/partners" className="underline" style={{ color: C.pillFg }}>
-                Dr Arup Sen, MRCP — Eos Longevity
+                leading scientists and physicians
               </Link>
             </p>
           </div>
