@@ -76,9 +76,10 @@ const PEOPLE: readonly Person[] = [
   },
   {
     photo: '/team-lech.jpeg',
-    name: 'Lechenu Iyoko',
+    name: 'Alechenu Iyoko',
     role: 'AI Engineer',
     bio: 'Expert in machine learning algorithms and IT infrastructure, developing scalable AI solutions for personalised metabolic health.',
+    objectPosition: 'center',
   },
   {
     photo: '/team-bhanu.jpeg',
