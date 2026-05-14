@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { PixelEvents } from "@/components/PixelEvents";
+import ExitIntentModal from "@/components/ExitIntentModal";
 
 // Manrope is the single primary face for the whole site (loaded via
 // the <link> tag in <head> so we can pick exact weights). Geist /
@@ -142,6 +144,7 @@ export default function RootLayout({
   // requests = no cookie banner needed.
   const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
+  const clarityId = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID;
 
   return (
     <html lang="en">
@@ -185,6 +188,15 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
         />
 
+        {/* Microsoft Clarity — async heatmaps + session replay. */}
+        {clarityId && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window, document, "clarity", "script", "${clarityId}");`,
+            }}
+          />
+        )}
+
         {/* Meta Pixel — fires PageView on every navigation */}
         <script
           dangerouslySetInnerHTML={{
@@ -226,6 +238,8 @@ export default function RootLayout({
       <body
         className={`${geist.variable} ${geistMono.variable} antialiased`}
       >
+        <PixelEvents />
+        <ExitIntentModal />
         {children}
       </body>
     </html>

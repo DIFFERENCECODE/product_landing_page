@@ -15,30 +15,6 @@ type Person = { photo: string; name: string; role: string; bio: string };
 
 const PEOPLE: readonly Person[] = [
   {
-    photo: '/team-tim-noakes.png',
-    name: 'Prof. Tim Noakes',
-    role: 'Scientific Advisor',
-    bio: "Emeritus Professor at UCT's Division of Exercise Science and Sports Medicine. Renowned for pioneering research in exercise physiology, nutrition, and low-carbohydrate science. Author and endurance athlete with 70+ marathons and ultramarathons.",
-  },
-  {
-    photo: '/team-robbert-slingerland.png',
-    name: 'Dr. Robbert Slingerland',
-    role: 'Scientific Advisor',
-    bio: 'Chair of Clinical Chemistry Laboratories at Isala Klinieken, Zwolle (Netherlands) and Chair of the European Reference Laboratory. Specialist in clinical chemistry and biostatistics with extensive research into metabolic biomarkers.',
-  },
-  {
-    photo: '/team-david-jehring.png',
-    name: 'David Jehring',
-    role: 'Technology Advisor',
-    bio: 'CEO and Founder of Black Pear Software. Healthcare technology leader with a background as CTO at Apollo Medical Systems Ltd, specialising in digital health integration.',
-  },
-  {
-    photo: '/team-isabella-cooper.png',
-    name: 'Dr. Isabella Cooper',
-    role: 'Research Advisor',
-    bio: 'PhD in Biochemistry, Physiology and Pathophysiology. Researcher in hyperinsulinemia and ketogenic science, advising on metabolic disease mechanisms and nutritional interventions.',
-  },
-  {
     photo: '/team-eric-smith.jpg',
     name: 'Dr. Eric Smith',
     role: 'Founder',
@@ -103,6 +79,30 @@ const PEOPLE: readonly Person[] = [
     name: 'Helen MacGregor',
     role: 'Finance',
     bio: 'Trusted advisor who provides strategic insights, financial analysis, and risk management solutions to help organisations optimise performance and ensure compliance.',
+  },
+  {
+    photo: '/team-tim-noakes.png',
+    name: 'Prof. Tim Noakes',
+    role: 'Scientific Advisor',
+    bio: "Emeritus Professor at UCT's Division of Exercise Science and Sports Medicine. Renowned for pioneering research in exercise physiology, nutrition, and low-carbohydrate science. Author and endurance athlete with 70+ marathons and ultramarathons.",
+  },
+  {
+    photo: '/team-robbert-slingerland.png',
+    name: 'Dr. Robbert Slingerland',
+    role: 'Scientific Advisor',
+    bio: 'Chair of Clinical Chemistry Laboratories at Isala Klinieken, Zwolle (Netherlands) and Chair of the European Reference Laboratory. Specialist in clinical chemistry and biostatistics with extensive research into metabolic biomarkers.',
+  },
+  {
+    photo: '/team-david-jehring.jpg',
+    name: 'David Jehring',
+    role: 'Technology Advisor',
+    bio: 'CEO and Founder of Black Pear Software. Healthcare technology leader with a background as CTO at Apollo Medical Systems Ltd, specialising in digital health integration.',
+  },
+  {
+    photo: '/team-isabella-cooper.jpg',
+    name: 'Dr. Isabella Cooper',
+    role: 'Research Advisor',
+    bio: 'PhD in Biochemistry, Physiology and Pathophysiology. Researcher in hyperinsulinemia and ketogenic science, advising on metabolic disease mechanisms and nutritional interventions.',
   },
 ];
 
@@ -230,7 +230,7 @@ export function PeopleCarousel() {
           The people <span style={{ color: C.primary }}>behind Meo</span>.
         </h2>
         <p className="text-center text-base mb-12 max-w-2xl mx-auto" style={{ color: C.muted }}>
-          Scientific advisors and core team — the clinical, commercial, AI, and design expertise pointing every part of Meterbolic at one goal.
+          Core team and scientific advisors — the clinical, commercial, AI, and design expertise pointing every part of Meterbolic at one goal.
         </p>
 
         <div className="relative">
