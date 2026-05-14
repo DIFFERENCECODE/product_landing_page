@@ -412,7 +412,7 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs mb-3" style={{ color: C.muted }}>
+            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-base mb-3" style={{ color: C.muted }}>
               {TRUST_CHIPS.map((chip) => {
                 const Icon = chip.icon;
                 return (
@@ -426,7 +426,7 @@ export default function HomePage() {
 
             {/* Eos credibility line — collapsed from full section to one
                 line so it carries trust without dominating the page. */}
-            <p className="text-xs" style={{ color: C.muted }}>
+            <p className="text-base" style={{ color: C.muted }}>
               In clinical alignment with{' '}
               <Link href="/partners" className="underline" style={{ color: C.pillFg }}>
                 leading scientists and physicians
