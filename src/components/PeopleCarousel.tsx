@@ -11,7 +11,19 @@ import { useEffect, useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 
-type Person = { photo: string; name: string; role: string; bio: string };
+type Person = {
+  photo: string;
+  name: string;
+  role: string;
+  bio: string;
+  /**
+   * Override the CSS `object-position` used to crop this person's photo.
+   * Defaults to `top` (subject's head at the top of the source). Set to
+   * `center` (or e.g. `'center 35%'`) when the face sits lower in the
+   * source frame and `top` would crop it out.
+   */
+  objectPosition?: string;
+};
 
 const PEOPLE: readonly Person[] = [
   {
@@ -97,6 +109,7 @@ const PEOPLE: readonly Person[] = [
     name: 'David Jehring',
     role: 'Technology Advisor',
     bio: 'CEO and Founder of Black Pear Software. Healthcare technology leader with a background as CTO at Apollo Medical Systems Ltd, specialising in digital health integration.',
+    objectPosition: 'center',
   },
   {
     photo: '/team-isabella-cooper.jpg',
@@ -132,7 +145,8 @@ function PersonCard({ p }: { p: Person }) {
         <img
           src={p.photo}
           alt={p.name}
-          className="absolute inset-0 w-full h-full object-cover object-top"
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ objectPosition: p.objectPosition ?? 'top' }}
         />
       </div>
       <div className="p-6 flex flex-col flex-1" style={{ minHeight: 200 }}>
