@@ -44,7 +44,6 @@ import {
 } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
-import { NewsletterSection } from '@/components/NewsletterForm';
 
 export const metadata: Metadata = {
   title: 'Meo — Metabolic Intelligence System',
@@ -59,8 +58,7 @@ const TRUST_CHIPS = [
   { icon: Clock, label: 'Ships in 72 hours' },
 ] as const;
 
-type StatItem = { value: string; label: string; sourceLabel?: string; href?: string };
-const STATS: ReadonlyArray<StatItem> = [
+const STATS = [
   {
     value: '1 in 3',
     label: 'UK adults with raised cholesterol',
@@ -77,7 +75,7 @@ const STATS: ReadonlyArray<StatItem> = [
     value: '364',
     label: 'days of metabolic drift between annual blood draws',
   },
-];
+] as const;
 
 const LOOP = [
   {
@@ -174,32 +172,12 @@ const TIERS = [
 
 const FAQ = [
   {
-    q: 'How is this different from a GP cholesterol test?',
-    a: 'A GP test gives you a single snapshot every 6–12 months. Meo lets you see the trend across many readings, plus the AI explains what each result means in plain English — not just numbers on a page. You stay in control between annual blood draws.',
-  },
-  {
     q: 'How accurate is the meter?',
     a: 'CE-marked BF-102, registered for Home Use in the UK & EU. Reads within ±10% of reference-lab panels for TC, HDL, LDL and triglycerides. The real value compounds across readings — small per-reading variance washes out in the trend.',
   },
   {
-    q: 'Do I have to prick my finger every day?',
-    a: 'No — most members test every 2–4 weeks, which is plenty to spot trends. Each test takes about 3 minutes. You decide the cadence; Meo AI works with whatever data you give it.',
-  },
-  {
-    q: 'Will it work if I’m already on statins or other medication?',
-    a: 'Yes — in fact, that’s when many members find Meo most useful, because they can see how their numbers respond between GP appointments. Meo doesn’t replace medical advice; it gives you data to bring to those conversations.',
-  },
-  {
-    q: 'What’s actually in the box?',
-    a: 'The CE-marked BF-102 lipid meter, 6 months of test strips, a finger-prick lancing device, alcohol swabs, a quick-start guide, and instant access to Meo AI plus The Thin Book of Fat (digital). Ships in 72 hours.',
-  },
-  {
     q: 'Is this a medical device?',
     a: 'The lipid meter is a CE-marked clinical-grade instrument. Meo as a whole is a wellness and monitoring system — it does not diagnose, treat, cure, or prevent any disease. Always consult a qualified healthcare professional for medical advice.',
-  },
-  {
-    q: 'Is my data private?',
-    a: 'Yes. Your readings are encrypted, GDPR-compliant, never sold, and never shared with insurers. You can export or delete your data at any time — it’s your health, your record.',
   },
   {
     q: 'What if it doesn’t work for me?',
@@ -412,7 +390,7 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-base mb-3" style={{ color: C.muted }}>
+            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs mb-3" style={{ color: C.muted }}>
               {TRUST_CHIPS.map((chip) => {
                 const Icon = chip.icon;
                 return (
@@ -426,10 +404,10 @@ export default function HomePage() {
 
             {/* Eos credibility line — collapsed from full section to one
                 line so it carries trust without dominating the page. */}
-            <p className="text-base" style={{ color: C.muted }}>
+            <p className="text-xs" style={{ color: C.muted }}>
               In clinical alignment with{' '}
               <Link href="/partners" className="underline" style={{ color: C.pillFg }}>
-                leading scientists and physicians
+                Dr Arup Sen, MRCP — Eos Longevity
               </Link>
             </p>
           </div>
@@ -656,32 +634,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* SOCIAL PROOF / TRUST STRIP — sits above Tiers as a
-            reassurance bar at the decision point. */}
-        <section className="px-5 sm:px-6 pt-6 pb-2" aria-label="Trust and reassurance">
-          <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-5">
-            {[
-              { stat: '1,100+', label: 'subscribers across the UK & EU' },
-              { stat: '30-day', label: 'money-back guarantee' },
-              { stat: 'IVDR', label: 'UK & EU registered device' },
-              { stat: '72h', label: 'tracked dispatch from the UK' },
-            ].map((t) => (
-              <div
-                key={t.label}
-                className="rounded-xl px-4 py-3 text-center"
-                style={{ background: 'rgba(30,70,60,0.55)', border: `1px solid ${C.border}` }}
-              >
-                <div className="text-base sm:text-lg font-bold leading-tight" style={{ color: C.primary, fontFamily: FONT_SERIF }}>
-                  {t.stat}
-                </div>
-                <div className="text-[11px] sm:text-xs leading-snug mt-0.5" style={{ color: C.muted }}>
-                  {t.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
         {/* TIERS — plain H2, no green emphasis. */}
         <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
           <div className="max-w-6xl mx-auto">
@@ -904,8 +856,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        <NewsletterSection />
-
         {/* FAQ */}
         <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
           <div className="max-w-3xl mx-auto">
@@ -914,7 +864,7 @@ export default function HomePage() {
                 className="font-bold leading-tight"
                 style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 38px)' }}
               >
-                Frequently asked questions.
+                Three things people ask first.
               </h2>
             </div>
             <div className="space-y-3">

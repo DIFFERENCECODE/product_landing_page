@@ -11,21 +11,33 @@ import { useEffect, useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 
-type Person = {
-  photo: string;
-  name: string;
-  role: string;
-  bio: string;
-  /**
-   * Override the CSS `object-position` used to crop this person's photo.
-   * Defaults to `top` (subject's head at the top of the source). Set to
-   * `center` (or e.g. `'center 35%'`) when the face sits lower in the
-   * source frame and `top` would crop it out.
-   */
-  objectPosition?: string;
-};
+type Person = { photo: string; name: string; role: string; bio: string };
 
 const PEOPLE: readonly Person[] = [
+  {
+    photo: '/team-tim-noakes.png',
+    name: 'Prof. Tim Noakes',
+    role: 'Scientific Advisor',
+    bio: "Emeritus Professor at UCT's Division of Exercise Science and Sports Medicine. Renowned for pioneering research in exercise physiology, nutrition, and low-carbohydrate science. Author and endurance athlete with 70+ marathons and ultramarathons.",
+  },
+  {
+    photo: '/team-robbert-slingerland.png',
+    name: 'Dr. Robbert Slingerland',
+    role: 'Scientific Advisor',
+    bio: 'Chair of Clinical Chemistry Laboratories at Isala Klinieken, Zwolle (Netherlands) and Chair of the European Reference Laboratory. Specialist in clinical chemistry and biostatistics with extensive research into metabolic biomarkers.',
+  },
+  {
+    photo: '/team-david-jehring.png',
+    name: 'David Jehring',
+    role: 'Technology Advisor',
+    bio: 'CEO and Founder of Black Pear Software. Healthcare technology leader with a background as CTO at Apollo Medical Systems Ltd, specialising in digital health integration.',
+  },
+  {
+    photo: '/team-isabella-cooper.png',
+    name: 'Dr. Isabella Cooper',
+    role: 'Research Advisor',
+    bio: 'PhD in Biochemistry, Physiology and Pathophysiology. Researcher in hyperinsulinemia and ketogenic science, advising on metabolic disease mechanisms and nutritional interventions.',
+  },
   {
     photo: '/team-eric-smith.jpg',
     name: 'Dr. Eric Smith',
@@ -76,10 +88,9 @@ const PEOPLE: readonly Person[] = [
   },
   {
     photo: '/team-lech.jpeg',
-    name: 'Alechenu Iyoko',
+    name: 'Lechenu Iyoko',
     role: 'AI Engineer',
     bio: 'Expert in machine learning algorithms and IT infrastructure, developing scalable AI solutions for personalised metabolic health.',
-    objectPosition: 'center',
   },
   {
     photo: '/team-bhanu.jpeg',
@@ -92,31 +103,6 @@ const PEOPLE: readonly Person[] = [
     name: 'Helen MacGregor',
     role: 'Finance',
     bio: 'Trusted advisor who provides strategic insights, financial analysis, and risk management solutions to help organisations optimise performance and ensure compliance.',
-  },
-  {
-    photo: '/team-tim-noakes.png',
-    name: 'Prof. Tim Noakes',
-    role: 'Scientific Advisor',
-    bio: "Emeritus Professor at UCT's Division of Exercise Science and Sports Medicine. Renowned for pioneering research in exercise physiology, nutrition, and low-carbohydrate science. Author and endurance athlete with 70+ marathons and ultramarathons.",
-  },
-  {
-    photo: '/team-robbert-slingerland.png',
-    name: 'Dr. Robbert Slingerland',
-    role: 'Scientific Advisor',
-    bio: 'Chair of Clinical Chemistry Laboratories at Isala Klinieken, Zwolle (Netherlands) and Chair of the European Reference Laboratory. Specialist in clinical chemistry and biostatistics with extensive research into metabolic biomarkers.',
-  },
-  {
-    photo: '/team-david-jehring.jpg',
-    name: 'David Jehring',
-    role: 'Technology Advisor',
-    bio: 'CEO and Founder of Black Pear Software. Healthcare technology leader with a background as CTO at Apollo Medical Systems Ltd, specialising in digital health integration.',
-    objectPosition: 'center',
-  },
-  {
-    photo: '/team-isabella-cooper.jpg',
-    name: 'Dr. Isabella Cooper',
-    role: 'Research Advisor',
-    bio: 'PhD in Biochemistry, Physiology and Pathophysiology. Researcher in hyperinsulinemia and ketogenic science, advising on metabolic disease mechanisms and nutritional interventions.',
   },
 ];
 
@@ -146,8 +132,7 @@ function PersonCard({ p }: { p: Person }) {
         <img
           src={p.photo}
           alt={p.name}
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ objectPosition: p.objectPosition ?? 'top' }}
+          className="absolute inset-0 w-full h-full object-cover object-top"
         />
       </div>
       <div className="p-6 flex flex-col flex-1" style={{ minHeight: 200 }}>
@@ -245,7 +230,7 @@ export function PeopleCarousel() {
           The people <span style={{ color: C.primary }}>behind Meo</span>.
         </h2>
         <p className="text-center text-base mb-12 max-w-2xl mx-auto" style={{ color: C.muted }}>
-          Core team and scientific advisors — the clinical, commercial, AI, and design expertise pointing every part of Meterbolic at one goal.
+          Scientific advisors and core team — the clinical, commercial, AI, and design expertise pointing every part of Meterbolic at one goal.
         </p>
 
         <div className="relative">

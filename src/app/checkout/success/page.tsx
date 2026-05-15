@@ -100,39 +100,6 @@ function SuccessContent() {
       .catch(() => setWaitlistState("error"));
   }, [session?.customerEmail]);
 
-  // 3. Fire Meta Pixel Purchase event — critical for ad optimization.
-  // Guarded by sessionId so it fires exactly once per success page load,
-  // even if React strict-mode double-runs the effect in dev.
-  const purchaseFiredRef = (typeof window !== "undefined" ? window : ({} as Window)) as Window & {
-    __meoPurchaseFired?: Set<string>;
-  };
-  useEffect(() => {
-    if (!session || !sessionId) return;
-    if (typeof window === "undefined") return;
-    const fbq = (window as unknown as { fbq?: (...args: unknown[]) => void }).fbq;
-    if (!fbq) return;
-    purchaseFiredRef.__meoPurchaseFired ??= new Set<string>();
-    if (purchaseFiredRef.__meoPurchaseFired.has(sessionId)) return;
-    purchaseFiredRef.__meoPurchaseFired.add(sessionId);
-    try {
-      fbq(
-        "track",
-        "Purchase",
-        {
-          value: session.amountTotal / 100,
-          currency: session.currency.toUpperCase(),
-          content_name: "Meo Order",
-          content_type: "product",
-        },
-        // event_id = Stripe session id. Server-side Meta CAPI sends the
-        // same id so Meta dedupes the two event sources into one Purchase.
-        { eventID: sessionId },
-      );
-    } catch {
-      /* swallow — never break the success page */
-    }
-  }, [session, sessionId, purchaseFiredRef]);
-
   // ── Render: loading ──
   if (!session && !loadError) return <LoadingScreen />;
 
@@ -180,17 +147,16 @@ function SuccessContent() {
             <Row label="Total" value={amountFormatted} />
           </div>
 
-          {/* Waitlist auto-enrol status */}
+          {/* Account-setup confirmation */}
           {waitlistState === "submitting" && (
             <p className="text-[var(--muted)] text-sm flex items-center justify-center gap-2">
               <Loader2 size={14} className="animate-spin" />
-              Adding you to the MeO AI waitlist…
+              Setting up your Meo AI account…
             </p>
           )}
           {waitlistState === "success" && (
             <p className="text-[var(--accent)] text-sm">
-              ✓ You&apos;re on the MeO AI waitlist — we&apos;ll be in touch when
-              your account is ready.
+              ✓ Your Meo AI account is being prepared. Sign-in details land in your inbox the moment your kit ships.
             </p>
           )}
           {(waitlistState === "error" || !session?.customerEmail) && (
@@ -265,7 +231,7 @@ function WaitlistFallback({
   return (
     <form onSubmit={handleSubmit} className="mt-4 text-left space-y-3">
       <p className="text-[var(--muted)] text-sm">
-        Enter your email to join the MeO AI waitlist:
+        Confirm the email we should set up your Meo AI account on:
       </p>
       <div className="flex gap-2">
         <input
@@ -281,7 +247,7 @@ function WaitlistFallback({
           disabled={waitlistState === "submitting"}
           className="btn-primary text-sm px-4 py-2 disabled:opacity-60"
         >
-          {waitlistState === "submitting" ? "…" : "Join"}
+          {waitlistState === "submitting" ? "…" : "Confirm"}
         </button>
       </div>
       {fallbackError && (

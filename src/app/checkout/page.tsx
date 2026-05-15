@@ -970,14 +970,12 @@ export default function CheckoutPage() {
                   }}
                 >
                   <div className="flex items-start gap-4">
-                    <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0" style={{ width: 64, height: 64 }}>
+                    <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0">
                       <Image
                         src="/spencer-martin.jpg"
                         alt="Spencer Martin"
-                        width={64}
-                        height={64}
-                        sizes="64px"
-                        className="object-cover object-top h-full w-full"
+                        fill
+                        className="object-cover object-top"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -1018,14 +1016,12 @@ export default function CheckoutPage() {
                   }}
                 >
                   <div className="flex items-start gap-4">
-                    <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0" style={{ width: 64, height: 64 }}>
+                    <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0">
                       <Image
                         src="/spencer-martin.jpg"
                         alt="Spencer Martin"
-                        width={64}
-                        height={64}
-                        sizes="64px"
-                        className="object-cover object-top h-full w-full"
+                        fill
+                        className="object-cover object-top"
                       />
                     </div>
                     <div className="flex-1 min-w-0">

@@ -244,7 +244,7 @@ export function Navbar() {
                 key={l.href}
                 href={l.href}
                 aria-current={active ? 'page' : undefined}
-                className="relative text-lg px-3 py-2 rounded-lg transition-colors hover:bg-white/5"
+                className="relative text-sm px-3 py-2 rounded-lg transition-colors hover:bg-white/5"
                 style={{
                   color: active ? C.primary : C.fg,
                   fontWeight: active ? 600 : 400,
@@ -2456,7 +2456,7 @@ export function Footer() {
 
         <nav aria-label="Product">
           <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.fg }}>Product</p>
-          <ul className="space-y-2 text-lg">
+          <ul className="space-y-2 text-sm">
             <li><Link href="/" className="hover:underline" style={{ color: C.muted }}>Home</Link></li>
             <li><Link href="/how-it-works" className="hover:underline" style={{ color: C.muted }}>How it works</Link></li>
             <li><Link href="/services" className="hover:underline" style={{ color: C.muted }}>Services</Link></li>
@@ -2467,7 +2467,7 @@ export function Footer() {
 
         <nav aria-label="Company">
           <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.fg }}>Company</p>
-          <ul className="space-y-2 text-lg">
+          <ul className="space-y-2 text-sm">
             <li><Link href="/about" className="hover:underline" style={{ color: C.muted }}>About</Link></li>
             <li><Link href="/partners" className="hover:underline" style={{ color: C.muted }}>Partners</Link></li>
             <li><a href="mailto:hello@meterbolic.com" className="hover:underline" style={{ color: C.muted }}>Contact</a></li>
@@ -2477,7 +2477,7 @@ export function Footer() {
 
         <nav aria-label="Legal">
           <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.fg }}>Legal</p>
-          <ul className="space-y-2 text-lg">
+          <ul className="space-y-2 text-sm">
             <li><Link href="/privacy" className="hover:underline" style={{ color: C.muted }}>Privacy Policy</Link></li>
             <li><Link href="/terms" className="hover:underline" style={{ color: C.muted }}>Terms of Service</Link></li>
             <li><Link href="/cookies" className="hover:underline" style={{ color: C.muted }}>Cookies Policy</Link></li>
