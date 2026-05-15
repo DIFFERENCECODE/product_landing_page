@@ -244,7 +244,7 @@ export function Navbar() {
                 key={l.href}
                 href={l.href}
                 aria-current={active ? 'page' : undefined}
-                className="relative text-sm px-3 py-2 rounded-lg transition-colors hover:bg-white/5"
+                className="relative text-[21px] px-3 py-2 rounded-lg transition-colors hover:bg-white/5"
                 style={{
                   color: active ? C.primary : C.fg,
                   fontWeight: active ? 600 : 400,

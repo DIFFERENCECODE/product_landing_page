@@ -176,17 +176,18 @@ const TIERS: readonly Tier[] = [
   },
 ];
 
-const TIER_COMPARE_ROWS: Array<{ label: string; lite: string | true; starter: string | true; coached: string | true }> = [
-  { label: 'The Thin Book of Fat (digital)',            lite: true,           starter: true, coached: true },
-  { label: 'Meo AI access',                              lite: '7-day trial', starter: '6 months', coached: '6 months' },
-  { label: 'Manual entry of past blood results',         lite: true,           starter: true, coached: true },
-  { label: 'Lab-grade Digital Lipid Meter',              lite: '—',           starter: true, coached: true },
-  { label: '20 test strips + lancets + carry case',      lite: '—',           starter: true, coached: true },
-  { label: 'Biological Age Score + Target Score',        lite: '—',           starter: true, coached: true },
-  { label: 'Free retest at month six',                   lite: '—',           starter: true, coached: true },
-  { label: '3 months 1:1 coaching (Spencer Martin)',     lite: '—',           starter: '—',     coached: true },
-  { label: '40-min onboarding + two 30-min follow-ups',  lite: '—',           starter: '—',     coached: true },
-  { label: 'Direct messaging with coach',                lite: '—',           starter: '—',     coached: true },
+type CompareCell = string | true | false;
+const TIER_COMPARE_ROWS: Array<{ label: string; retail: string; lite: CompareCell; starter: CompareCell; coached: CompareCell }> = [
+  { label: 'The Thin Book of Fat (digital)',           retail: '£19',  lite: true,           starter: true, coached: true },
+  { label: 'Meo AI access',                             retail: '£174', lite: '7-day trial', starter: '6 months', coached: '6 months' },
+  { label: 'Manual entry of past blood results',        retail: 'included', lite: true,       starter: true, coached: true },
+  { label: 'Lab-grade Digital Lipid Meter',             retail: '£119', lite: false,          starter: true, coached: true },
+  { label: '20 test strips + lancets + carry case',     retail: '£49',  lite: false,          starter: true, coached: true },
+  { label: 'Biological Age Score + Target Score',       retail: '£29',  lite: false,          starter: true, coached: true },
+  { label: 'Free retest at month six',                  retail: '£25',  lite: false,          starter: true, coached: true },
+  { label: '3 months 1:1 coaching (Spencer Martin)',    retail: '£297', lite: false,          starter: false, coached: true },
+  { label: '40-min onboarding + two 30-min follow-ups', retail: 'included', lite: false,      starter: false, coached: true },
+  { label: 'Direct messaging with coach',               retail: 'included', lite: false,      starter: false, coached: true },
 ];
 
 const FAQ = [
@@ -409,7 +410,7 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs mb-3" style={{ color: C.muted }}>
+            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-lg mb-3" style={{ color: C.muted }}>
               {TRUST_CHIPS.map((chip) => {
                 const Icon = chip.icon;
                 return (
@@ -421,12 +422,12 @@ export default function HomePage() {
               })}
             </div>
 
-            {/* Eos credibility line — collapsed from full section to one
+            {/* Credibility line — collapsed from full section to one
                 line so it carries trust without dominating the page. */}
-            <p className="text-xs" style={{ color: C.muted }}>
+            <p className="text-lg" style={{ color: C.muted }}>
               In clinical alignment with{' '}
               <Link href="/partners" className="underline" style={{ color: C.pillFg }}>
-                Dr Arup Sen, MRCP — Eos Longevity
+                world leading scientists and physicians
               </Link>
             </p>
           </div>
@@ -739,11 +740,14 @@ export default function HomePage() {
               style={{ background: 'rgba(30,70,60,0.85)', border: `1px solid ${C.border}` }}
             >
               <div
-                className="grid grid-cols-[1.6fr_repeat(3,1fr)] sm:grid-cols-[2fr_repeat(3,1fr)] text-sm"
+                className="grid grid-cols-[1.6fr_auto_repeat(3,1fr)] sm:grid-cols-[2fr_auto_repeat(3,1fr)] text-sm"
                 style={{ color: C.fg }}
               >
                 <div className="p-4 sm:p-5 text-xs uppercase tracking-wide font-semibold" style={{ color: C.muted, borderBottom: `1px solid ${C.border}` }}>
                   Component
+                </div>
+                <div className="p-4 sm:p-5 text-xs uppercase tracking-wide font-semibold text-right" style={{ color: C.muted, borderBottom: `1px solid ${C.border}`, borderLeft: `1px solid ${C.border}` }}>
+                  Typical retail
                 </div>
                 {TIERS.map((t) => (
                   <div
@@ -763,27 +767,78 @@ export default function HomePage() {
                   <Fragment key={row.label}>
                     <div
                       className="p-4 sm:p-5 leading-snug"
-                      style={{ borderBottom: i === TIER_COMPARE_ROWS.length - 1 ? 'none' : `1px solid ${C.border}`, color: C.fg }}
+                      style={{ borderBottom: `1px solid ${C.border}`, color: C.fg }}
                     >
                       {row.label}
                     </div>
-                    {([row.lite, row.starter, row.coached] as Array<string | true>).map((v, ci) => (
+                    <div
+                      className="p-4 sm:p-5 text-right tabular-nums"
+                      style={{ borderBottom: `1px solid ${C.border}`, borderLeft: `1px solid ${C.border}`, color: C.muted }}
+                    >
+                      {row.retail}
+                    </div>
+                    {([row.lite, row.starter, row.coached] as CompareCell[]).map((v, ci) => (
                       <div
                         key={ci}
                         className="p-4 sm:p-5 text-center"
                         style={{
-                          borderBottom: i === TIER_COMPARE_ROWS.length - 1 ? 'none' : `1px solid ${C.border}`,
+                          borderBottom: `1px solid ${C.border}`,
                           borderLeft: `1px solid ${C.border}`,
                           background: ci === 1 ? 'rgba(164,214,94,0.06)' : 'transparent',
                           color: v === true ? C.primary : C.muted,
                         }}
                       >
-                        {v === true ? <Check className="h-4 w-4 inline-block" /> : <span className="text-sm tabular-nums">{v}</span>}
+                        {v === true ? (
+                          <Check className="h-4 w-4 inline-block" />
+                        ) : v === false ? (
+                          <span className="text-sm">—</span>
+                        ) : (
+                          <span className="text-sm tabular-nums">{v}</span>
+                        )}
                       </div>
                     ))}
                   </Fragment>
                 ))}
+
+                {/* Totals row — sums of typical retail vs. bundle price per tier */}
+                <div className="p-4 sm:p-5 font-semibold" style={{ color: C.fg }}>
+                  Total typical retail
+                </div>
+                <div className="p-4 sm:p-5 text-right font-semibold tabular-nums" style={{ color: C.fg, borderLeft: `1px solid ${C.border}` }}>
+                  £712
+                </div>
+                <div className="p-4 sm:p-5 text-center tabular-nums" style={{ borderLeft: `1px solid ${C.border}`, color: C.muted }}>
+                  £193
+                </div>
+                <div className="p-4 sm:p-5 text-center tabular-nums" style={{ borderLeft: `1px solid ${C.border}`, color: C.muted, background: 'rgba(164,214,94,0.06)' }}>
+                  £415
+                </div>
+                <div className="p-4 sm:p-5 text-center tabular-nums" style={{ borderLeft: `1px solid ${C.border}`, color: C.muted }}>
+                  £712
+                </div>
+
+                <div className="p-4 sm:p-5 font-semibold" style={{ color: C.fg, borderTop: `1px solid ${C.border}` }}>
+                  Your price
+                </div>
+                <div className="p-4 sm:p-5 text-right tabular-nums" style={{ color: C.muted, borderLeft: `1px solid ${C.border}`, borderTop: `1px solid ${C.border}` }}>
+                  —
+                </div>
+                {TIERS.map((t) => (
+                  <div key={t.id} className="p-4 sm:p-5 text-center font-extrabold tabular-nums" style={{
+                    color: C.primary,
+                    fontSize: 'clamp(18px, 2vw, 22px)',
+                    borderLeft: `1px solid ${C.border}`,
+                    borderTop: `1px solid ${C.border}`,
+                    background: t.popular ? 'rgba(164,214,94,0.10)' : 'transparent',
+                  }}>
+                    £{t.price}
+                  </div>
+                ))}
               </div>
+              <p className="px-4 sm:px-5 py-3 text-xs" style={{ color: C.muted, borderTop: `1px solid ${C.border}` }}>
+                Typical retail values reflect standalone street pricing in the UK (Meo AI at £29/mo); coaching priced
+                at the standalone £99/mo Spencer Martin rate. Bundle pricing inclusive of VAT.
+              </p>
             </div>
           </div>
         </section>

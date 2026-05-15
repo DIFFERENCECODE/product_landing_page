@@ -11,9 +11,9 @@ declare global {
   }
 }
 
-const STORAGE_KEY = 'meo_exit_intent_v1';
+const STORAGE_KEY = 'meo_exit_intent_v2';
 const SUBSCRIBED_KEY = 'meo_subscribed';
-const ARM_DELAY_MS = 15_000;
+const ARM_DELAY_MS = 8_000;
 
 export default function ExitIntentModal() {
   const [armed, setArmed] = useState(false);
@@ -58,10 +58,16 @@ export default function ExitIntentModal() {
       lastT = now;
     };
 
+    const onVisibility = () => {
+      if (document.visibilityState === 'hidden') trigger();
+    };
+
     document.addEventListener('mouseleave', onMouseLeave);
+    document.addEventListener('visibilitychange', onVisibility);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       document.removeEventListener('mouseleave', onMouseLeave);
+      document.removeEventListener('visibilitychange', onVisibility);
       window.removeEventListener('scroll', onScroll);
     };
   }, [armed]);
@@ -162,17 +168,19 @@ export default function ExitIntentModal() {
 
         <h2
           id="exit-intent-title"
-          className="font-extrabold mb-2 leading-tight"
+          className="font-extrabold mb-3 leading-tight"
           style={{
             color: C.fg,
             fontFamily: FONT_SERIF,
             fontSize: 'clamp(22px, 3.4vw, 28px)',
           }}
         >
-          Two things, on the house.
+          Before you go.
         </h2>
-        <p className="text-sm mb-5" style={{ color: C.muted }}>
-          Subscribers get instant access to:
+        <p className="text-sm mb-5 leading-relaxed" style={{ color: C.muted }}>
+          Make sure you learn about the next product in the Meterbolic Tracker series.{' '}
+          If you leave us your name, you&apos;ll be the first to know — and you&apos;ll get a peek
+          behind the deep thinking that sits behind this quacking website{' '}<span aria-hidden>;-)</span>.
         </p>
 
         {/* Lead magnet #1 — Free chapter with cover image */}
