@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ExitIntentModal from "@/components/ExitIntentModal";
 
 // Manrope is the single primary face for the whole site (loaded via
 // the <link> tag in <head> so we can pick exact weights). Geist /
@@ -226,6 +227,7 @@ export default function RootLayout({
       <body
         className={`${geist.variable} ${geistMono.variable} antialiased`}
       >
+        <ExitIntentModal />
         {children}
       </body>
     </html>

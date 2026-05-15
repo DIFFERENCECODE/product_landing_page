@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 // ─────────────────────────────────────────────────────────────────────
 // / — Meo homepage. Audit-led variant promoted from /preview.
 //
@@ -41,9 +42,11 @@ import {
   Users,
   ClipboardList,
   Mail,
+  Briefcase,
 } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
+import { NewsletterSection } from '@/components/NewsletterForm';
 
 export const metadata: Metadata = {
   title: 'Meo — Metabolic Intelligence System',
@@ -56,6 +59,7 @@ const TRUST_CHIPS = [
   { icon: Activity, label: '±10% of reference-lab' },
   { icon: Check, label: '30-day money-back' },
   { icon: Clock, label: 'Ships in 72 hours' },
+  { icon: Briefcase, label: 'Trusted by the underwriting industry' },
 ];
 
 type Stat = { readonly value: string; readonly label: string; readonly sourceLabel?: string; readonly href?: string };
@@ -170,6 +174,19 @@ const TIERS: readonly Tier[] = [
     cta: 'Get Meo + Coach',
     href: '/checkout?plan=coached',
   },
+];
+
+const TIER_COMPARE_ROWS: Array<{ label: string; lite: string | true; starter: string | true; coached: string | true }> = [
+  { label: 'The Thin Book of Fat (digital)',            lite: true,           starter: true, coached: true },
+  { label: 'Meo AI access',                              lite: '7-day trial', starter: '6 months', coached: '6 months' },
+  { label: 'Manual entry of past blood results',         lite: true,           starter: true, coached: true },
+  { label: 'Lab-grade Digital Lipid Meter',              lite: '—',           starter: true, coached: true },
+  { label: '20 test strips + lancets + carry case',      lite: '—',           starter: true, coached: true },
+  { label: 'Biological Age Score + Target Score',        lite: '—',           starter: true, coached: true },
+  { label: 'Free retest at month six',                   lite: '—',           starter: true, coached: true },
+  { label: '3 months 1:1 coaching (Spencer Martin)',     lite: '—',           starter: '—',     coached: true },
+  { label: '40-min onboarding + two 30-min follow-ups',  lite: '—',           starter: '—',     coached: true },
+  { label: 'Direct messaging with coach',                lite: '—',           starter: '—',     coached: true },
 ];
 
 const FAQ = [
@@ -703,6 +720,74 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* TIER COMPARISON — feature-by-feature matrix. */}
+        <section className="py-16 sm:py-24 px-5 sm:px-6" aria-label="Tier comparison">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-10">
+              <h2
+                className="font-bold mb-3 leading-tight"
+                style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 40px)', textWrap: 'balance' }}
+              >
+                What's included, at a glance.
+              </h2>
+              <p className="text-base sm:text-lg max-w-2xl mx-auto" style={{ color: C.muted }}>
+                Every component of the delivered package, across the three tiers.
+              </p>
+            </div>
+            <div
+              className="rounded-2xl overflow-hidden"
+              style={{ background: 'rgba(30,70,60,0.85)', border: `1px solid ${C.border}` }}
+            >
+              <div
+                className="grid grid-cols-[1.6fr_repeat(3,1fr)] sm:grid-cols-[2fr_repeat(3,1fr)] text-sm"
+                style={{ color: C.fg }}
+              >
+                <div className="p-4 sm:p-5 text-xs uppercase tracking-wide font-semibold" style={{ color: C.muted, borderBottom: `1px solid ${C.border}` }}>
+                  Component
+                </div>
+                {TIERS.map((t) => (
+                  <div
+                    key={t.id}
+                    className="p-4 sm:p-5 text-center"
+                    style={{
+                      borderBottom: `1px solid ${C.border}`,
+                      borderLeft: `1px solid ${C.border}`,
+                      background: t.popular ? 'rgba(164,214,94,0.10)' : 'transparent',
+                    }}
+                  >
+                    <div className="font-bold text-base" style={{ color: C.fg, fontFamily: FONT_SERIF }}>{t.name}</div>
+                    <div className="text-xs mt-0.5 tabular-nums" style={{ color: C.primary }}>£{t.price}</div>
+                  </div>
+                ))}
+                {TIER_COMPARE_ROWS.map((row, i) => (
+                  <Fragment key={row.label}>
+                    <div
+                      className="p-4 sm:p-5 leading-snug"
+                      style={{ borderBottom: i === TIER_COMPARE_ROWS.length - 1 ? 'none' : `1px solid ${C.border}`, color: C.fg }}
+                    >
+                      {row.label}
+                    </div>
+                    {([row.lite, row.starter, row.coached] as Array<string | true>).map((v, ci) => (
+                      <div
+                        key={ci}
+                        className="p-4 sm:p-5 text-center"
+                        style={{
+                          borderBottom: i === TIER_COMPARE_ROWS.length - 1 ? 'none' : `1px solid ${C.border}`,
+                          borderLeft: `1px solid ${C.border}`,
+                          background: ci === 1 ? 'rgba(164,214,94,0.06)' : 'transparent',
+                          color: v === true ? C.primary : C.muted,
+                        }}
+                      >
+                        {v === true ? <Check className="h-4 w-4 inline-block" /> : <span className="text-sm tabular-nums">{v}</span>}
+                      </div>
+                    ))}
+                  </Fragment>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* MEO CLINIC — B2B / clinician partnership block, distinct
             from the consumer tier ladder above. Surfaces the Meo
             system as an offering practices can run with their own
@@ -857,6 +942,9 @@ export default function HomePage() {
             </p>
           </div>
         </section>
+
+        <NewsletterSection />
+
 
         {/* FAQ */}
         <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
