@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 
-type Person = { photo: string; name: string; role: string; bio: string };
+type Person = { photo: string; name: string; role: string; bio: string; objectPosition?: string };
 
 const PEOPLE: readonly Person[] = [
   {
@@ -27,13 +27,13 @@ const PEOPLE: readonly Person[] = [
     bio: 'Chair of Clinical Chemistry Laboratories at Isala Klinieken, Zwolle (Netherlands) and Chair of the European Reference Laboratory. Specialist in clinical chemistry and biostatistics with extensive research into metabolic biomarkers.',
   },
   {
-    photo: '/team-david-jehring.png',
-    name: 'David Jehring',
+    photo: '/team-david-jehring.jpg',
+    name: 'Dr. David Jehring',
     role: 'Technology Advisor',
     bio: 'CEO and Founder of Black Pear Software. Healthcare technology leader with a background as CTO at Apollo Medical Systems Ltd, specialising in digital health integration.',
   },
   {
-    photo: '/team-isabella-cooper.png',
+    photo: '/team-isabella-cooper.jpg',
     name: 'Dr. Isabella Cooper',
     role: 'Research Advisor',
     bio: 'PhD in Biochemistry, Physiology and Pathophysiology. Researcher in hyperinsulinemia and ketogenic science, advising on metabolic disease mechanisms and nutritional interventions.',
@@ -70,7 +70,7 @@ const PEOPLE: readonly Person[] = [
   },
   {
     photo: '/team-gabor.png',
-    name: 'Prof. Gabor Erdosi',
+    name: 'Gabor Erdosi',
     role: 'Chief Metabolic Scientist',
     bio: 'Molecular biologist focused on metabolic dysfunction and sweetener science, advancing evidence-based innovation in diagnostics.',
   },
@@ -88,9 +88,10 @@ const PEOPLE: readonly Person[] = [
   },
   {
     photo: '/team-lech.jpeg',
-    name: 'Lechenu Iyoko',
+    name: 'Alechenu Iyoko',
     role: 'AI Engineer',
     bio: 'Expert in machine learning algorithms and IT infrastructure, developing scalable AI solutions for personalised metabolic health.',
+    objectPosition: '50% 40%',
   },
   {
     photo: '/team-bhanu.jpeg',
@@ -132,7 +133,7 @@ function PersonCard({ p }: { p: Person }) {
         <img
           src={p.photo}
           alt={p.name}
-          className="absolute inset-0 w-full h-full object-cover object-top"
+          className="absolute inset-0 w-full h-full object-cover" style={{ objectPosition: p.objectPosition || 'top' }}
         />
       </div>
       <div className="p-6 flex flex-col flex-1" style={{ minHeight: 200 }}>

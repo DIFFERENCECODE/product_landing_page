@@ -56,9 +56,10 @@ const TRUST_CHIPS = [
   { icon: Activity, label: '±10% of reference-lab' },
   { icon: Check, label: '30-day money-back' },
   { icon: Clock, label: 'Ships in 72 hours' },
-] as const;
+];
 
-const STATS = [
+type Stat = { readonly value: string; readonly label: string; readonly sourceLabel?: string; readonly href?: string };
+const STATS: readonly Stat[] = [
   {
     value: '1 in 3',
     label: 'UK adults with raised cholesterol',
@@ -75,7 +76,7 @@ const STATS = [
     value: '364',
     label: 'days of metabolic drift between annual blood draws',
   },
-] as const;
+];
 
 const LOOP = [
   {
@@ -96,7 +97,7 @@ const LOOP = [
     body:
       'A Biological Age Score updates with every reading. The trend is visible early, not after a diagnosis.',
   },
-] as const;
+];
 
 const MARKERS = [
   { abbr: 'TC', label: 'Total Cholesterol — overall lipid load' },
@@ -105,7 +106,7 @@ const MARKERS = [
   { abbr: 'TG', label: 'Triglycerides — blood fat from diet & liver' },
   { abbr: 'TG:HDL', label: 'Insulin-resistance marker' },
   { abbr: 'BAS', label: 'Biological Age Score — composite metric' },
-] as const;
+];
 
 const IN_THE_BOX = [
   {
@@ -120,9 +121,10 @@ const IN_THE_BOX = [
     title: 'The Thin Book of Fat',
     sub: 'Marina Young’s action manual — yours to keep',
   },
-] as const;
+];
 
-const TIERS = [
+type Tier = { readonly id: string; readonly name: string; readonly price: number; readonly blurb: string; readonly features: readonly string[]; readonly cta: string; readonly href: string; readonly popular?: boolean };
+const TIERS: readonly Tier[] = [
   {
     id: 'lite',
     name: 'Meo Lite',
@@ -168,7 +170,7 @@ const TIERS = [
     cta: 'Get Meo + Coach',
     href: '/checkout?plan=coached',
   },
-] as const;
+];
 
 const FAQ = [
   {
