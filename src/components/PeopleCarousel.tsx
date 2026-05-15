@@ -15,30 +15,6 @@ type Person = { photo: string; name: string; role: string; bio: string; objectPo
 
 const PEOPLE: readonly Person[] = [
   {
-    photo: '/team-tim-noakes.png',
-    name: 'Prof. Tim Noakes',
-    role: 'Scientific Advisor',
-    bio: "Emeritus Professor at UCT's Division of Exercise Science and Sports Medicine. Renowned for pioneering research in exercise physiology, nutrition, and low-carbohydrate science. Author and endurance athlete with 70+ marathons and ultramarathons.",
-  },
-  {
-    photo: '/team-robbert-slingerland.png',
-    name: 'Dr. Robbert Slingerland',
-    role: 'Scientific Advisor',
-    bio: 'Chair of Clinical Chemistry Laboratories at Isala Klinieken, Zwolle (Netherlands) and Chair of the European Reference Laboratory. Specialist in clinical chemistry and biostatistics with extensive research into metabolic biomarkers.',
-  },
-  {
-    photo: '/team-david-jehring.jpg',
-    name: 'Dr. David Jehring',
-    role: 'Technology Advisor',
-    bio: 'CEO and Founder of Black Pear Software. Healthcare technology leader with a background as CTO at Apollo Medical Systems Ltd, specialising in digital health integration.',
-  },
-  {
-    photo: '/team-isabella-cooper.jpg',
-    name: 'Dr. Isabella Cooper',
-    role: 'Research Advisor',
-    bio: 'PhD in Biochemistry, Physiology and Pathophysiology. Researcher in hyperinsulinemia and ketogenic science, advising on metabolic disease mechanisms and nutritional interventions.',
-  },
-  {
     photo: '/team-eric-smith.jpg',
     name: 'Dr. Eric Smith',
     role: 'Founder',
@@ -91,7 +67,7 @@ const PEOPLE: readonly Person[] = [
     name: 'Alechenu Iyoko',
     role: 'AI Engineer',
     bio: 'Expert in machine learning algorithms and IT infrastructure, developing scalable AI solutions for personalised metabolic health.',
-    objectPosition: '50% 40%',
+    objectPosition: '50% 100%',
   },
   {
     photo: '/team-bhanu.jpeg',
@@ -105,8 +81,32 @@ const PEOPLE: readonly Person[] = [
     role: 'Finance',
     bio: 'Trusted advisor who provides strategic insights, financial analysis, and risk management solutions to help organisations optimise performance and ensure compliance.',
   },
+  {
+    photo: '/team-tim-noakes.png',
+    name: 'Prof. Tim Noakes',
+    role: 'Scientific Advisor',
+    bio: "Emeritus Professor at UCT's Division of Exercise Science and Sports Medicine. Renowned for pioneering research in exercise physiology, nutrition, and low-carbohydrate science. Author and endurance athlete with 70+ marathons and ultramarathons.",
+  },
+  {
+    photo: '/team-robbert-slingerland.png',
+    name: 'Dr. Robbert Slingerland',
+    role: 'Scientific Advisor',
+    bio: 'Chair of Clinical Chemistry Laboratories at Isala Klinieken, Zwolle (Netherlands) and Chair of the European Reference Laboratory. Specialist in clinical chemistry and biostatistics with extensive research into metabolic biomarkers.',
+  },
+  {
+    photo: '/team-david-jehring.jpg',
+    name: 'Dr. David Jehring',
+    role: 'Technology Advisor',
+    bio: 'CEO and Founder of Black Pear Software. Healthcare technology leader with a background as CTO at Apollo Medical Systems Ltd, specialising in digital health integration.',
+    objectPosition: 'center',
+  },
+  {
+    photo: '/team-isabella-cooper.jpg',
+    name: 'Dr. Isabella Cooper',
+    role: 'Research Advisor',
+    bio: 'PhD in Biochemistry, Physiology and Pathophysiology. Researcher in hyperinsulinemia and ketogenic science, advising on metabolic disease mechanisms and nutritional interventions.',
+  },
 ];
-
 function PersonCard({ p }: { p: Person }) {
   // "Advisor" / "Team" chip — visitors should be able to tell at a
   // glance whether someone runs the company or advises it. Inferred
