@@ -1,4 +1,9 @@
-# SKILLS-UTM.md — Meterbolic UTM & Affiliate URL Ontology
+---
+name: meterbolic-utm-url-ontology
+description: Canonical ontology for minting, validating, and interpreting Meterbolic affiliate URLs and UTM parameters. Use whenever a process (human, agent, or script) needs to produce a meterbolic.com URL for a campaign, email, ad, event, QR code, or partner landing — or needs to interpret utm_* values seen in analytics. Covers the /a/<Affiliate>/<Vertical> path namespace, affiliate slug registry, fixed vertical vocabulary, utm_source/medium/campaign/content/term mapping rules, and validation regex.
+---
+
+# Meterbolic UTM & Affiliate URL Ontology
 
 Operating manual for any Meterbolic process (humans, Claude Code orchestrators,
 campaign tooling, email templates, ad managers) that **mints, ingests, or
