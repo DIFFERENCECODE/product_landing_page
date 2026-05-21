@@ -51,11 +51,18 @@ landing page personalised to that affiliate × vertical.
 ### 1.2 UTM query string (client-side analytics)
 
 ```
-?utm_source=<src>&utm_medium=<med>&utm_campaign=<camp>&utm_content=<cnt>[&utm_term=<term>]
+?utm_source=<src>&utm_medium=<med>&utm_campaign=<camp>&utm_content=<cnt>[&utm_term=<term>][&utm_intent=<intent>]
 ```
 
 Required: `utm_source`, `utm_medium`, `utm_campaign`.
-Optional: `utm_content`, `utm_term`.
+Optional: `utm_content`, `utm_term`, `utm_intent`.
+
+`utm_source`/`utm_medium` capture **where the link sits** (FB ad, Instagram
+post, email, QR on a slide). `utm_intent` captures **what the visitor wants
+when they land** — a Meter, the AI service, a therapist. The two axes are
+orthogonal: the same Instagram ad creative can run with `utm_intent=meter`
+for one audience and `utm_intent=therapist` for another, and the landing
+page handler can swap the hero CTA accordingly without changing the path.
 
 The UTM values must be **derivable from the path** wherever a path exists, so
 that the URL and the analytics tag cannot drift. See §6 for the mapping rule.
@@ -172,6 +179,7 @@ and a campaign theme `<theme>`, the UTM values are:
 | `utm_campaign` | `<Vertical>-<YYYYqQ>-<theme>` per §5                            |
 | `utm_content`  | The placement/creative slug (§6.3). Required if known.          |
 | `utm_term`     | `<Vertical>` (§4) — optional, useful when source/medium aggregate across verticals |
+| `utm_intent`   | The visitor's desired outcome (§6.4) — optional, drives landing-page CTA selection |
 
 ### 6.1 `utm_medium` registry
 
@@ -216,6 +224,41 @@ location within the same campaign. Use kebab-case tokens drawn from:
 
 Compose tokens with `-` when needed: `email-2-hero`, `card-3-mobile`.
 
+### 6.4 `utm_intent` registry
+
+Optional. Declares **what the visitor wants when they land**, independent of
+where the link was placed. The landing page handler reads this to select the
+hero CTA and section ordering without changing the path. Fixed vocabulary —
+do not invent values ad-hoc.
+
+| Value       | Meaning                                                              |
+| ----------- | -------------------------------------------------------------------- |
+| `meter`     | Visitor wants the Biological Age Score Meter (device / dashboard)    |
+| `ai`        | Visitor wants the AI coach / agentic service                         |
+| `therapist` | Visitor wants a human practitioner (coach, therapist, consultation)  |
+
+Reserved for future use (do not mint URLs with these until the corresponding
+landing-page behaviour exists):
+
+| Value       | Meaning                                                              |
+| ----------- | -------------------------------------------------------------------- |
+| `course`    | Educational content / programme                                      |
+| `community` | Membership / community / mailing list                                |
+| `book`      | Book an appointment / consultation slot                              |
+| `pricing`   | Pricing / plans page                                                 |
+
+Rules:
+
+- `utm_intent` is **never** required. Omit it when the link is generic.
+- The same `(affiliate, vertical, campaign, placement)` MAY appear with
+  different `utm_intent` values — that's the productive case (one ad
+  creative, three intent variants pointing at the same landing page).
+- The landing page handler must fail soft: an unknown or missing
+  `utm_intent` renders the default CTA, never an error.
+- To extend the registry, add a row in the same PR/commit that ships the
+  landing-page behaviour for the new value. The keyword in `value` must
+  remain short, lowercase, and a single token where possible.
+
 ---
 
 ## 7. Worked examples
@@ -255,7 +298,27 @@ https://meterbolic.com/a/EoS/weightloss?utm_source=eos&utm_medium=email&utm_camp
 https://meterbolic.com/a/Fiori/longevity?utm_source=fiori&utm_medium=social-paid&utm_campaign=longevity-2026q3-launch&utm_content=card-3
 ```
 
-### 7.4 Non-affiliate URL (organic founder LinkedIn post)
+### 7.4 Same Instagram ad, three intent variants (one creative, three CTAs)
+
+- Affiliate: Arup
+- Vertical: longevity
+- Channel: paid social (Instagram)
+- Theme: `launch` (Q3 2026)
+- Placement: hero card
+
+The same ad creative is dropped into three targeting buckets; each gets a
+different `utm_intent` so the landing page surfaces the right CTA:
+
+```
+https://meterbolic.com/a/Arup/longevity?utm_source=arup&utm_medium=social-paid&utm_campaign=longevity-2026q3-launch&utm_content=ig-hero&utm_intent=meter
+https://meterbolic.com/a/Arup/longevity?utm_source=arup&utm_medium=social-paid&utm_campaign=longevity-2026q3-launch&utm_content=ig-hero&utm_intent=ai
+https://meterbolic.com/a/Arup/longevity?utm_source=arup&utm_medium=social-paid&utm_campaign=longevity-2026q3-launch&utm_content=ig-hero&utm_intent=therapist
+```
+
+Rule of thumb: when `utm_intent` is the only varying axis, keep the rest of
+the URL identical so analytics can attribute intent variance cleanly.
+
+### 7.5 Non-affiliate URL (organic founder LinkedIn post)
 
 No `/a/` path → no affiliate.
 
@@ -283,13 +346,19 @@ A minted URL is valid iff:
 5. `utm_medium` is in the registry in §6.1.
 6. `utm_campaign` matches `^[a-z]+-\d{4}q[1-4]-[a-z0-9-]+$`.
 7. `utm_content` (if present) uses only tokens from §6.3.
-8. No spaces, no uppercase, no `_`, no PII.
+8. `utm_intent` (if present) is a value listed in §6.4 (active rows only —
+   reserved values are not yet valid).
+9. No spaces, no uppercase, no `_`, no PII.
 
 Regex for a fully-formed `/a/` URL:
 
 ```
-^https://(www\.)?meterbolic\.com/a/[A-Za-z][A-Za-z0-9]{1,11}/(longevity|diabetes|weightloss|metabolic|cognition|performance|women)(/[a-z0-9-]+)?\?utm_source=[a-z0-9]+&utm_medium=(affiliate|email|social-paid|social-organic|search-paid|display|event|referral|direct)&utm_campaign=[a-z]+-\d{4}q[1-4]-[a-z0-9-]+(&utm_content=[a-z0-9-]+)?(&utm_term=[a-z]+)?$
+^https://(www\.)?meterbolic\.com/a/[A-Za-z][A-Za-z0-9]{1,11}/(longevity|diabetes|weightloss|metabolic|cognition|performance|women)(/[a-z0-9-]+)?\?utm_source=[a-z0-9]+&utm_medium=(affiliate|email|social-paid|social-organic|search-paid|display|event|referral|direct)&utm_campaign=[a-z]+-\d{4}q[1-4]-[a-z0-9-]+(&utm_content=[a-z0-9-]+)?(&utm_term=[a-z]+)?(&utm_intent=(meter|ai|therapist))?$
 ```
+
+Parameter order in the regex is canonical: `source`, `medium`, `campaign`,
+`content`, `term`, `intent`. Generators should emit in this order to keep
+URLs string-comparable across runs.
 
 ---
 
@@ -298,9 +367,13 @@ Regex for a fully-formed `/a/` URL:
 - This file is the **source of truth**. Tooling that mints URLs (email
   templates, ad-manager scripts, the future URL-minting agent) must read this
   registry, not duplicate it.
-- Changes to §3, §4, §5, §6.1, §6.3 require a commit that updates this file
-  alongside whatever introduced the new term. Reviewers should reject PRs that
-  add an unregistered slug.
+- Changes to §3, §4, §5, §6.1, §6.3, §6.4 require a commit that updates this
+  file alongside whatever introduced the new term. Reviewers should reject
+  PRs that add an unregistered slug.
+- New `utm_intent` values must ship in the same PR as the landing-page
+  behaviour they unlock; otherwise the value reaches analytics but the user
+  experience does not change, which silently breaks the contract that
+  `utm_intent` *means* something at the destination.
 - Audit cadence: at every quarter boundary, run a report listing distinct
   `utm_*` values seen in the analytics pipeline against this file. Anything in
   the analytics that isn't here is drift — fix the source, then backfill the
