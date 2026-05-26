@@ -51,18 +51,22 @@ landing page personalised to that affiliate × vertical.
 ### 1.2 UTM query string (client-side analytics)
 
 ```
-?utm_source=<src>&utm_medium=<med>&utm_campaign=<camp>&utm_content=<cnt>[&utm_term=<term>][&utm_intent=<intent>]
+?utm_source=<src>&utm_medium=<med>&utm_campaign=<camp>&utm_content=<cnt>[&utm_term=<term>][&utm_intent=<intent>][&utm_hint=<hint>]
 ```
 
 Required: `utm_source`, `utm_medium`, `utm_campaign`.
-Optional: `utm_content`, `utm_term`, `utm_intent`.
+Optional: `utm_content`, `utm_term`, `utm_intent`, `utm_hint`.
 
 `utm_source`/`utm_medium` capture **where the link sits** (FB ad, Instagram
-post, email, QR on a slide). `utm_intent` captures **what the visitor wants
-when they land** — a Meter, the AI service, a therapist. The two axes are
-orthogonal: the same Instagram ad creative can run with `utm_intent=meter`
-for one audience and `utm_intent=therapist` for another, and the landing
-page handler can swap the hero CTA accordingly without changing the path.
+post, email, QR on a slide). `utm_intent` captures **what category the
+visitor wants when they land** — a Meter, the AI service, a therapist.
+`utm_hint` carries a **finer-grained recommendation to the receiving system**
+— a specific product, or a product paired with the affiliate's branded
+service — so the landing page can surface the most relevant single offer
+instead of the category default. The three axes are orthogonal: the same
+Instagram ad creative can run with `utm_intent=meter` & `utm_hint=meter-pro`
+for one audience and `utm_intent=therapist` & `utm_hint=therapist-arup` for
+another, all without changing the path.
 
 The UTM values must be **derivable from the path** wherever a path exists, so
 that the URL and the analytics tag cannot drift. See §6 for the mapping rule.
@@ -179,7 +183,8 @@ and a campaign theme `<theme>`, the UTM values are:
 | `utm_campaign` | `<Vertical>-<YYYYqQ>-<theme>` per §5                            |
 | `utm_content`  | The placement/creative slug (§6.3). Required if known.          |
 | `utm_term`     | `<Vertical>` (§4) — optional, useful when source/medium aggregate across verticals |
-| `utm_intent`   | The visitor's desired outcome (§6.4) — optional, drives landing-page CTA selection |
+| `utm_intent`   | The visitor's desired outcome category (§6.4) — optional, drives landing-page CTA selection |
+| `utm_hint`     | Specific product or product+affiliate recommendation (§6.5) — optional, finer-grained than `utm_intent` |
 
 ### 6.1 `utm_medium` registry
 
@@ -259,6 +264,66 @@ Rules:
   landing-page behaviour for the new value. The keyword in `value` must
   remain short, lowercase, and a single token where possible.
 
+### 6.5 `utm_hint` — specific recommendation to the receiver
+
+Optional. Where `utm_intent` is the **category** the visitor wants
+(meter / ai / therapist), `utm_hint` is the **specific recommendation** the
+landing page should surface — a particular product, or a product paired with
+the affiliate's branded service. The receiver treats this as a *hint*, not a
+directive: it should prefer the hinted offer when valid, fall back to the
+`utm_intent` default when the hint is unknown or inapplicable, and never
+error on it.
+
+**Format:** lowercase, kebab-case, matches `^[a-z][a-z0-9]*(-[a-z0-9]+)*$`,
+max 40 chars.
+
+**Grammar (recommended, not enforced by regex):**
+
+```
+utm_hint = <product-slug>[ - <affiliate-slug-lower> ]
+```
+
+- `<product-slug>` — a product or service identifier from the product
+  registry below. Use the most specific applicable slug.
+- `<affiliate-slug-lower>` — optional, lowercased affiliate slug from §3,
+  appended when the hint refers to a product *paired* with the affiliate's
+  branded service. Distinguishes "the Meter Pro device" from "the Meter Pro
+  packaged with the Arup engineering longevity programme".
+
+**Product slug registry (seed — extend in the same PR as new product copy):**
+
+| Slug              | Refers to                                                       |
+| ----------------- | --------------------------------------------------------------- |
+| `meter-pro`       | Biological Age Score Meter (paid tier)                          |
+| `meter-free`      | Biological Age Score Meter (free tier / lead-magnet)            |
+| `ai-coach`        | AI agentic coach service                                        |
+| `ai-coach-plus`   | AI coach paired with human-in-the-loop review                   |
+| `therapist-1on1` | Booked human practitioner session                                |
+| `kraft-test`      | Kraft insulin assay product                                     |
+
+Composed examples:
+
+```
+utm_hint=meter-pro
+utm_hint=meter-pro-arup            # Meter Pro within Arup programme
+utm_hint=ai-coach-eos              # AI coach within EoS partnership
+utm_hint=therapist-1on1-fiori      # 1:1 therapist via Fiori channel
+```
+
+Rules:
+
+- `utm_hint` is **never** required.
+- `utm_hint` SHOULD be consistent with `utm_intent` when both are present:
+  a `utm_intent=therapist` URL should not carry `utm_hint=meter-pro`. The
+  validator (§8) warns on disagreement but does not reject — the receiver
+  has final say.
+- Unregistered product slugs MAY appear during product launches; the
+  registry must be updated in the same PR as the launch copy. URLs minted
+  with un-launched product slugs will not break, but analytics rollups will
+  show them as fragments until the registry catches up.
+- Do NOT put SKU numbers, pricing tiers, A/B variant labels, or affiliate-IDs
+  here. Product slug only, plus optional affiliate slug suffix.
+
 ---
 
 ## 7. Worked examples
@@ -318,6 +383,24 @@ https://meterbolic.com/a/Arup/longevity?utm_source=arup&utm_medium=social-paid&u
 Rule of thumb: when `utm_intent` is the only varying axis, keep the rest of
 the URL identical so analytics can attribute intent variance cleanly.
 
+### 7.5 Layered intent + hint — recommend a specific Arup-branded product
+
+Same Arup longevity placement, `utm_intent=meter` (category), `utm_hint`
+narrows to a specific Arup-paired product:
+
+```
+https://meterbolic.com/a/Arup/longevity?utm_source=arup&utm_medium=social-paid&utm_campaign=longevity-2026q3-launch&utm_content=ig-hero&utm_intent=meter&utm_hint=meter-pro-arup
+```
+
+The landing page reads `utm_intent` for the section layout and `utm_hint`
+for which specific product card to feature above the fold. If a future
+campaign decides to push the AI coach paired with Arup, only the last two
+params change:
+
+```
+…&utm_intent=ai&utm_hint=ai-coach-arup
+```
+
 ### 7.5 Non-affiliate URL (organic founder LinkedIn post)
 
 No `/a/` path → no affiliate.
@@ -348,17 +431,22 @@ A minted URL is valid iff:
 7. `utm_content` (if present) uses only tokens from §6.3.
 8. `utm_intent` (if present) is a value listed in §6.4 (active rows only —
    reserved values are not yet valid).
-9. No spaces, no uppercase, no `_`, no PII.
+9. `utm_hint` (if present) matches `^[a-z][a-z0-9]*(-[a-z0-9]+)*$`, is at
+   most 40 chars, and SHOULD start with a slug from the §6.5 product
+   registry. The validator emits a **warning** (not an error) when the slug
+   is unrecognised or when `utm_hint` and `utm_intent` disagree (e.g.
+   `intent=therapist` & `hint=meter-pro`).
+10. No spaces, no uppercase, no `_`, no PII.
 
 Regex for a fully-formed `/a/` URL:
 
 ```
-^https://(www\.)?meterbolic\.com/a/[A-Za-z][A-Za-z0-9]{1,11}/(longevity|diabetes|weightloss|metabolic|cognition|performance|women)(/[a-z0-9-]+)?\?utm_source=[a-z0-9]+&utm_medium=(affiliate|email|social-paid|social-organic|search-paid|display|event|referral|direct)&utm_campaign=[a-z]+-\d{4}q[1-4]-[a-z0-9-]+(&utm_content=[a-z0-9-]+)?(&utm_term=[a-z]+)?(&utm_intent=(meter|ai|therapist))?$
+^https://(www\.)?meterbolic\.com/a/[A-Za-z][A-Za-z0-9]{1,11}/(longevity|diabetes|weightloss|metabolic|cognition|performance|women)(/[a-z0-9-]+)?\?utm_source=[a-z0-9]+&utm_medium=(affiliate|email|social-paid|social-organic|search-paid|display|event|referral|direct)&utm_campaign=[a-z]+-\d{4}q[1-4]-[a-z0-9-]+(&utm_content=[a-z0-9-]+)?(&utm_term=[a-z]+)?(&utm_intent=(meter|ai|therapist))?(&utm_hint=[a-z][a-z0-9]*(-[a-z0-9]+){0,7})?$
 ```
 
 Parameter order in the regex is canonical: `source`, `medium`, `campaign`,
-`content`, `term`, `intent`. Generators should emit in this order to keep
-URLs string-comparable across runs.
+`content`, `term`, `intent`, `hint`. Generators should emit in this order
+to keep URLs string-comparable across runs.
 
 ---
 
@@ -367,13 +455,18 @@ URLs string-comparable across runs.
 - This file is the **source of truth**. Tooling that mints URLs (email
   templates, ad-manager scripts, the future URL-minting agent) must read this
   registry, not duplicate it.
-- Changes to §3, §4, §5, §6.1, §6.3, §6.4 require a commit that updates this
-  file alongside whatever introduced the new term. Reviewers should reject
-  PRs that add an unregistered slug.
+- Changes to §3, §4, §5, §6.1, §6.3, §6.4, §6.5 require a commit that updates
+  this file alongside whatever introduced the new term. Reviewers should
+  reject PRs that add an unregistered slug.
 - New `utm_intent` values must ship in the same PR as the landing-page
   behaviour they unlock; otherwise the value reaches analytics but the user
   experience does not change, which silently breaks the contract that
   `utm_intent` *means* something at the destination.
+- New `utm_hint` product slugs MAY land slightly ahead of the landing-page
+  behaviour (because `hint` is by definition advisory and the receiver falls
+  back to the `utm_intent` default), but the registry must catch up within
+  the same calendar week — otherwise analytics rollups carry untyped slugs
+  that no one can interpret three months later.
 - Audit cadence: at every quarter boundary, run a report listing distinct
   `utm_*` values seen in the analytics pipeline against this file. Anything in
   the analytics that isn't here is drift — fix the source, then backfill the
