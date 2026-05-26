@@ -21,7 +21,7 @@ Working tree lives **on engine** (`ssh engine`, `~/apps/product-landing-page`) �
 
 Pin down with the user:
 
-- **Affiliate slug** (PascalCase, ≤12 chars) — must match or extend §3 of `skills/utm/SKILL.md`.
+- **Affiliate slug** (PascalCase, ≤12 chars) — must match or extend §3 of `docs/utm.md`.
 - **Vertical** — one of `longevity | diabetes | weightloss | metabolic | cognition | performance | women` (UTM §4).
 - **Partner layer kind** — `therapy | coaching | practitioner | content | community` (drives which Stripe addon price IDs apply; the existing `NEXT_PUBLIC_ADDON_THERAPY_PRICE_ID` is the precedent).
 - **Per-tier deltas vs canonical TIERS** — what does Lite/Starter/Coached *gain* from the partner? Are tier names rebranded? Are prices uplifted?
@@ -31,9 +31,9 @@ Pin down with the user:
 
 In the same PR/commit that ships the page:
 
-1. `skills/utm/SKILL.md` §3 — add the affiliate slug row if new.
-2. `skills/utm/SKILL.md` §6.5 — add product slug(s) for the new SKUs, format `<partner-layer>-<affiliate-lower>` (e.g. `therapy-arup`, `coach-eos`). Mark active vs reserved.
-3. `skills/utm/SKILL.md` §8 — extend the regex if a new `utm_intent` value is required.
+1. `docs/utm.md` §3 — add the affiliate slug row if new.
+2. `docs/utm.md` §6.5 — add product slug(s) for the new SKUs, format `<partner-layer>-<affiliate-lower>` (e.g. `therapy-arup`, `coach-eos`). Mark active vs reserved.
+3. `docs/utm.md` §8 — extend the regex if a new `utm_intent` value is required.
 
 ### 3. Wire Stripe (price IDs first, never inline pence)
 
@@ -58,7 +58,7 @@ Implementation notes specific to this codebase:
 
 ### 5. Mint the canonical marketing URLs
 
-Use the UTM ontology — do **not** restate it. For each placement the partner needs (email, paid social, event QR, etc.), produce one URL per `(affiliate, vertical, campaign, placement, intent, hint)` tuple. Validate against the regex in `skills/utm/SKILL.md` §8 before delivery. Hand the URL set to the partner with a one-line README mapping placement → URL.
+Use the UTM ontology — do **not** restate it. For each placement the partner needs (email, paid social, event QR, etc.), produce one URL per `(affiliate, vertical, campaign, placement, intent, hint)` tuple. Validate against the regex in `docs/utm.md` §8 before delivery. Hand the URL set to the partner with a one-line README mapping placement → URL.
 
 ### 6. Ship & verify
 
@@ -71,14 +71,14 @@ Follow root `SKILLS.md` §3 to the letter — build on engine, `pm2 reload meo-l
 ## Failure modes
 
 - **Skipping the Meter+MeO core** in any tier — breaks the brand promise. Tiers without the standard core are *not* Affiliate Products; route them through a different SKU class.
-- **Hard-coding the affiliate slug** anywhere except `skills/utm/SKILL.md` §3 — fragments the registry and silently breaks analytics rollups.
+- **Hard-coding the affiliate slug** anywhere except `docs/utm.md` §3 — fragments the registry and silently breaks analytics rollups.
 - **Inlining Stripe pence values** instead of price IDs — pricing changes will require code edits, not dashboard edits. Always use env-resolved price IDs.
 - **Adding to `TIERS` without the readonly type** — fails TS build silently in Actions (root SKILLS.md §5.1).
-- **Minting URLs without consulting `skills/utm/SKILL.md`** — produces inconsistent UTM tags. The UTM skill is the source of truth; this skill defers to it.
+- **Minting URLs without consulting `docs/utm.md`** — produces inconsistent UTM tags. The UTM skill is the source of truth; this skill defers to it.
 
 ## References
 
-- `skills/utm/SKILL.md` — canonical UTM ontology, affiliate slug registry, product slug registry.
+- `docs/utm.md` — canonical UTM ontology, affiliate slug registry, product slug registry.
 - Root `SKILLS.md` — engine SSH workflow, build/reload commands, deploy pipeline gotchas, secrets policy.
 - `src/app/page.tsx::TIERS` (engine) — canonical tier shape and pricing precedent.
 - `src/app/api/kit-checkout/route.ts` and `src/app/api/meo-stripe/checkout/` — checkout wiring patterns to extend, not replace.
