@@ -383,7 +383,7 @@ export default function HomePage() {
               }}
             >
               Metabolic intelligence,{' '}
-              <span style={{ color: C.primary }}>at home</span>.
+              <span style={{ color: C.primary }}>at home</span>
             </h1>
             <p
               className="text-base sm:text-lg mx-auto mb-8 sm:mb-10 max-w-2xl"
