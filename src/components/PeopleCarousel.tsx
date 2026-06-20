@@ -39,7 +39,7 @@ const PEOPLE: readonly Person[] = [
     bio: 'Building the intelligence layer behind Meo — architecture, backend systems, and the data that turns a finger-prick into a metabolic picture.',
   },
   {
-    photo: '/team-leonard.png',
+    photo: '/team-leonard.jpg',
     name: 'Leonard Lin',
     role: 'Product Supervisor',
     bio: 'Overseeing product direction and ensuring every feature of Meo delivers real metabolic insight — from hardware integration to the AI conversation layer. Leonard is the man behind the world\'s leading Japanese translation AI model https://shisa.ai/ja/about/',
@@ -65,8 +65,8 @@ const PEOPLE: readonly Person[] = [
   {
     photo: '/team-lech.jpeg',
     name: 'Alechenu Iyoko',
-    role: 'AI Engineer',
-    bio: 'Expert in machine learning algorithms and IT infrastructure, developing scalable AI solutions for personalised metabolic health.',
+    role: 'AI Engineer · CAIO',
+    bio: "Designing Meterbolic’s AI from the inside out — MeO’s multi-agent reasoning engine for personalised metabolic guidance, and the intelligence infrastructure that runs the company behind it.",
     objectPosition: '50% 100%',
   },
   {
