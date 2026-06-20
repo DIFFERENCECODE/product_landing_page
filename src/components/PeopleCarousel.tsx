@@ -66,7 +66,7 @@ const PEOPLE: readonly Person[] = [
     photo: '/team-lech.jpeg',
     name: 'Alechenu Iyoko',
     role: 'AI Engineer · CAIO',
-    bio: "Designing Meterbolic’s AI from the inside out — MeO’s multi-agent reasoning engine for personalised metabolic guidance, and the intelligence infrastructure that runs the company behind it.",
+    bio: "Building Meterbolic’s AI systems — MeO’s multi‑agent reasoning for practitioners and patients, and the internal intelligence layer that connects the company’s data, tools, and workflows.",
     objectPosition: '50% 100%',
   },
   {
