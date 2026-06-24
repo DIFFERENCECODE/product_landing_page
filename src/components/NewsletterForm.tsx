@@ -39,7 +39,12 @@ export function NewsletterSection() {
       const res = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, name: [firstName, lastName].filter(Boolean).join(' '), _hp: honeypot }),
+        body: JSON.stringify({
+          email,
+          first_name: firstName,
+          last_name: lastName,
+          _hp: honeypot,
+        }),
       });
       if (!res.ok) throw new Error('Failed');
       try {
@@ -92,28 +97,14 @@ export function NewsletterSection() {
           Free for subscribers
         </div>
         <h2
-          className="font-extrabold mb-4 leading-tight"
-          style={{
-            color: C.fg,
-            fontFamily: FONT_SERIF,
-            fontSize: 'clamp(32px, 5.2vw, 52px)',
-            textWrap: 'balance',
-          }}
+          className="font-extrabold mb-3"
+          style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(26px, 4vw, 36px)' }}
         >
-          Free trial access to the world&apos;s first{' '}
-          <span style={{ color: C.primary }}>Metabolic Conversational AI</span>.
+          Not ready to buy? Take two things on us.
         </h2>
-        <p
-          className="font-semibold mb-3 max-w-2xl mx-auto leading-snug"
-          style={{ color: C.fg, fontSize: 'clamp(18px, 2.4vw, 22px)' }}
-        >
-          Talk to Meo — plain-English answers about your metabolic health, on demand.
-        </p>
-        <p className="text-base mb-2 max-w-xl mx-auto" style={{ color: C.muted }}>
-          Plus the opening chapter of <em>The Thin Book of Fat</em> by Marina Young — free.
-        </p>
-        <p className="text-sm mb-8 max-w-xl mx-auto" style={{ color: C.muted }}>
-          Join the Meo newsletter. No spam, ever.
+        <p className="text-base mb-8 max-w-xl mx-auto" style={{ color: C.muted }}>
+          Join the Meo newsletter — instant access to a free book extract and the world&apos;s
+          only Metabolic Conversational AI. No spam, ever.
         </p>
 
         {/* Lead magnets — branded cards */}
@@ -223,21 +214,21 @@ export function NewsletterSection() {
                   color: C.fg,
                 }}
               />
-              <input
-                type="email"
-                required
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
-                className="sm:col-span-2 rounded-xl px-4 py-3 text-sm focus:outline-none"
-                style={{
-                  background: 'rgba(255,255,255,0.08)',
-                  border: `1px solid ${C.border}`,
-                  color: C.fg,
-                }}
-              />
             </div>
+            <input
+              type="email"
+              required
+              placeholder="your@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+              className="rounded-xl px-4 py-3 text-sm focus:outline-none"
+              style={{
+                background: 'rgba(255,255,255,0.08)',
+                border: `1px solid ${C.border}`,
+                color: C.fg,
+              }}
+            />
             <button
               type="submit"
               disabled={state === 'submitting'}

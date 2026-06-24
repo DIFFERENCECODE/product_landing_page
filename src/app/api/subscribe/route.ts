@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendEmail } from '@/lib/ses';
-import { subscribeWelcomeHtml, subscribeWelcomeText } from '@/lib/emails/subscribe-welcome';
+import {
+  subscribeWelcomeHtml,
+  subscribeWelcomeText,
+  subscribeNotificationHtml,
+  subscribeNotificationText,
+} from '@/lib/emails/subscribe-welcome';
 import { query } from '@/lib/db';
 import { pushToBeehiiv } from '@/lib/beehiiv';
 
@@ -94,12 +99,34 @@ export async function POST(req: NextRequest) {
     })
     .catch((err) => console.error('[subscribe] beehiiv push threw:', err));
 
+  // Subscriber-facing welcome email with the eBook link + credentials
   await sendEmail({
     to: cleanEmail,
-    subject: "You're in — your free extract of The Thin Book of Fat",
-    html: subscribeWelcomeHtml({ email: cleanEmail }),
-    text: subscribeWelcomeText({ email: cleanEmail }),
+    subject: "You're in — your free extract of The Thin Guide to Fat",
+    html: subscribeWelcomeHtml({ email: cleanEmail, firstName }),
+    text: subscribeWelcomeText({ email: cleanEmail, firstName }),
   });
+
+  // Internal notification — fire & forget so a slow SES call doesn't
+  // block the user response or break the form.
+  sendEmail({
+    to: 'info@meterbolic.com',
+    subject: `New signup: ${cleanEmail}`,
+    html: subscribeNotificationHtml({
+      email: cleanEmail,
+      firstName,
+      lastName,
+      ip,
+      source: 'newsletter',
+    }),
+    text: subscribeNotificationText({
+      email: cleanEmail,
+      firstName,
+      lastName,
+      ip,
+      source: 'newsletter',
+    }),
+  }).catch((err) => console.error('[subscribe] internal notification failed:', err));
 
   // Forward to waitlist webhook if configured
   const webhookUrl = process.env.WAITLIST_WEBHOOK_URL;

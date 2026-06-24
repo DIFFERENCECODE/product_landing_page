@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Mail, Check, X, ArrowRight, MessageSquare } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
@@ -11,9 +11,9 @@ declare global {
   }
 }
 
-const STORAGE_KEY = 'meo_exit_intent_v2';
+const STORAGE_KEY = 'meo_exit_intent_v1';
 const SUBSCRIBED_KEY = 'meo_subscribed';
-const ARM_DELAY_MS = 8_000;
+const ARM_DELAY_MS = 15_000;
 
 export default function ExitIntentModal() {
   const [armed, setArmed] = useState(false);
@@ -24,9 +24,13 @@ export default function ExitIntentModal() {
   const [honeypot, setHoneypot] = useState('');
   const [state, setState] = useState<'idle' | 'submitting' | 'done' | 'error'>('idle');
 
+  // One-shot guard: once the modal has fired (shown OR closed OR submitted),
+  // it stays "spent" for the entire page-load. React state alone wasn't enough
+  // because rapid mouseleave/scroll events fire before state updates settle.
+  const spentRef = useRef(false);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    // Subscribed users should never see this modal again.
     if (localStorage.getItem(SUBSCRIBED_KEY) === '1') return;
     if (sessionStorage.getItem(STORAGE_KEY) === 'shown') return;
     if (localStorage.getItem(STORAGE_KEY) === 'dismissed') return;
@@ -37,10 +41,21 @@ export default function ExitIntentModal() {
   useEffect(() => {
     if (!armed) return;
     if (typeof window === 'undefined') return;
+    if (spentRef.current) return; // never re-attach once consumed
 
     const trigger = () => {
+      // Belt-and-suspenders: every storage gate is re-checked here, plus
+      // the in-memory spent flag, plus we tear down listeners immediately
+      // after the first successful fire.
+      if (spentRef.current) return;
+      if (sessionStorage.getItem(STORAGE_KEY) === 'shown') return;
+      if (localStorage.getItem(STORAGE_KEY) === 'dismissed') return;
+      if (localStorage.getItem(SUBSCRIBED_KEY) === '1') return;
+
+      spentRef.current = true;
       sessionStorage.setItem(STORAGE_KEY, 'shown');
       setOpen(true);
+      detach();
     };
 
     const onMouseLeave = (e: MouseEvent) => {
@@ -58,18 +73,14 @@ export default function ExitIntentModal() {
       lastT = now;
     };
 
-    const onVisibility = () => {
-      if (document.visibilityState === 'hidden') trigger();
+    const detach = () => {
+      document.removeEventListener('mouseleave', onMouseLeave);
+      window.removeEventListener('scroll', onScroll);
     };
 
     document.addEventListener('mouseleave', onMouseLeave);
-    document.addEventListener('visibilitychange', onVisibility);
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => {
-      document.removeEventListener('mouseleave', onMouseLeave);
-      document.removeEventListener('visibilitychange', onVisibility);
-      window.removeEventListener('scroll', onScroll);
-    };
+    return detach;
   }, [armed]);
 
   useEffect(() => {
@@ -98,7 +109,12 @@ export default function ExitIntentModal() {
       const res = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, name: [firstName, lastName].filter(Boolean).join(' '), _hp: honeypot }),
+        body: JSON.stringify({
+          email,
+          first_name: firstName,
+          last_name: lastName,
+          _hp: honeypot,
+        }),
       });
       if (!res.ok) throw new Error('failed');
       try {
@@ -121,6 +137,7 @@ export default function ExitIntentModal() {
   };
 
   const handleClose = () => {
+    spentRef.current = true; // belt-and-suspenders even if listeners somehow survived
     setOpen(false);
     try {
       localStorage.setItem(STORAGE_KEY, 'dismissed');
@@ -168,19 +185,17 @@ export default function ExitIntentModal() {
 
         <h2
           id="exit-intent-title"
-          className="font-extrabold mb-3 leading-tight"
+          className="font-extrabold mb-2 leading-tight"
           style={{
             color: C.fg,
             fontFamily: FONT_SERIF,
             fontSize: 'clamp(22px, 3.4vw, 28px)',
           }}
         >
-          Before you go.
+          Two things, on the house.
         </h2>
-        <p className="text-sm mb-5 leading-relaxed" style={{ color: C.muted }}>
-          Make sure you learn about the next product in the Meterbolic Tracker series.{' '}
-          If you leave us your name, you&apos;ll be the first to know — and you&apos;ll get a peek
-          behind the deep thinking that sits behind this quacking website{' '}<span aria-hidden>;-)</span>.
+        <p className="text-sm mb-5" style={{ color: C.muted }}>
+          Subscribers get instant access to:
         </p>
 
         {/* Lead magnet #1 — Free chapter with cover image */}

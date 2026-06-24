@@ -39,6 +39,5 @@ next-env.d.ts
 data/
 data/stock.json
 data/
-branch_structure.json
-temp_auto_push.bat
-temp_interactive_push.bat
+.env.local.bak
+.env.local.bak.*
