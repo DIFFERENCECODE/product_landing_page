@@ -46,7 +46,7 @@ Saad or Erik try to make it look better.
 # bundle
 6 months of Meo AI
 Lipid meter — bundled
-20 lipid test strips + lancets + carry case
+10 lipid test strips + lancets + carry case
 Biological Age Score included
 
 - Add to bundle -- also see below in the new format
