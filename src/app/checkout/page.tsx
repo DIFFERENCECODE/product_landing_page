@@ -197,7 +197,7 @@ function HeroProductCard() {
   const features = [
     { icon: <Brain className="h-4 w-4" />, text: '6 months of Meo AI' },
     { icon: <Activity className="h-4 w-4" />, text: 'Lipid meter — bundled' },
-    { icon: <Droplets className="h-4 w-4" />, text: '20 lipid test strips + lancets + carry case' },
+    { icon: <Droplets className="h-4 w-4" />, text: '10 lipid test strips + lancets + carry case' },
     {
       // BAS PNG rendered as a CSS mask so it picks up currentColor
       // from the wrapping span (C.primary). Sized h-5 w-5 so its

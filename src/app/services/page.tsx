@@ -31,7 +31,7 @@ const INCLUDED = [
     icon: Activity,
     title: 'Digital Lipid Meter',
     body:
-      'Lab-grade at-home meter cleared for Home Use in the UK & EU. Reads Total Cholesterol, HDL, LDL, Triglycerides, the TC/HDL ratio, and a Kraft-style insulin response from a single finger-prick. Ships with 20 strips, lancets, and a carry case.',
+      'Lab-grade at-home meter cleared for Home Use in the UK & EU. Reads Total Cholesterol, HDL, LDL, Triglycerides, the TC/HDL ratio, and a Kraft-style insulin response from a single finger-prick. Ships with 10 strips, lancets, and a carry case.',
   },
   {
     icon: Brain,

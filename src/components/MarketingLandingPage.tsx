@@ -1806,7 +1806,7 @@ function TiersSection() {
       features: [
         'Lab-grade lipid meter (UK & EU registered)',
         '6 months of Meo AI included',
-        '20 test strips + lancets + carry case',
+        '10 test strips + lancets + carry case',
         'Biological Age Score + Target Score',
       ],
       // Monthly £29 sourced from OfferStackSection's "£29/month at

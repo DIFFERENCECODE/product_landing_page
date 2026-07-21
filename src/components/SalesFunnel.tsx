@@ -119,7 +119,7 @@ const IN_THE_BOX = [
     src: '/lipid-meter.png',
     alt: 'Digital Lipid Meter (BF-102, CE-marked)',
     title: 'Digital Lipid Meter',
-    sub: 'Lab-grade BF-102 · 20 strips · lancets · carry case',
+    sub: 'Lab-grade BF-102 · 10 strips · lancets · carry case',
   },
   {
     src: '/ebook-cover.jpg',
@@ -156,7 +156,7 @@ const DEFAULT_TIERS: readonly Tier[] = [
     features: [
       'Lab-grade Digital Lipid Meter',
       '6 months of Meo AI included',
-      '20 test strips + lancets + carry case',
+      '10 test strips + lancets + carry case',
       'Biological Age Score + Target Score',
       'Free retest at month six',
     ],
@@ -188,7 +188,7 @@ const TIER_COMPARE_ROWS: Array<{ label: string; retail: string; lite: CompareCel
   { label: 'Meo AI access',                             retail: '£174', lite: '7-day trial', starter: '6 months', coached: '6 months' },
   { label: 'Manual entry of past blood results',        retail: 'included', lite: true,       starter: true, coached: true },
   { label: 'Lab-grade Digital Lipid Meter',             retail: '£119', lite: false,          starter: true, coached: true },
-  { label: '20 test strips + lancets + carry case',     retail: '£49',  lite: false,          starter: true, coached: true },
+  { label: '10 test strips + lancets + carry case',     retail: '£49',  lite: false,          starter: true, coached: true },
   { label: 'Biological Age Score + Target Score',       retail: '£29',  lite: false,          starter: true, coached: true },
   { label: 'Free retest at month six',                  retail: '£25',  lite: false,          starter: true, coached: true },
   { label: '3 months 1:1 coaching (Spencer Martin)',    retail: '£297', lite: false,          starter: false, coached: true },
