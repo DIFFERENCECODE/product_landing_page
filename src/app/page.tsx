@@ -998,7 +998,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        <NewsletterSection />
 
 
         {/* FAQ */}
@@ -1075,6 +1074,8 @@ export default function HomePage() {
         </section>
 
         {/* SOURCES — citations now linked to verifiable sources. */}
+        <NewsletterSection />
+
         <section id="sources" className="py-12 px-5 sm:px-6" style={{ background: C.bgDeep, borderTop: `1px solid ${C.border}` }}>
           <div className="max-w-3xl mx-auto text-xs" style={{ color: C.muted }}>
             <p className="font-semibold mb-3" style={{ color: C.fg }}>Sources</p>
