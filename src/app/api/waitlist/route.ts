@@ -22,6 +22,7 @@
 // ═══════════════════════════════════════════════════════════════
 
 import { NextRequest, NextResponse } from "next/server";
+import { pushToGhl } from "@/lib/ghl";
 
 export const runtime = "nodejs";
 
@@ -67,6 +68,11 @@ export async function POST(req: NextRequest) {
     source,
     joinedAt: new Date().toISOString(),
   };
+
+  // Push to GoHighLevel — fire and forget, feeds the GHL unified inbox
+  pushToGhl(payload.email, { source: `waitlist:${source}` })
+    .then((r) => { if (!r.ok) console.error("[waitlist] GHL push failed:", r.status, r.error); })
+    .catch((err) => console.error("[waitlist] GHL push threw:", err));
 
   // ── Forward to external service if configured ─────────────────
   const webhookUrl = process.env.WAITLIST_WEBHOOK_URL;

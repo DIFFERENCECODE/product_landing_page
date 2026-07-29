@@ -8,6 +8,7 @@ import {
 } from '@/lib/emails/subscribe-welcome';
 import { query } from '@/lib/db';
 import { pushToBeehiiv } from '@/lib/beehiiv';
+import { pushToGhl } from '@/lib/ghl';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -86,6 +87,11 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error('[subscribe] DB insert failed:', err);
   }
+
+  // Push to GoHighLevel — fire and forget, feeds the GHL unified inbox
+  pushToGhl(cleanEmail, { firstName, lastName, source: 'meterbolic.com newsletter' })
+    .then((r) => { if (!r.ok) console.error('[subscribe] GHL push failed:', r.status, r.error); })
+    .catch((err) => console.error('[subscribe] GHL push threw:', err));
 
   // Push to Beehiiv — fire and forget, never blocks the user response
   pushToBeehiiv(cleanEmail, {

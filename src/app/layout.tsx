@@ -239,6 +239,13 @@ export default function RootLayout({
       >
         <ExitIntentModal />
         {children}
+        {/* GoHighLevel live chat — feeds the Meterbolic GHL unified inbox. */}
+        <script
+          src="https://widgets.leadconnectorhq.com/loader.js"
+          data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
+          data-widget-id="6a6964ef883a38e90e147dad"
+          async
+        />
       </body>
     </html>
   );
