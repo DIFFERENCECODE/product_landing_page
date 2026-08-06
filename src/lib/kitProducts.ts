@@ -194,8 +194,12 @@ export interface EnquiryProduct {
   duration: string;
   includes: readonly string[];
   enquirySubject: string;
-  /** Gives the fuller programme card its subtle primary-tinted border. */
-  accent: boolean;
+  /**
+   * Which card is lit on first paint. Selection is mutually exclusive —
+   * choosing the other card moves the highlight rather than adding a
+   * second one. See components/KraftPricingCards.tsx.
+   */
+  defaultSelected: boolean;
 }
 
 export const KRAFT_TEST: EnquiryProduct = {
@@ -213,7 +217,7 @@ export const KRAFT_TEST: EnquiryProduct = {
     'A follow-up conversation to walk through what it means',
   ],
   enquirySubject: 'KRAFT Test enquiry',
-  accent: false,
+  defaultSelected: false,
 };
 
 export const KRAFT_TEST_COACHED: EnquiryProduct = {
@@ -231,7 +235,7 @@ export const KRAFT_TEST_COACHED: EnquiryProduct = {
     'A progress review to see how the plan is landing',
   ],
   enquirySubject: 'KRAFT Test + Coaching enquiry',
-  accent: true,
+  defaultSelected: true,
 };
 
 export const KRAFT_TIERS: readonly EnquiryProduct[] = [KRAFT_TEST, KRAFT_TEST_COACHED];
