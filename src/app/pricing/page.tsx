@@ -8,7 +8,7 @@
 // ─────────────────────────────────────────────────────────────────────
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft, Check } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 
@@ -175,6 +175,34 @@ export default function PricingPage() {
         <p className="text-center text-xs mt-10" style={{ color: C.muted }}>
           One-time purchases. Prices in GBP. Shipping calculated at checkout.
         </p>
+
+        {/* SCRUM-18 — the KRAFT Test is a legacy product with no
+            published price yet, so it sits below the three Meo plans as
+            an enquiry rather than a fourth tier card. Turn it into a
+            priced card once Eric signs off pricing + fulfilment. */}
+        <div
+          className="max-w-3xl mx-auto mt-14 rounded-2xl p-7 text-center"
+          style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+        >
+          <p className="text-xs font-semibold tracking-wide mb-2" style={{ color: C.pillFg }}>
+            Also available
+          </p>
+          <h2 className="font-bold text-xl mb-3" style={{ color: C.fg, fontFamily: FONT_SERIF }}>
+            The KRAFT Test
+          </h2>
+          <p className="text-sm leading-relaxed mb-5" style={{ color: C.muted }}>
+            Meterbolic&apos;s original diagnostic — a measured glucose challenge with serial
+            insulin readings, run through a certified clinic or as a home kit. A one-off test
+            rather than a Meo plan, arranged directly with our team.
+          </p>
+          <Link
+            href="/kraft-test"
+            className="inline-flex items-center gap-2 text-sm font-semibold hover:underline"
+            style={{ color: C.primary }}
+          >
+            About the KRAFT Test <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </section>
 
       <Footer />

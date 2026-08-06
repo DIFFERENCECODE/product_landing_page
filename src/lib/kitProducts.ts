@@ -155,6 +155,55 @@ export const KIT_LITE: KitAddon = {
   priceId: process.env.NEXT_PUBLIC_DOWNSELL_LITE_PRICE_ID || 'price_meo_lite_placeholder',
 };
 
+// ─── Legacy product: the KRAFT Test (SCRUM-18) ──────────────────────
+//
+// Meterbolic's original diagnostic — Dr Joseph Kraft's insulin-survey
+// method run out-of-lab: an oral glucose challenge with serial insulin
+// readings from a single drop of blood, on a proprietary lateral-flow
+// analyser (CE-IVD, FDA-approved manufacturing facility).
+//
+// PRODUCT HIERARCHY (confirmed by Eric, 2026-06-14): the Lipid Meter
+// (Meo Starter) is the LEADING product; the KRAFT Test is LEGACY but
+// still on offer. Copy must position it that way — it is the deeper,
+// clinical-grade companion test, never the lead CTA. Do not let it
+// compete with the £149 bundle on the homepage.
+//
+// ⚠️  PRICE / CHECKOUT DELIBERATELY NOT SET.
+// SCRUM-18 is blocked pending decisions from Eric: KRAFT list price,
+// fulfilment & shipping model (who ships kits, address collection, geo
+// limits), and clinic-vs-home channel split. Until those land, the
+// product is listed as ENQUIRY-ONLY — the page captures leads through
+// /api/waitlist (source 'kraft-test', which is already a known
+// utm_hint in lib/affiliates.ts) rather than showing a price or a
+// Stripe button we can't fulfil. When the decisions arrive:
+//   1. set `price` (GBP pence) and populate NEXT_PUBLIC_KRAFT_PRICE_ID
+//   2. flip `enquiryOnly` to false
+//   3. wire the CTA to /checkout like the kit does
+export interface LegacyProduct {
+  id: string;
+  name: string;
+  tagline: string;
+  /** GBP pence. null while the product is enquiry-only. */
+  price: number | null;
+  /** Stripe Price ID — empty until the one-time Price exists. */
+  priceId: string;
+  /** When true the UI shows an enquiry form instead of a buy button. */
+  enquiryOnly: boolean;
+  /** Waitlist/GHL source tag for lead attribution. */
+  leadSource: string;
+}
+
+export const KRAFT_TEST: LegacyProduct = {
+  id: 'kraft-test',
+  name: 'The KRAFT Test',
+  tagline:
+    'The insulin-response test behind the science — Dr Joseph Kraft’s method, run outside the lab.',
+  price: null,
+  priceId: process.env.NEXT_PUBLIC_KRAFT_PRICE_ID || '',
+  enquiryOnly: true,
+  leadSource: 'kraft-test',
+};
+
 // ─── Biomarkers surfaced on the landing page ────────────────────────
 
 export const BIOMARKERS = [

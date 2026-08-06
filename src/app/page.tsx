@@ -47,6 +47,7 @@ import {
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 import { NewsletterSection } from '@/components/NewsletterForm';
+import { KraftCurve } from '@/components/Visuals';
 
 export const metadata: Metadata = {
   title: 'Meo — Metabolic Intelligence System',
@@ -998,7 +999,71 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* THE KRAFT TEST — SCRUM-18. Meterbolic's original diagnostic,
+            back on the page as a listed product. Deliberately placed
+            after the tiers, the comparison matrix and the clinic block
+            so the £149 Meo Starter stays the lead offer: KRAFT is the
+            legacy companion test, not a competing headline. Plain H2,
+            no green emphasis (both allowances are used by the hero and
+            the closing CTA). */}
+        <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
+          <div className="max-w-5xl mx-auto">
+            <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.pillFg }}>
+              Also from Meterbolic
+            </p>
+            <h2
+              className="font-extrabold mb-4 leading-tight"
+              style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 42px)' }}
+            >
+              The pattern behind the number — the KRAFT Test
+            </h2>
 
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-10 items-center">
+              <div className="space-y-4 text-base" style={{ color: C.muted }}>
+                <p>
+                  Decades ago, cardiologist Dr Joseph Kraft surveyed the insulin response of more
+                  than 14,000 people and showed that much of what we now call
+                  &ldquo;pre-diabetes&rdquo; is visible in the insulin curve years before a
+                  standard fasting glucose test picks anything up.
+                </p>
+                <p>
+                  The <strong style={{ color: C.fg }}>KRAFT Test</strong> is our original
+                  diagnostic, built on that method — a measured glucose challenge with serial
+                  insulin readings, run outside the lab. It is a separate one-off test rather than
+                  part of the Meo Starter bundle, available through certified clinics and as a home
+                  kit.
+                </p>
+                <p className="text-sm">
+                  Not a diagnosis. The clearest look available at how hard your insulin is working.
+                </p>
+                <Link
+                  href="/kraft-test"
+                  className="inline-flex items-center gap-2 text-sm font-semibold hover:underline"
+                  style={{ color: C.primary }}
+                >
+                  About the KRAFT Test <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+
+              <div
+                className="rounded-2xl p-5 sm:p-6"
+                style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+              >
+                <div className="flex items-baseline justify-between mb-3">
+                  <p className="text-xs tracking-wide" style={{ color: C.muted }}>
+                    Insulin response · 3 hours
+                  </p>
+                  <p className="text-xs" style={{ color: C.muted }}>
+                    Illustrative
+                  </p>
+                </div>
+                <div className="overflow-x-auto">
+                  <KraftCurve width={520} height={220} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* FAQ */}
         <section className="py-16 sm:py-24 px-5 sm:px-6" style={{ background: C.bgDeep }}>
