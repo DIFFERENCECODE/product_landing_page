@@ -168,41 +168,35 @@ export const KIT_LITE: KitAddon = {
 // clinical-grade companion test, never the lead CTA. Do not let it
 // compete with the £149 bundle on the homepage.
 //
-// ⚠️  PRICE / CHECKOUT DELIBERATELY NOT SET.
-// SCRUM-18 is blocked pending decisions from Eric: KRAFT list price,
-// fulfilment & shipping model (who ships kits, address collection, geo
-// limits), and clinic-vs-home channel split. Until those land, the
-// product is listed as ENQUIRY-ONLY — the page captures leads through
-// /api/waitlist (source 'kraft-test', which is already a known
-// utm_hint in lib/affiliates.ts) rather than showing a price or a
-// Stripe button we can't fulfil. When the decisions arrive:
-//   1. set `price` (GBP pence) and populate NEXT_PUBLIC_KRAFT_PRICE_ID
-//   2. flip `enquiryOnly` to false
-//   3. wire the CTA to /checkout like the kit does
-export interface LegacyProduct {
+// NOT PURCHASABLE ONLINE — enquiry only (Eric, 2026-08-06).
+// The KRAFT Test is arranged directly with the team, so the site shows
+// no price and no Stripe button. Every CTA is a `mailto:` to
+// info@meterbolic.com, exactly like the /coaching programme cards
+// (see components/coaching/Pricing.tsx and CtaClosing.tsx) — same
+// pattern, same inbox, no form and no lead-capture API in between.
+export interface EnquiryProduct {
   id: string;
   name: string;
   tagline: string;
-  /** GBP pence. null while the product is enquiry-only. */
-  price: number | null;
-  /** Stripe Price ID — empty until the one-time Price exists. */
-  priceId: string;
-  /** When true the UI shows an enquiry form instead of a buy button. */
-  enquiryOnly: boolean;
-  /** Waitlist/GHL source tag for lead attribution. */
-  leadSource: string;
+  /** Where enquiries land. Matches the /coaching pages. */
+  enquiryEmail: string;
+  /** Pre-filled subject line, so the inbox can route on it. */
+  enquirySubject: string;
 }
 
-export const KRAFT_TEST: LegacyProduct = {
+export const KRAFT_TEST: EnquiryProduct = {
   id: 'kraft-test',
   name: 'The KRAFT Test',
   tagline:
     'The insulin-response test behind the science — Dr Joseph Kraft’s method, run outside the lab.',
-  price: null,
-  priceId: process.env.NEXT_PUBLIC_KRAFT_PRICE_ID || '',
-  enquiryOnly: true,
-  leadSource: 'kraft-test',
+  enquiryEmail: 'info@meterbolic.com',
+  enquirySubject: 'KRAFT Test enquiry',
 };
+
+/** `mailto:` href for any KRAFT Test enquiry CTA. */
+export const KRAFT_TEST_MAILTO = `mailto:${KRAFT_TEST.enquiryEmail}?subject=${encodeURIComponent(
+  KRAFT_TEST.enquirySubject,
+)}`;
 
 // ─── Biomarkers surfaced on the landing page ────────────────────────
 

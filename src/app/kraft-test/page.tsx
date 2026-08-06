@@ -8,10 +8,10 @@
 // every route out of it either goes to the enquiry form or back to the
 // £149 bundle — it never competes with the bundle head-on.
 //
-// No price and no Stripe button: SCRUM-18 is blocked on Eric's pricing
-// and fulfilment decisions, so the CTA is enquiry-only (see
-// components/KraftTestEnquiry.tsx and the KRAFT_TEST entry in
-// lib/kitProducts.ts for how to switch it to checkout later).
+// The KRAFT Test is NOT purchasable online (Eric, 2026-08-06): no
+// price, no Stripe button. Every CTA is a `mailto:` to
+// info@meterbolic.com, matching the /coaching programme pattern
+// (components/coaching/Pricing.tsx, CtaClosing.tsx).
 // ─────────────────────────────────────────────────────────────────────
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -23,13 +23,13 @@ import {
   Droplet,
   Home,
   LineChart,
+  Mail,
   ShieldCheck,
 } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 import { KraftCurve } from '@/components/Visuals';
-import { KraftTestEnquiry } from '@/components/KraftTestEnquiry';
-import { KRAFT_TEST } from '@/lib/kitProducts';
+import { KRAFT_TEST, KRAFT_TEST_MAILTO } from '@/lib/kitProducts';
 
 export const metadata: Metadata = {
   title: 'The KRAFT Test — Meterbolic',
@@ -120,13 +120,13 @@ export default function KraftTestPage() {
         </p>
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link
-            href="#enquire"
+          <a
+            href={KRAFT_TEST_MAILTO}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl font-semibold px-10 py-4 text-base transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a4d65e] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c4a40]"
             style={{ background: C.primary, color: C.primaryFg }}
           >
-            Request the KRAFT Test <ArrowRight className="h-4 w-4" />
-          </Link>
+            Enquire about the KRAFT Test <ArrowRight className="h-4 w-4" aria-hidden />
+          </a>
           <Link href="/pricing" className="text-sm hover:underline" style={{ color: C.muted }}>
             or see the Meo Starter bundle
           </Link>
@@ -206,8 +206,8 @@ export default function KraftTestPage() {
             Two ways to take it
           </h2>
           <p className="text-center text-sm sm:text-base mb-10 max-w-2xl mx-auto" style={{ color: C.muted }}>
-            Which route is open to you depends on where you are. Tell us on the form below and
-            we&apos;ll confirm what&apos;s available.
+            Which route is open to you depends on where you are. Ask us and we&apos;ll confirm
+            what&apos;s available.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {CHANNELS.map((ch) => {
@@ -272,8 +272,39 @@ export default function KraftTestPage() {
         </div>
       </section>
 
-      {/* Enquiry CTA (no price until SCRUM-18 unblocks) */}
-      <KraftTestEnquiry />
+      {/* Closing enquiry CTA — mailto, same pattern as /coaching. */}
+      <section id="enquire" className="px-5 sm:px-6 py-16 sm:py-24" style={{ background: C.bgDeep }}>
+        <div
+          className="max-w-2xl mx-auto rounded-2xl p-7 sm:p-10 text-center"
+          style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+        >
+          <h2
+            className="font-extrabold mb-3 leading-tight"
+            style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(26px, 4vw, 38px)' }}
+          >
+            Enquire about the KRAFT Test
+          </h2>
+          <p className="text-sm sm:text-base mb-7" style={{ color: C.muted }}>
+            The KRAFT Test is arranged directly with our team rather than bought off the shelf.
+            Email us and we&apos;ll confirm the right route for you — certified clinic or home kit
+            — along with availability and cost.
+          </p>
+          <a
+            href={KRAFT_TEST_MAILTO}
+            className="inline-flex items-center justify-center gap-2 rounded-xl font-semibold px-10 py-4 text-base transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a4d65e] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c4a40]"
+            style={{ background: C.primary, color: C.primaryFg }}
+          >
+            <Mail className="h-4 w-4" aria-hidden /> Email {KRAFT_TEST.enquiryEmail}
+          </a>
+          <p className="mt-5 text-xs leading-relaxed" style={{ color: C.muted }}>
+            Prefer to talk it through?{' '}
+            <Link href="/book-a-call" className="underline" style={{ color: C.muted }}>
+              Book a call
+            </Link>
+            .
+          </p>
+        </div>
+      </section>
 
       {/* Medical disclaimer — this page describes a diagnostic test, so
           it carries the caveat explicitly rather than relying on the

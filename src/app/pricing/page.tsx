@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
+import { KRAFT_TEST_MAILTO } from '@/lib/kitProducts';
 
 export const metadata: Metadata = {
   title: 'Pricing — Meo',
@@ -176,10 +177,10 @@ export default function PricingPage() {
           One-time purchases. Prices in GBP. Shipping calculated at checkout.
         </p>
 
-        {/* SCRUM-18 — the KRAFT Test is a legacy product with no
-            published price yet, so it sits below the three Meo plans as
-            an enquiry rather than a fourth tier card. Turn it into a
-            priced card once Eric signs off pricing + fulfilment. */}
+        {/* SCRUM-18 — the KRAFT Test is not sold online. It sits below
+            the three Meo plans as an enquiry rather than a fourth tier
+            card, and its CTA is a mailto to info@meterbolic.com, the
+            same pattern the /coaching programme cards use. */}
         <div
           className="max-w-3xl mx-auto mt-14 rounded-2xl p-7 text-center"
           style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
@@ -190,18 +191,27 @@ export default function PricingPage() {
           <h2 className="font-bold text-xl mb-3" style={{ color: C.fg, fontFamily: FONT_SERIF }}>
             The KRAFT Test
           </h2>
-          <p className="text-sm leading-relaxed mb-5" style={{ color: C.muted }}>
+          <p className="text-sm leading-relaxed mb-6" style={{ color: C.muted }}>
             Meterbolic&apos;s original diagnostic — a measured glucose challenge with serial
-            insulin readings, run through a certified clinic or as a home kit. A one-off test
-            rather than a Meo plan, arranged directly with our team.
+            insulin readings, run through a certified clinic or as a home kit. Not sold online:
+            it is a one-off test arranged directly with our team.
           </p>
-          <Link
-            href="/kraft-test"
-            className="inline-flex items-center gap-2 text-sm font-semibold hover:underline"
-            style={{ color: C.primary }}
-          >
-            About the KRAFT Test <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a
+              href={KRAFT_TEST_MAILTO}
+              className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl px-7 py-3 text-sm font-semibold transition-opacity hover:opacity-90"
+              style={{ background: 'transparent', color: C.primary, border: `1px solid ${C.primary}` }}
+            >
+              Enquire about the KRAFT Test
+            </a>
+            <Link
+              href="/kraft-test"
+              className="inline-flex items-center gap-2 text-sm hover:underline"
+              style={{ color: C.muted }}
+            >
+              Read more <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+          </div>
         </div>
       </section>
 

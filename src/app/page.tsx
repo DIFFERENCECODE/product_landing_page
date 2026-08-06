@@ -48,6 +48,7 @@ import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 import { NewsletterSection } from '@/components/NewsletterForm';
 import { KraftCurve } from '@/components/Visuals';
+import { KRAFT_TEST_MAILTO } from '@/lib/kitProducts';
 
 export const metadata: Metadata = {
   title: 'Meo — Metabolic Intelligence System',
@@ -1035,14 +1036,24 @@ export default function HomePage() {
                 </p>
                 <p className="text-sm">
                   Not a diagnosis. The clearest look available at how hard your insulin is working.
+                  Not sold online — arranged directly with our team.
                 </p>
-                <Link
-                  href="/kraft-test"
-                  className="inline-flex items-center gap-2 text-sm font-semibold hover:underline"
-                  style={{ color: C.primary }}
-                >
-                  About the KRAFT Test <ArrowRight className="h-4 w-4" />
-                </Link>
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-3 pt-1">
+                  <a
+                    href={KRAFT_TEST_MAILTO}
+                    className="inline-flex items-center justify-center rounded-xl px-6 py-3 text-sm font-semibold transition-opacity hover:opacity-90"
+                    style={{ background: 'transparent', color: C.primary, border: `1px solid ${C.primary}` }}
+                  >
+                    Enquire about the KRAFT Test
+                  </a>
+                  <Link
+                    href="/kraft-test"
+                    className="inline-flex items-center gap-2 text-sm hover:underline"
+                    style={{ color: C.muted }}
+                  >
+                    Read more <ArrowRight className="h-4 w-4" aria-hidden />
+                  </Link>
+                </div>
               </div>
 
               <div
