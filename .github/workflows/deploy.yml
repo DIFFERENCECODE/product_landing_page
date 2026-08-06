@@ -105,10 +105,10 @@ jobs:
       - name: Smoke test
         run: |
           set +e
-          LIVE_URL="${LIVE_URL:-https://shop.meterbolic.com}"
+          LIVE_URL="${LIVE_URL:-https://meterbolic.com}"
           for i in 1 2 3 4 5; do
             sleep 3
-            CODE=$(curl -s -o /dev/null -w '%{http_code}' "${LIVE_URL}/")
+            CODE=$(curl -sL -o /dev/null -w '%{http_code}' "${LIVE_URL}/")
             echo "attempt $i → ${LIVE_URL}/ returned $CODE"
             if [ "$CODE" = "200" ]; then
               echo "✅ Live"
