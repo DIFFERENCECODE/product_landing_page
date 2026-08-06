@@ -6,7 +6,7 @@
 // ─────────────────────────────────────────────────────────────────────
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft, Stethoscope, Activity, Briefcase, Watch, FlaskConical, Mail, ArrowRight, Award, GraduationCap, Microscope, Quote } from 'lucide-react';
+import { ArrowLeft, Stethoscope, Activity, Briefcase, Watch, FlaskConical, Mail, ArrowRight, Award, GraduationCap, Microscope, Quote, Sun } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 
@@ -41,6 +41,11 @@ const PARTNER_TYPES = [
     icon: FlaskConical,
     title: 'Pharma & Insurers',
     body: 'Track real-world response to GLP-1s and metabolic interventions — not just theory.',
+  },
+  {
+    icon: Sun,
+    title: 'Eos Longevity',
+    body: 'Our launch partner in longevity medicine — consultant-led care that acts on the daily metabolic signal Meo surfaces at home.',
   },
 ] as const;
 
