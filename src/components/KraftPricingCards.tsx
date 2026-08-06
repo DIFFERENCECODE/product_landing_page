@@ -14,7 +14,7 @@
 // working as an ordinary mailto link.
 // ─────────────────────────────────────────────────────────────────────
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { CalendarClock, Check, CheckCircle2 } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { MeoEnterpriseBonus } from '@/components/MeoEnterpriseBonus';
@@ -25,11 +25,21 @@ const INITIAL = KRAFT_TIERS.find((t) => t.defaultSelected)?.id ?? KRAFT_TIERS[0]
 
 export function KraftPricingCards() {
   const [selected, setSelected] = useState<string>(INITIAL);
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  // Roving tabindex: DOM focus must travel with the selection. Without
+  // this, arrowing to the £397 card left focus on the £897 card, so the
+  // next Tab landed on the wrong tier's "Enquire and book" button and
+  // the change was never announced to a screen reader.
+  const select = (id: string) => {
+    setSelected(id);
+    cardRefs.current[id]?.focus();
+  };
 
   const move = (delta: number) => {
     const i = KRAFT_TIERS.findIndex((t) => t.id === selected);
     const next = (i + delta + KRAFT_TIERS.length) % KRAFT_TIERS.length;
-    setSelected(KRAFT_TIERS[next].id);
+    select(KRAFT_TIERS[next].id);
   };
 
   const onKeyDown = (e: React.KeyboardEvent, id: string) => {
@@ -46,16 +56,16 @@ export function KraftPricingCards() {
         break;
       case 'Home':
         e.preventDefault();
-        setSelected(KRAFT_TIERS[0].id);
+        select(KRAFT_TIERS[0].id);
         break;
       case 'End':
         e.preventDefault();
-        setSelected(KRAFT_TIERS[KRAFT_TIERS.length - 1].id);
+        select(KRAFT_TIERS[KRAFT_TIERS.length - 1].id);
         break;
       case ' ':
       case 'Enter':
         e.preventDefault();
-        setSelected(id);
+        select(id);
         break;
     }
   };
@@ -71,10 +81,13 @@ export function KraftPricingCards() {
         return (
           <div
             key={t.id}
+            ref={(el) => {
+              cardRefs.current[t.id] = el;
+            }}
             role="radio"
             aria-checked={isSelected}
             tabIndex={isSelected ? 0 : -1}
-            onClick={() => setSelected(t.id)}
+            onClick={() => select(t.id)}
             onKeyDown={(e) => onKeyDown(e, t.id)}
             className="relative rounded-2xl p-7 flex flex-col cursor-pointer transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a4d65e] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c4a40]"
             style={{

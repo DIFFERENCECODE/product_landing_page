@@ -207,7 +207,10 @@ export function KraftCurve({ width = 480, height = 220 }: { width?: number; heig
     <svg
       viewBox={`0 0 ${width} ${height}`}
       width="100%"
-      height="auto"
+      // `height="auto"` is not a valid SVG length and logged
+      // `Expected length, "auto"` on every page rendering this chart.
+      // The CSS property does the same job without the error.
+      style={{ height: 'auto' }}
       role="img"
       aria-label="Insulin response curves: a fast-recovery healthy curve vs. a sustained-elevation concerning curve"
     >

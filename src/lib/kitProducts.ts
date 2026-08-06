@@ -240,11 +240,27 @@ export const KRAFT_TEST_COACHED: EnquiryProduct = {
 
 export const KRAFT_TIERS: readonly EnquiryProduct[] = [KRAFT_TEST, KRAFT_TEST_COACHED];
 
-/** `mailto:` href for a general KRAFT Test enquiry (hero / cross-page CTAs). */
-export const KRAFT_TEST_MAILTO = enquiryMailto(KRAFT_TEST.enquirySubject);
+/**
+ * `mailto:` for a general KRAFT enquiry — the hero, the closing block
+ * and the cross-page CTAs, where the visitor has not picked a tier.
+ *
+ * Deliberately its OWN subject rather than reusing the £397 tier's:
+ * info@ triages on the subject alone, and the closing block offers to
+ * help you choose between the two, so "undecided" must not arrive
+ * looking like "I want the test-only option".
+ */
+export const KRAFT_TEST_MAILTO = enquiryMailto('KRAFT Test enquiry — option not yet chosen');
 
 /** Lowest KRAFT price, for "from £397" teasers on other pages. */
 export const KRAFT_FROM_PRICE = KRAFT_TEST.price;
+
+/**
+ * One sentence, rendered on every surface that shows a KRAFT price, so
+ * the availability terms cannot drift between the homepage, /pricing
+ * and /kraft-test.
+ */
+export const KRAFT_AVAILABILITY_NOTE =
+  'Not sold online — booked by appointment with our team.';
 
 // ─── Biomarkers surfaced on the landing page ────────────────────────
 

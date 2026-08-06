@@ -50,7 +50,12 @@ import { Navbar, Footer } from '@/components/MarketingLandingPage';
 import { NewsletterSection } from '@/components/NewsletterForm';
 import { KraftCurve } from '@/components/Visuals';
 import { MeoEnterpriseBonus } from '@/components/MeoEnterpriseBonus';
-import { KRAFT_TEST, KRAFT_TEST_COACHED, KRAFT_TEST_MAILTO } from '@/lib/kitProducts';
+import {
+  KRAFT_AVAILABILITY_NOTE,
+  KRAFT_TEST,
+  KRAFT_TEST_COACHED,
+  KRAFT_TEST_MAILTO,
+} from '@/lib/kitProducts';
 
 export const metadata: Metadata = {
   title: 'Meo — Metabolic Intelligence System',
@@ -1052,6 +1057,9 @@ export default function HomePage() {
                     {KRAFT_TEST.price} · with coaching {KRAFT_TEST_COACHED.price}
                   </span>
                 </div>
+                <p className="text-sm" style={{ color: C.muted }}>
+                  {KRAFT_AVAILABILITY_NOTE}
+                </p>
 
                 <div>
                   <MeoEnterpriseBonus variant="inline" />
