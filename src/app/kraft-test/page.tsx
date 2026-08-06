@@ -20,6 +20,8 @@ import {
   ArrowRight,
   Activity,
   Building2,
+  CalendarClock,
+  Check,
   Droplet,
   Home,
   LineChart,
@@ -29,7 +31,14 @@ import {
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 import { KraftCurve } from '@/components/Visuals';
-import { KRAFT_TEST, KRAFT_TEST_MAILTO } from '@/lib/kitProducts';
+import { MeoEnterpriseBonus } from '@/components/MeoEnterpriseBonus';
+import {
+  KRAFT_ENQUIRY_EMAIL,
+  KRAFT_FROM_PRICE,
+  KRAFT_TEST_MAILTO,
+  KRAFT_TIERS,
+  enquiryMailto,
+} from '@/lib/kitProducts';
 
 export const metadata: Metadata = {
   title: 'The KRAFT Test — Meterbolic',
@@ -116,20 +125,37 @@ export default function KraftTestPage() {
           The <span style={{ color: C.primary }}>KRAFT Test</span>.
         </h1>
         <p className="text-base sm:text-lg max-w-2xl mx-auto" style={{ color: C.muted }}>
-          {KRAFT_TEST.tagline}
+          The insulin-response test behind the science — Dr Joseph Kraft&apos;s method, run outside
+          the lab.
         </p>
 
+        {/* By-appointment + from-price, stated before the fold so nobody
+            reaches the cards expecting a checkout. */}
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <span
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold"
+            style={{ background: C.pill, color: C.pillFg, border: `1px solid ${C.primary}40` }}
+          >
+            <CalendarClock className="h-3.5 w-3.5 shrink-0" aria-hidden />
+            By appointment only
+          </span>
+          <span className="text-sm" style={{ color: C.muted }}>
+            From <strong style={{ color: C.fg }}>{KRAFT_FROM_PRICE}</strong>
+          </span>
+          <MeoEnterpriseBonus variant="inline" />
+        </div>
+
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <a
-            href={KRAFT_TEST_MAILTO}
+          <Link
+            href="#pricing"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl font-semibold px-10 py-4 text-base transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a4d65e] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c4a40]"
             style={{ background: C.primary, color: C.primaryFg }}
           >
-            Enquire about the KRAFT Test <ArrowRight className="h-4 w-4" aria-hidden />
-          </a>
-          <Link href="/pricing" className="text-sm hover:underline" style={{ color: C.muted }}>
-            or see the Meo Starter bundle
+            See the two options <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>
+          <a href={KRAFT_TEST_MAILTO} className="text-sm hover:underline" style={{ color: C.muted }}>
+            or enquire now
+          </a>
         </div>
       </section>
 
@@ -196,18 +222,118 @@ export default function KraftTestPage() {
         </div>
       </section>
 
-      {/* Two ways to take it */}
-      <section className="px-5 sm:px-6 py-16 sm:py-24">
-        <div className="max-w-5xl mx-auto">
+      {/* Pricing — two appointment-based options. Mirrors the /coaching
+          programme cards: equal visual weight, the fuller option carries
+          a primary-tinted border rather than a "most popular" badge, and
+          both CTAs are mailto rather than checkout. */}
+      <section id="pricing" className="scroll-mt-24 px-5 sm:px-6 py-16 sm:py-24">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-xs font-semibold tracking-wide mb-3 text-center" style={{ color: C.pillFg }}>
+            The two options
+          </p>
+          <h2
+            className="font-extrabold mb-4 text-center leading-tight"
+            style={{
+              color: C.fg,
+              fontFamily: FONT_SERIF,
+              fontSize: 'clamp(28px, 4vw, 38px)',
+              textWrap: 'balance',
+            }}
+          >
+            The test, or the test and a plan
+          </h2>
+          <p className="text-center text-sm sm:text-base mb-10 max-w-2xl mx-auto" style={{ color: C.muted }}>
+            Both are booked by appointment — there is no online checkout. Email us and we&apos;ll
+            arrange a slot and confirm the right route for you.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
+            {KRAFT_TIERS.map((t) => (
+              <div
+                key={t.id}
+                className="relative rounded-2xl p-7 flex flex-col"
+                style={{
+                  background: t.accent ? C.bgCardHover : C.bgCard,
+                  border: `1px solid ${t.accent ? 'rgba(164,214,94,0.45)' : C.border}`,
+                }}
+              >
+                <span
+                  className="self-start inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold tracking-wide mb-4"
+                  style={{ background: C.pill, color: C.pillFg }}
+                >
+                  <CalendarClock className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                  By appointment
+                </span>
+
+                <h3 className="font-bold text-xl mb-1" style={{ color: C.fg, fontFamily: FONT_SERIF }}>
+                  {t.name}
+                </h3>
+                <p className="text-sm mb-5" style={{ color: C.muted }}>
+                  {t.duration}
+                </p>
+
+                <div className="mb-4">
+                  <span className="text-4xl font-extrabold" style={{ color: C.fg }}>
+                    {t.price}
+                  </span>
+                </div>
+
+                <p className="text-sm italic leading-relaxed mb-6" style={{ color: C.muted }}>
+                  {t.tagline}
+                </p>
+
+                {/* The complimentary Meo Enterprise offer, identical to
+                    the one on the EoS coaching cards. */}
+                <div className="mb-6">
+                  <MeoEnterpriseBonus />
+                </div>
+
+                <ul className="space-y-3 mb-8 flex-1">
+                  {t.includes.map((f) => (
+                    <li key={f} className="flex items-start gap-2.5">
+                      <Check className="h-4 w-4 mt-0.5 shrink-0" style={{ color: C.primary }} aria-hidden />
+                      <span className="text-sm leading-relaxed" style={{ color: C.fg }}>
+                        {f}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                <a
+                  href={enquiryMailto(t.enquirySubject)}
+                  className="w-full inline-flex items-center justify-center rounded-xl py-3 text-sm font-semibold transition-opacity hover:opacity-90"
+                  style={{
+                    background: t.accent ? C.primary : 'transparent',
+                    color: t.accent ? C.primaryFg : C.primary,
+                    border: t.accent ? 'none' : `1px solid ${C.primary}`,
+                  }}
+                >
+                  Enquire and book
+                </a>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-center text-xs mt-10 max-w-2xl mx-auto leading-relaxed" style={{ color: C.muted }}>
+            Prices in GBP. The KRAFT Test is not sold online — every booking is arranged by
+            appointment with our team, who will confirm availability and the right route for you
+            before anything is paid.
+          </p>
+        </div>
+      </section>
+
+      {/* Where you take it */}
+      <section className="px-5 sm:px-6 pb-16 sm:pb-24" style={{ background: C.bgDeep }}>
+        <div className="max-w-5xl mx-auto pt-16 sm:pt-24">
           <h2
             className="font-extrabold mb-3 text-center leading-tight"
             style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 42px)' }}
           >
-            Two ways to take it
+            Where you take it
           </h2>
           <p className="text-center text-sm sm:text-base mb-10 max-w-2xl mx-auto" style={{ color: C.muted }}>
-            Which route is open to you depends on where you are. Ask us and we&apos;ll confirm
-            what&apos;s available.
+            Both options above can be run either way. Which route is open to you depends on where
+            you are — we&apos;ll confirm when you enquire.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {CHANNELS.map((ch) => {
@@ -282,19 +408,22 @@ export default function KraftTestPage() {
             className="font-extrabold mb-3 leading-tight"
             style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(26px, 4vw, 38px)' }}
           >
-            Enquire about the KRAFT Test
+            Book your KRAFT Test
           </h2>
-          <p className="text-sm sm:text-base mb-7" style={{ color: C.muted }}>
-            The KRAFT Test is arranged directly with our team rather than bought off the shelf.
-            Email us and we&apos;ll confirm the right route for you — certified clinic or home kit
-            — along with availability and cost.
+          <p className="text-sm sm:text-base mb-6" style={{ color: C.muted }}>
+            The KRAFT Test is by appointment — arranged directly with our team rather than bought
+            off the shelf. Email us and we&apos;ll confirm a slot, the right route for you
+            (certified clinic or home kit), and which of the two options fits.
           </p>
+          <div className="mb-7 flex justify-center">
+            <MeoEnterpriseBonus variant="inline" />
+          </div>
           <a
             href={KRAFT_TEST_MAILTO}
             className="inline-flex items-center justify-center gap-2 rounded-xl font-semibold px-10 py-4 text-base transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a4d65e] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c4a40]"
             style={{ background: C.primary, color: C.primaryFg }}
           >
-            <Mail className="h-4 w-4" aria-hidden /> Email {KRAFT_TEST.enquiryEmail}
+            <Mail className="h-4 w-4" aria-hidden /> Email {KRAFT_ENQUIRY_EMAIL}
           </a>
           <p className="mt-5 text-xs leading-relaxed" style={{ color: C.muted }}>
             Prefer to talk it through?{' '}

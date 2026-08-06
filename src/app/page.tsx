@@ -43,12 +43,14 @@ import {
   ClipboardList,
   Mail,
   Briefcase,
+  CalendarClock,
 } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 import { NewsletterSection } from '@/components/NewsletterForm';
 import { KraftCurve } from '@/components/Visuals';
-import { KRAFT_TEST_MAILTO } from '@/lib/kitProducts';
+import { MeoEnterpriseBonus } from '@/components/MeoEnterpriseBonus';
+import { KRAFT_TEST, KRAFT_TEST_COACHED, KRAFT_TEST_MAILTO } from '@/lib/kitProducts';
 
 export const metadata: Metadata = {
   title: 'Meo — Metabolic Intelligence System',
@@ -1036,8 +1038,25 @@ export default function HomePage() {
                 </p>
                 <p className="text-sm">
                   Not a diagnosis. The clearest look available at how hard your insulin is working.
-                  Not sold online — arranged directly with our team.
                 </p>
+
+                <div className="flex flex-wrap items-center gap-3 pt-1">
+                  <span
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold"
+                    style={{ background: C.pill, color: C.pillFg, border: `1px solid ${C.primary}40` }}
+                  >
+                    <CalendarClock className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                    By appointment
+                  </span>
+                  <span className="text-sm" style={{ color: C.muted }}>
+                    {KRAFT_TEST.price} · with coaching {KRAFT_TEST_COACHED.price}
+                  </span>
+                </div>
+
+                <div>
+                  <MeoEnterpriseBonus variant="inline" />
+                </div>
+
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-3 pt-1">
                   <a
                     href={KRAFT_TEST_MAILTO}

@@ -168,35 +168,79 @@ export const KIT_LITE: KitAddon = {
 // clinical-grade companion test, never the lead CTA. Do not let it
 // compete with the £149 bundle on the homepage.
 //
-// NOT PURCHASABLE ONLINE — enquiry only (Eric, 2026-08-06).
-// The KRAFT Test is arranged directly with the team, so the site shows
-// no price and no Stripe button. Every CTA is a `mailto:` to
-// info@meterbolic.com, exactly like the /coaching programme cards
-// (see components/coaching/Pricing.tsx and CtaClosing.tsx) — same
-// pattern, same inbox, no form and no lead-capture API in between.
+// PRICED, BUT NOT PURCHASABLE ONLINE — by appointment (Eric, 2026-08-06).
+// Prices are published on the site (£397 / £897) but there is no cart
+// and no Stripe button: the test needs an appointment, so every CTA is
+// a `mailto:` to info@meterbolic.com, exactly like the /coaching
+// programme cards (components/coaching/Pricing.tsx, CtaClosing.tsx).
+//
+// Both tiers carry the complimentary 3-month Meo Enterprise
+// subscription — rendered by components/MeoEnterpriseBonus.tsx, which
+// the EoS coaching programmes share so the offer looks identical
+// wherever it appears.
+export const KRAFT_ENQUIRY_EMAIL = 'info@meterbolic.com';
+
+/** Build a `mailto:` href with a routable subject line. */
+export function enquiryMailto(subject: string): string {
+  return `mailto:${KRAFT_ENQUIRY_EMAIL}?subject=${encodeURIComponent(subject)}`;
+}
+
 export interface EnquiryProduct {
   id: string;
   name: string;
   tagline: string;
-  /** Where enquiries land. Matches the /coaching pages. */
-  enquiryEmail: string;
-  /** Pre-filled subject line, so the inbox can route on it. */
+  /** Display string, not pence — these prices are never sent to Stripe. */
+  price: string;
+  duration: string;
+  includes: readonly string[];
   enquirySubject: string;
+  /** Gives the fuller programme card its subtle primary-tinted border. */
+  accent: boolean;
 }
 
 export const KRAFT_TEST: EnquiryProduct = {
   id: 'kraft-test',
   name: 'The KRAFT Test',
   tagline:
-    'The insulin-response test behind the science — Dr Joseph Kraft’s method, run outside the lab.',
-  enquiryEmail: 'info@meterbolic.com',
+    'The insulin-response test itself, run through a certified clinic or as a home kit, with your results read against Dr Kraft’s response patterns.',
+  price: '£397',
+  duration: 'One-off test · by appointment',
+  includes: [
+    'The full KRAFT insulin-response assessment — glucose challenge with serial insulin readings',
+    'Analysis on Meterbolic’s CE-IVD lateral-flow analyser',
+    'Your curve read against Dr Kraft’s response patterns',
+    'A written report in plain English, reviewed before it reaches you',
+    'A follow-up conversation to walk through what it means',
+  ],
   enquirySubject: 'KRAFT Test enquiry',
+  accent: false,
 };
 
-/** `mailto:` href for any KRAFT Test enquiry CTA. */
-export const KRAFT_TEST_MAILTO = `mailto:${KRAFT_TEST.enquiryEmail}?subject=${encodeURIComponent(
-  KRAFT_TEST.enquirySubject,
-)}`;
+export const KRAFT_TEST_COACHED: EnquiryProduct = {
+  id: 'kraft-test-coached',
+  name: 'KRAFT Test + Coaching',
+  tagline:
+    'The same test, plus 1:1 coaching to act on what it finds — for people who want the result turned into a plan rather than a PDF.',
+  price: '£897',
+  duration: 'Test + coaching programme · by appointment',
+  includes: [
+    'Everything in The KRAFT Test',
+    '1:1 metabolic coaching built around your insulin curve',
+    'A personalised plan covering nutrition, movement, sleep and stress',
+    'Messaging support between sessions',
+    'A progress review to see how the plan is landing',
+  ],
+  enquirySubject: 'KRAFT Test + Coaching enquiry',
+  accent: true,
+};
+
+export const KRAFT_TIERS: readonly EnquiryProduct[] = [KRAFT_TEST, KRAFT_TEST_COACHED];
+
+/** `mailto:` href for a general KRAFT Test enquiry (hero / cross-page CTAs). */
+export const KRAFT_TEST_MAILTO = enquiryMailto(KRAFT_TEST.enquirySubject);
+
+/** Lowest KRAFT price, for "from £397" teasers on other pages. */
+export const KRAFT_FROM_PRICE = KRAFT_TEST.price;
 
 // ─── Biomarkers surfaced on the landing page ────────────────────────
 
