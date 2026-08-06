@@ -1,6 +1,6 @@
 // ─── Coaching · How it works ──────────────────────────────────────────
 //
-// Section 2 of the /coaching page (Dr Arup Sen · Eos Longevity). A
+// Section 2 of the /eos page (Dr Arup Sen · Eos Longevity). A
 // 3-step horizontal sequence — Test → Coach → Track — using the shared
 // numbered-card treatment from the main /how-it-works page (numbered
 // badge + serif title + accent icon + muted body), laid out 3-up on

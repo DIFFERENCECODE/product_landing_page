@@ -1,6 +1,6 @@
 // ─── Coaching · What this programme is — and isn't ───────────────────
 //
-// Section 4 of the /coaching page. A plain, readable content block that
+// Section 4 of the /eos page. A plain, readable content block that
 // sets expectations about the coaching programme. Deliberately NOT
 // styled as grey small print, a tooltip, an accordion, or a legal
 // disclaimer box — it renders as normal body copy in the primary text

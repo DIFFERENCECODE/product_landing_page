@@ -41,7 +41,7 @@ export const AFFILIATES: Record<string, AffiliateEntry> = {
       bio: 'A leading voice in metabolic health and longevity medicine, partnering with Meterbolic to bring personalised metabolic intelligence to the EoS community.',
       quote:
         'Longevity is not simply about living longer — it is about preserving vitality, independence, and quality of life for as long as possible.',
-      photo: '/team-arup-sen.jpg',
+      photo: '/coach-arup-sen.jpg',
     },
     defaultVertical: 'longevity',
   },

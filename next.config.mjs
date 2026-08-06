@@ -6,7 +6,16 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
-  // No auth redirects — this is a public storefront only.
+  // Route redirects. No auth redirects — this is a public storefront
+  // only; these are renames that must not break shared links.
+  //
+  //   /coaching → /eos   (renamed 2026-08-06, SCRUM Eos coaching page)
+  async redirects() {
+    return [
+      { source: '/coaching', destination: '/eos', permanent: true },
+    ];
+  },
+
   //
   // Cache headers: temporarily set HTML to `no-store` to force-bust
   // every browser that has an old `s-maxage=31536000` HTML cached
