@@ -19,6 +19,7 @@
 // ──────────────────────────────────────────────────────────────────────
 import { Check, CalendarDays, Mail, MessageCircle, Package, UserRound } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
+import { MeoEnterpriseBonus } from '@/components/MeoEnterpriseBonus';
 import { ENQUIRY_EMAIL } from '@/components/coaching/contact';
 
 const CHIP_ICONS = {
@@ -92,7 +93,7 @@ const TIERS: readonly Tier[] = [
 
 export default function Pricing() {
   return (
-    <section id="pricing" className="px-5 sm:px-6 py-16 sm:py-24" style={{ background: C.bg }}>
+    <section id="pricing" className="scroll-mt-24 px-5 sm:px-6 py-16 sm:py-24" style={{ background: C.bg }}>
       <div className="max-w-4xl mx-auto">
         <p
           className="text-xs font-semibold tracking-wide mb-3 text-center"
@@ -174,6 +175,13 @@ export default function Pricing() {
                     </span>
                   );
                 })}
+              </div>
+
+              {/* Complimentary Meo Enterprise — the same element the
+                  KRAFT Test cards use, so the offer reads identically
+                  across both product families. */}
+              <div className="mb-6">
+                <MeoEnterpriseBonus />
               </div>
 
               <ul className="space-y-3 mb-8 flex-1">

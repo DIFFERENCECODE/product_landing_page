@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/',                freq: 'weekly',  priority: 1.0 },
     { path: '/about',           freq: 'monthly', priority: 0.7 },
     { path: '/how-it-works',    freq: 'monthly', priority: 0.7 },
+    { path: '/kraft-test',      freq: 'monthly', priority: 0.7 },
     { path: '/services',        freq: 'monthly', priority: 0.6 },
     { path: '/partners',        freq: 'monthly', priority: 0.6 },
     { path: '/quiz',            freq: 'monthly', priority: 0.6 },

@@ -198,6 +198,7 @@ export function Navbar() {
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
     { label: 'How it works', href: '/how-it-works' },
+    { label: 'KRAFT Test', href: '/kraft-test' },
     { label: 'Services', href: '/services' },
     { label: 'Partners', href: '/partners' },
     { label: 'Pricing', href: '/pricing' },
@@ -2459,6 +2460,7 @@ export function Footer() {
           <ul className="space-y-2 text-sm">
             <li><Link href="/" className="hover:underline" style={{ color: C.muted }}>Home</Link></li>
             <li><Link href="/how-it-works" className="hover:underline" style={{ color: C.muted }}>How it works</Link></li>
+            <li><Link href="/kraft-test" className="hover:underline" style={{ color: C.muted }}>The KRAFT Test</Link></li>
             <li><Link href="/services" className="hover:underline" style={{ color: C.muted }}>Services</Link></li>
             <li><Link href="/pricing" className="hover:underline" style={{ color: C.muted }}>Pricing</Link></li>
             <li><Link href="/chat" className="hover:underline" style={{ color: C.muted }}>Open chat</Link></li>

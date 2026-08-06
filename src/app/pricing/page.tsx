@@ -8,9 +8,11 @@
 // ─────────────────────────────────────────────────────────────────────
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft, Check } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CalendarClock, Check } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
+import { MeoEnterpriseBonus } from '@/components/MeoEnterpriseBonus';
+import { KRAFT_TEST, KRAFT_TEST_COACHED, KRAFT_TEST_MAILTO } from '@/lib/kitProducts';
 
 export const metadata: Metadata = {
   title: 'Pricing — Meo',
@@ -175,6 +177,59 @@ export default function PricingPage() {
         <p className="text-center text-xs mt-10" style={{ color: C.muted }}>
           One-time purchases. Prices in GBP. Shipping calculated at checkout.
         </p>
+
+        {/* SCRUM-18 — the KRAFT Test is not sold online. It sits below
+            the three Meo plans as an enquiry rather than a fourth tier
+            card, and its CTA is a mailto to info@meterbolic.com, the
+            same pattern the /coaching programme cards use. */}
+        <div
+          className="max-w-3xl mx-auto mt-14 rounded-2xl p-7 text-center"
+          style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+        >
+          <p className="text-xs font-semibold tracking-wide mb-2" style={{ color: C.pillFg }}>
+            Also available
+          </p>
+          <h2 className="font-bold text-xl mb-3" style={{ color: C.fg, fontFamily: FONT_SERIF }}>
+            The KRAFT Test
+          </h2>
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
+            <span
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold"
+              style={{ background: C.pill, color: C.pillFg, border: `1px solid ${C.primary}40` }}
+            >
+              <CalendarClock className="h-3.5 w-3.5 shrink-0" aria-hidden />
+              By appointment
+            </span>
+            <span className="text-sm" style={{ color: C.muted }}>
+              <strong style={{ color: C.fg }}>{KRAFT_TEST.price}</strong> · with coaching{' '}
+              <strong style={{ color: C.fg }}>{KRAFT_TEST_COACHED.price}</strong>
+            </span>
+          </div>
+          <p className="text-sm leading-relaxed mb-5" style={{ color: C.muted }}>
+            Meterbolic&apos;s original diagnostic — a measured glucose challenge with serial
+            insulin readings, run through a certified clinic or as a home kit. Not sold online:
+            it is booked by appointment with our team.
+          </p>
+          <div className="mb-6 flex justify-center">
+            <MeoEnterpriseBonus variant="inline" />
+          </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a
+              href={KRAFT_TEST_MAILTO}
+              className="w-full sm:w-auto inline-flex items-center justify-center rounded-xl px-7 py-3 text-sm font-semibold transition-opacity hover:opacity-90"
+              style={{ background: 'transparent', color: C.primary, border: `1px solid ${C.primary}` }}
+            >
+              Enquire about the KRAFT Test
+            </a>
+            <Link
+              href="/kraft-test"
+              className="inline-flex items-center gap-2 text-sm hover:underline"
+              style={{ color: C.muted }}
+            >
+              Read more <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+          </div>
+        </div>
       </section>
 
       <Footer />
