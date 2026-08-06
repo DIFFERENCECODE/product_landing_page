@@ -1,6 +1,6 @@
 // ─── Coaching · Pricing tiers ─────────────────────────────────────────
 //
-// Section 3 of the /coaching page. Two programme cards side by side
+// Section 3 of the /eos page. Two programme cards side by side
 // (Metabolic Optimisation · Metabolic Continuum), of EQUAL visual
 // weight — no "most popular" badge. Continuum carries a subtle
 // primary-tinted border and a slightly deeper card tone to read as the
@@ -8,12 +8,28 @@
 // "Introductory pricing" tag so prices can be revised later without
 // implying a reduction. Centred small-print footnote below.
 //
+// Each card also carries an "at a glance" chip row (session count,
+// span, kit, messaging). Those chips are DERIVED from the `includes`
+// bullets below them — 1×60min + 5×30min = 6 sessions for Optimisation,
+// +3×45min = 9 for Continuum — so they must be kept in step with the
+// bullets if the bullets ever change.
+//
 // id="pricing" is the scroll target for the Hero CTA. Copy is fixed
 // marketing/compliance-reviewed text — do not paraphrase.
 // ──────────────────────────────────────────────────────────────────────
-import { Check } from 'lucide-react';
+import { Check, CalendarDays, Mail, MessageCircle, Package, UserRound } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { MeoEnterpriseBonus } from '@/components/MeoEnterpriseBonus';
+import { ENQUIRY_EMAIL } from '@/components/coaching/contact';
+
+const CHIP_ICONS = {
+  sessions: UserRound,
+  span: CalendarDays,
+  kit: Package,
+  messaging: MessageCircle,
+} as const;
+
+type Chip = { kind: keyof typeof CHIP_ICONS; label: string };
 
 type Tier = {
   id: string;
@@ -21,6 +37,7 @@ type Tier = {
   duration: string;
   price: string;
   tagline: string;
+  chips: readonly Chip[];
   includes: readonly string[];
   accent: boolean;
 };
@@ -33,6 +50,12 @@ const TIERS: readonly Tier[] = [
     price: '£850',
     tagline:
       'A focused 12-week programme to build sustainable metabolic habits, with regular 1:1 coaching from Dr Arup Sen.',
+    chips: [
+      { kind: 'sessions', label: '6 coaching sessions' },
+      { kind: 'span', label: '12 weeks' },
+      { kind: 'kit', label: 'Meo kit included' },
+      { kind: 'messaging', label: 'Messaging support' },
+    ],
     includes: [
       'Meo Starter: CE-marked digital lipid meter, 10 test strips + lancets + carry case',
       '6 months of Meo AI plain-English interpretation',
@@ -51,6 +74,12 @@ const TIERS: readonly Tier[] = [
     price: '£1,450',
     tagline:
       'Sustained 1:1 coaching across 6 months — frequent support while you build new habits, then ongoing maintenance to keep them.',
+    chips: [
+      { kind: 'sessions', label: '9 coaching sessions' },
+      { kind: 'span', label: '6 months' },
+      { kind: 'kit', label: 'Meo kit included' },
+      { kind: 'messaging', label: 'Priority messaging' },
+    ],
     includes: [
       'Everything in Metabolic Optimisation',
       '3 additional × 45-minute monthly maintenance coaching sessions (months 4–6)',
@@ -120,11 +149,33 @@ export default function Pricing() {
               </div>
 
               <p
-                className="text-sm italic leading-relaxed mb-6"
+                className="text-sm italic leading-relaxed mb-5"
                 style={{ color: C.muted }}
               >
                 {t.tagline}
               </p>
+
+              {/* At a glance — the shape of the programme in one scan,
+                  before the full includes list. */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                {t.chips.map((chip) => {
+                  const Icon = CHIP_ICONS[chip.kind];
+                  return (
+                    <span
+                      key={chip.label}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
+                      style={{
+                        background: 'rgba(255,255,255,0.06)',
+                        border: `1px solid ${C.border}`,
+                        color: C.fg,
+                      }}
+                    >
+                      <Icon className="h-3.5 w-3.5 shrink-0" style={{ color: C.primary }} aria-hidden />
+                      {chip.label}
+                    </span>
+                  );
+                })}
+              </div>
 
               {/* Complimentary Meo Enterprise — the same element the
                   KRAFT Test cards use, so the offer reads identically
@@ -144,17 +195,24 @@ export default function Pricing() {
                 ))}
               </ul>
 
+              {/* Live enquiry button — no checkout is wired for the
+                  coaching programmes, so both cards open an email to
+                  the Eos programme inbox with the tier pre-filled. */}
               <a
-                href={`mailto:info@meterbolic.com?subject=${encodeURIComponent(
+                href={`mailto:${ENQUIRY_EMAIL}?subject=${encodeURIComponent(
                   `${t.name} enquiry`,
+                )}&body=${encodeURIComponent(
+                  `Hi,\n\nI'd like to know more about the ${t.name} (${t.duration}, ${t.price}).\n\nThank you,\n`,
                 )}`}
-                className="w-full inline-flex items-center justify-center rounded-xl py-3 text-sm font-semibold transition-opacity hover:opacity-90"
+                aria-label={`Enquire about the ${t.name} programme by email`}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition-opacity hover:opacity-90"
                 style={{
                   background: t.accent ? C.primary : 'transparent',
                   color: t.accent ? C.primaryFg : C.primary,
                   border: t.accent ? 'none' : `1px solid ${C.primary}`,
                 }}
               >
+                <Mail className="h-4 w-4 shrink-0" aria-hidden />
                 Enquire about this programme
               </a>
             </div>

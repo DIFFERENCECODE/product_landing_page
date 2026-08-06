@@ -2,7 +2,7 @@
 
 // ─── Coaching Hero ────────────────────────────────────────────────────
 //
-// Hero for the /coaching programme page (Dr Arup Sen · Eos Longevity).
+// Hero for the /eos programme page (Dr Arup Sen · Eos Longevity).
 // Matches the flagship marketing hero treatment: full-screen centered
 // layout over the liquid-metal video background with a dark overlay for
 // legibility, primary-accented serif-weight headline, muted subhead, a

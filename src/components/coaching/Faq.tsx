@@ -1,6 +1,6 @@
 // ─── Coaching · FAQ ───────────────────────────────────────────────────
 //
-// Section 5 of the /coaching page. Five questions as expandable
+// Section 5 of the /eos page. Five questions as expandable
 // accordions, matching the site's established FAQ treatment
 // (<details>/<summary> with a rotating "+", from SalesFunnel.tsx).
 //
