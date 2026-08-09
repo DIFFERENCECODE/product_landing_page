@@ -215,7 +215,7 @@ const TIER_COMPARE_ROWS: Array<{ label: string; retail: string; lite: CompareCel
 const FAQ = [
   {
     q: 'How accurate is the meter?',
-    a: 'CE-marked BF-102, registered for Home Use in the UK & EU. Reads within ±10% of reference-lab panels for TC, HDL, LDL and triglycerides. The real value compounds across readings — small per-reading variance washes out in the trend.',
+    a: 'CE-marked BF-102, registered for Home Use in the UK & EU. Reads within ±10% of reference-lab panels for TC, HDL, LDL and Triglycerides. The real value compounds across readings — small per-reading variance washes out in the trend.',
   },
   {
     q: 'Is this a medical device?',
@@ -1249,7 +1249,7 @@ export default function HomePage() {
               </li>
               <li>
                 BF-102 device specification — CE-marked clinical-grade lipid meter, accuracy
-                within ±10% vs reference-lab panels for TC, HDL, LDL, triglycerides.
+                within ±10% vs reference-lab panels for TC, HDL, LDL, Triglycerides.
               </li>
             </ol>
           </div>

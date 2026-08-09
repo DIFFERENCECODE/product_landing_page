@@ -27,7 +27,7 @@ const FAQ = [
   },
   {
     q: 'Is the Meo device accurate?',
-    a: 'The Meo lipid meter is CE-marked and specified to read within approximately ±10% of a reference laboratory for total cholesterol, HDL, LDL and triglycerides.',
+    a: 'The Meo lipid meter is CE-marked and specified to read within approximately ±10% of a reference laboratory for total cholesterol, HDL, LDL and Triglycerides.',
   },
 ] as const;
 

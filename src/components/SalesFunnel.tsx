@@ -175,7 +175,7 @@ const IN_THE_BOX = [
 const FAQ = [
   {
     q: 'How accurate is the meter?',
-    a: 'CE-marked BF-102, registered for Home Use in the UK & EU. Reads within ±10% of reference-lab panels for TC, HDL, LDL and triglycerides. The real value compounds across readings — small per-reading variance washes out in the trend.',
+    a: 'CE-marked BF-102, registered for Home Use in the UK & EU. Reads within ±10% of reference-lab panels for TC, HDL, LDL and Triglycerides. The real value compounds across readings — small per-reading variance washes out in the trend.',
   },
   {
     q: 'Is this a medical device?',
@@ -755,7 +755,7 @@ export default function SalesFunnel({ affiliate, vertical, tiers, pricingNote, u
               <li>
                 <a href="https://pubmed.ncbi.nlm.nih.gov/30484738/" target="_blank" rel="noopener noreferrer" className="underline hover:text-white" style={{ color: C.muted }}>Araújo, Cai &amp; Stevens (2019), <em>Metabolic Syndrome and Related Disorders</em></a>{' '}— prevalence of optimal metabolic health in US adults (NHANES 2009-2016).
               </li>
-              <li>BF-102 device specification — CE-marked clinical-grade lipid meter, accuracy within ±10% vs reference-lab panels for TC, HDL, LDL, triglycerides.</li>
+              <li>BF-102 device specification — CE-marked clinical-grade lipid meter, accuracy within ±10% vs reference-lab panels for TC, HDL, LDL, Triglycerides.</li>
             </ol>
           </div>
         </section>

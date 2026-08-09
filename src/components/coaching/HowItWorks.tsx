@@ -17,7 +17,7 @@ const STEPS = [
     icon: Droplet,
     title: 'Test',
     body:
-      'A finger-prick at home reads your key lipid markers — total cholesterol, HDL, LDL and triglycerides — in about three minutes, including your triglyceride-to-HDL ratio, a well-studied surrogate marker for insulin resistance.',
+      'A finger-prick at home reads your key lipid markers — total cholesterol, HDL, LDL and Triglycerides — in about three minutes, including your Triglyceride-to-HDL ratio, a well-studied surrogate marker for insulin resistance.',
   },
   {
     n: 2,

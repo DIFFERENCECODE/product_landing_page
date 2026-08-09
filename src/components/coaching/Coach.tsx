@@ -11,14 +11,41 @@
 // to match the site's photo treatment. Every line here restates a fact
 // already on this page (Hero, HowItWorks, Pricing, Faq).
 // ──────────────────────────────────────────────────────────────────────
+import type { ReactNode } from 'react';
 import { Check } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 
-const POINTS = [
-  'Founder of EoS Longevity, with a background in longevity medicine',
-  'Delivers every coaching session personally, 1:1',
-  'Works with you on nutrition, movement, sleep and stress',
-] as const;
+// ReactNode rather than string: the clinical-affiliation line carries an
+// outbound link, and the list renderer below is shared by every point.
+const POINTS: readonly { key: string; body: ReactNode }[] = [
+  {
+    key: 'clinics',
+    body: (
+      <>
+        Triple-certified physician, with clinics at the NHS and Cleveland Clinic
+        London{' '}
+        <a
+          href="https://clevelandcliniclondon.uk/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-2 transition-opacity hover:opacity-80"
+          style={{ color: C.primary }}
+        >
+          clevelandcliniclondon.uk
+        </a>
+      </>
+    ),
+  },
+  {
+    key: 'founder',
+    body: 'Founder of EoS Longevity, with a background in longevity medicine',
+  },
+  { key: 'personally', body: 'Delivers every coaching session personally, 1:1' },
+  {
+    key: 'scope',
+    body: 'Works with you on nutrition, movement, sleep and stress',
+  },
+];
 
 export default function Coach() {
   return (
@@ -58,10 +85,10 @@ export default function Coach() {
 
           <ul className="mt-5 space-y-2 inline-block text-left">
             {POINTS.map((p) => (
-              <li key={p} className="flex items-start gap-2.5">
+              <li key={p.key} className="flex items-start gap-2.5">
                 <Check className="h-4 w-4 mt-0.5 shrink-0" style={{ color: C.primary }} aria-hidden />
                 <span className="text-sm sm:text-base leading-relaxed" style={{ color: C.fg }}>
-                  {p}
+                  {p.body}
                 </span>
               </li>
             ))}

@@ -336,7 +336,7 @@ export default function TrustPage() {
         <p>
           Population averages are why metabolic advice usually fails. &ldquo;Eat
           less fat&rdquo; is a statement about a cohort; it is not a statement
-          about your triglycerides on a Tuesday. Everything Meo collects exists to
+          about your Triglycerides on a Tuesday. Everything Meo collects exists to
           replace an average with a measurement of you.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">

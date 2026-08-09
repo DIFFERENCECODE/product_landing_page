@@ -633,7 +633,7 @@ function TrustPanel() {
     {
       icon: <Activity className="h-5 w-5" />,
       label: '±10% of reference-lab',
-      sub: 'CE-marked BF-102 across TC, HDL, LDL, triglycerides',
+      sub: 'CE-marked BF-102 across TC, HDL, LDL, Triglycerides',
     },
     {
       icon: <Heart className="h-5 w-5" />,
@@ -1741,7 +1741,7 @@ function EbookSection() {
     'The 7 lipid-moving habits the peer-reviewed research actually supports',
     'Meals, not "meal plans" — frameworks that survive real life',
     'The cortisol–LDL feedback loop almost no one talks about',
-    'The sleep–triglycerides link the data is unambiguous about',
+    'The sleep–Triglycerides link the data is unambiguous about',
     'How to read your own trend chart without becoming obsessive',
     'A 6-week gentle-protocol you can stick to at weddings, on trips, on sick days',
   ];
@@ -2151,7 +2151,7 @@ function ObjectionsSection() {
   const items = [
     {
       q: 'How accurate is the meter?',
-      a: 'The BF-102 is CE-marked and reads within ±10% of reference-lab panels for TC, HDL, LDL and triglycerides. But the real value of Meo is in the trend across hundreds of your own readings — small per-reading variance washes out in the pattern.',
+      a: 'The BF-102 is CE-marked and reads within ±10% of reference-lab panels for TC, HDL, LDL and Triglycerides. But the real value of Meo is in the trend across hundreds of your own readings — small per-reading variance washes out in the pattern.',
     },
     {
       q: 'Is it hard to use?',

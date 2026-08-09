@@ -298,7 +298,7 @@ export const FAQ_ITEMS = [
   {
     question: 'How accurate is the meter?',
     answer:
-      'The BF-102 is CE-marked and reads within ±10% of reference-lab panels for TC, HDL, LDL and triglycerides. But the real value of Meo is in the trend across hundreds of your own readings — small per-reading variance washes out in the pattern.',
+      'The BF-102 is CE-marked and reads within ±10% of reference-lab panels for TC, HDL, LDL and Triglycerides. But the real value of Meo is in the trend across hundreds of your own readings — small per-reading variance washes out in the pattern.',
   },
   {
     question: 'Is it hard to use?',
