@@ -243,8 +243,9 @@ export function Navbar({ affiliate }: { affiliate?: ChromeAffiliate | null } = {
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
     { label: 'How it works', href: '/how-it-works' },
-    { label: 'KRAFT Test', href: '/kraft-test' },
+    // Coaching outranks the KRAFT Test: it is the revenue priority.
     { label: 'Coaching', href: '/coaching' },
+    { label: 'KRAFT Test', href: '/kraft-test' },
     { label: 'Services', href: '/services' },
     { label: 'Partners', href: '/partners' },
     { label: 'Pricing', href: '/pricing' },
@@ -280,7 +281,11 @@ export function Navbar({ affiliate }: { affiliate?: ChromeAffiliate | null } = {
           borderBottom: scrolled ? `1px solid ${C.border}` : '1px solid transparent',
         }}
       >
-        <Link href={chromeHome(affiliate)} className="flex items-center gap-2.5" aria-label="Meo by Meterbolic — home">
+        {/* shrink-0 on both outer children (this and the CTA cluster) plus
+            min-w-0 on the link row: without them the 9-item link row
+            refuses to shrink, pushes past its track and the "Meo" pill
+            renders on top of the first nav link. */}
+        <Link href={chromeHome(affiliate)} className="flex items-center gap-2.5 shrink-0" aria-label="Meo by Meterbolic — home">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/meterbolic-logo.png"
@@ -296,7 +301,10 @@ export function Navbar({ affiliate }: { affiliate?: ChromeAffiliate | null } = {
           </span>
         </Link>
 
-        <div className="hidden lg:flex items-center gap-1">
+        {/* xl, not lg: at 1024–1279px nine links at 21px no longer fit
+            beside the logo and the CTAs. Below xl the drawer carries
+            them, which is also what a zoomed-in browser lands on. */}
+        <div className="hidden xl:flex items-center gap-1 min-w-0">
           {links.map((l) => {
             const active = isActive(l.href);
             return (
@@ -304,7 +312,7 @@ export function Navbar({ affiliate }: { affiliate?: ChromeAffiliate | null } = {
                 key={l.href}
                 href={l.href}
                 aria-current={active ? 'page' : undefined}
-                className="relative text-[21px] px-3 py-2 rounded-lg transition-colors hover:bg-white/5"
+                className="relative whitespace-nowrap text-[17px] 2xl:text-[21px] px-2.5 2xl:px-3 py-2 rounded-lg transition-colors hover:bg-white/5"
                 style={{
                   color: active ? C.primary : C.fg,
                   fontWeight: active ? 600 : 400,
@@ -327,7 +335,7 @@ export function Navbar({ affiliate }: { affiliate?: ChromeAffiliate | null } = {
           })}
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {/* Secondary CTA — sends users to the Meo web app at
               app.meterbolic.com (Cognito Hosted-UI handles login +
               signup there). Hidden on small screens to avoid crowding
@@ -350,7 +358,7 @@ export function Navbar({ affiliate }: { affiliate?: ChromeAffiliate | null } = {
           </Link>
           <button
             onClick={() => setMenuOpen(true)}
-            className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg"
+            className="xl:hidden flex items-center justify-center w-10 h-10 rounded-lg"
             style={{ color: C.fg, border: `1px solid ${C.border}` }}
             aria-label="Open menu"
           >
@@ -367,7 +375,7 @@ export function Navbar({ affiliate }: { affiliate?: ChromeAffiliate | null } = {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="lg:hidden fixed inset-0 z-[60] flex flex-col"
+            className="xl:hidden fixed inset-0 z-[60] flex flex-col"
             style={{ background: 'rgba(10,31,26,0.96)', backdropFilter: 'blur(16px)' }}
           >
             <div className="flex items-center justify-between px-6 py-4">
@@ -1741,7 +1749,10 @@ function EbookSection() {
     'The 7 lipid-moving habits the peer-reviewed research actually supports',
     'Meals, not "meal plans" — frameworks that survive real life',
     'The cortisol–LDL feedback loop almost no one talks about',
-    'The sleep–Triglycerides link the data is unambiguous about',
+    // Lower-case here on purpose: mid-sentence in running prose, where
+    // the capitalised marker-label form reads as a typo. The capitalised
+    // "Triglycerides" is for marker lists and panel enumerations.
+    'The sleep–triglycerides link the data is unambiguous about',
     'How to read your own trend chart without becoming obsessive',
     'A 6-week gentle-protocol you can stick to at weddings, on trips, on sick days',
   ];
@@ -2496,8 +2507,8 @@ export function Footer({ affiliate }: { affiliate?: ChromeAffiliate | null } = {
   const product = [
     { label: 'Home', href: '/' },
     { label: 'How it works', href: '/how-it-works' },
-    { label: 'The KRAFT Test', href: '/kraft-test' },
     { label: 'Coaching', href: '/coaching' },
+    { label: 'The KRAFT Test', href: '/kraft-test' },
     { label: 'Services', href: '/services' },
     { label: 'Pricing', href: '/pricing' },
     { label: 'Open chat', href: '/chat' },
