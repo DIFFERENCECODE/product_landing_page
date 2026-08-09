@@ -3,8 +3,12 @@
 // (meo)/pricing route which was wrapped in the chatbot AppShell. This
 // version uses the same Navbar/Footer chrome as /about, /services, and
 // /how-it-works, with no auth, no chat sidebar, and no Stripe status
-// fetch. Three tiers — Lite / Starter / Coached — each linking to the
-// checkout page with the appropriate query param.
+// fetch.
+//
+// Three tiers — Lite / Starter / Coached. Lite and Starter link into
+// /checkout; Coached is the EoS entry coaching programme, so it links to
+// /coaching and is arranged by enquiry. Its price and bullets are read
+// from lib/programmes.ts and never restated here.
 // ─────────────────────────────────────────────────────────────────────
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -13,12 +17,25 @@ import { C, FONT_SERIF, cardSurface } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 import { MeoEnterpriseBonus } from '@/components/MeoEnterpriseBonus';
 import { SelectableCard, SelectableCardGroup } from '@/components/SelectableCard';
-import { KRAFT_TEST, KRAFT_TEST_COACHED, KRAFT_TEST_MAILTO } from '@/lib/kitProducts';
+import {
+  KIT_PRODUCT,
+  KRAFT_TEST,
+  KRAFT_TEST_COACHED,
+  KRAFT_TEST_MAILTO,
+} from '@/lib/kitProducts';
+import { DEFAULT_COACH_OFFER } from '@/lib/affiliates';
+import { formatProgrammePrice } from '@/lib/programmes';
+
+// The programme behind the Coached tier — the one place its price and
+// feature list come from.
+const COACHED_PROGRAMME = DEFAULT_COACH_OFFER?.programme;
 
 export const metadata: Metadata = {
   title: 'Pricing — Meo',
   description:
-    'Three ways in. Same destination. Meo Lite (£29), Meo Starter (£149), and Meo Coached (£444).',
+    `Three ways in. Same destination. Meo Lite (£29), Meo Starter (£149), and Meo Coached${
+      COACHED_PROGRAMME ? ` (${formatProgrammePrice(COACHED_PROGRAMME)})` : ''
+    }.`,
 };
 
 interface Plan {
@@ -26,7 +43,7 @@ interface Plan {
   name: string;
   price: number;
   blurb: string;
-  features: string[];
+  features: readonly string[];
   cta: string;
   href: string;
   popular?: boolean;
@@ -63,20 +80,18 @@ const PLANS: Plan[] = [
     href: '/checkout',
     popular: true,
   },
+  // The Coached plan IS the launch partner's entry coaching programme.
+  // Price and features come from lib/programmes.ts via the coach offer —
+  // /pricing, /coaching, / and /checkout therefore quote one figure. It
+  // is arranged by enquiry, so the CTA goes to the programme page.
   {
     id: 'coached',
     name: 'Meo Coached',
-    price: 444,
+    price: COACHED_PROGRAMME?.priceGBP ?? KIT_PRODUCT.price / 100,
     blurb: 'Everything in Starter, plus a metabolic coach.',
-    features: [
-      'Everything in Meo Starter',
-      '3 months of 1:1 metabolic coaching with Dr Arup Sen (EoS)',
-      '40-min onboarding consultation',
-      'Two 30-min follow-ups',
-      'Direct messaging between sessions',
-    ],
-    cta: 'Get Meo + Coach',
-    href: '/checkout?plan=coached',
+    features: COACHED_PROGRAMME?.highlights ?? ['Everything in Meo Starter'],
+    cta: 'Explore coaching',
+    href: DEFAULT_COACH_OFFER?.programmesHref ?? '/coaching',
   },
 ];
 

@@ -64,7 +64,6 @@ import {
   KIT_PRODUCT,
   KIT_ADDONS,
   KIT_LITE,
-  THERAPY_ADDON,
   BIOMARKERS,
   FAQ_ITEMS,
   formatGBP,
@@ -190,7 +189,11 @@ export interface ChromeAffiliate {
   name: string;
 }
 
-const AFFILIATE_HIDDEN_PATHS = new Set(['/', '/pricing', '/partners']);
+// Funnel isolation: destinations that must not appear inside another
+// affiliate's chrome. `/coaching` is EoS's own programme offer (see
+// lib/programmes.ts) — surfacing it inside, say, the Fiori funnel would
+// sell one partner's programme off another partner's traffic.
+const AFFILIATE_HIDDEN_PATHS = new Set(['/', '/pricing', '/partners', '/coaching']);
 
 function attributed(href: string, aff?: ChromeAffiliate | null): string {
   if (!aff || !href.startsWith('/')) return href;
@@ -241,6 +244,7 @@ export function Navbar({ affiliate }: { affiliate?: ChromeAffiliate | null } = {
     { label: 'About', href: '/about' },
     { label: 'How it works', href: '/how-it-works' },
     { label: 'KRAFT Test', href: '/kraft-test' },
+    { label: 'Coaching', href: '/coaching' },
     { label: 'Services', href: '/services' },
     { label: 'Partners', href: '/partners' },
     { label: 'Pricing', href: '/pricing' },
@@ -1874,20 +1878,25 @@ function TiersSection() {
       href: '/checkout',
       featured: true,
     },
+    // Meo Coached IS the coach's entry programme — price, span, bullets
+    // and CTA all read from lib/programmes.ts via the coach offer, so
+    // this card cannot quote a figure /coaching disagrees with. It is
+    // sold by enquiry, hence "Explore" rather than "Get".
     {
       name: 'Meo Coached',
       tagline: 'Add a human in the loop.',
-      price: KIT_PRODUCT.price + THERAPY_ADDON.price,
-      blurb: `Everything in Starter + 3 months of 1:1 metabolic coaching with ${DEFAULT_COACH_OFFER?.practitioner.name ?? 'your metabolic coach'}${DEFAULT_COACH_OFFER ? ` of ${DEFAULT_COACH_OFFER.affiliateName}` : ''}.`,
-      valueNote: `Coaching alone is ${formatGBP(THERAPY_ADDON.price)} — same price here, paired with the full system.`,
-      features: [
-        'Everything in Meo Starter',
-        '40-min onboarding consultation',
-        'Two 30-min follow-ups',
-        'Direct messaging with your coach',
-      ],
-      cta: 'Get Meo + Coach',
-      href: `/checkout?addon=${THERAPY_ADDON.id}`,
+      // Pence, like the other two, so the shared renderer's
+      // formatGBP(t.price) needs no special case.
+      price: DEFAULT_COACH_OFFER
+        ? DEFAULT_COACH_OFFER.programme.priceGBP * 100
+        : KIT_PRODUCT.price,
+      blurb: DEFAULT_COACH_OFFER
+        ? `${DEFAULT_COACH_OFFER.programme.name} — ${DEFAULT_COACH_OFFER.programme.duration.toLowerCase()} of 1:1 metabolic coaching with ${DEFAULT_COACH_OFFER.practitioner.name} of ${DEFAULT_COACH_OFFER.affiliateName}, with the Meo kit and six months of Meo AI included.`
+        : 'Everything in Starter, plus 1:1 metabolic coaching.',
+      valueNote: 'Introductory programme pricing · arranged by enquiry.',
+      features: DEFAULT_COACH_OFFER?.programme.highlights ?? [],
+      cta: 'Explore coaching',
+      href: DEFAULT_COACH_OFFER?.programmesHref ?? '/coaching',
       featured: false,
     },
   ] as const;
@@ -2488,6 +2497,7 @@ export function Footer({ affiliate }: { affiliate?: ChromeAffiliate | null } = {
     { label: 'Home', href: '/' },
     { label: 'How it works', href: '/how-it-works' },
     { label: 'The KRAFT Test', href: '/kraft-test' },
+    { label: 'Coaching', href: '/coaching' },
     { label: 'Services', href: '/services' },
     { label: 'Pricing', href: '/pricing' },
     { label: 'Open chat', href: '/chat' },

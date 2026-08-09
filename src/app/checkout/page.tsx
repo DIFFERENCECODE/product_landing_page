@@ -26,14 +26,20 @@ import {
   FileText,
   Zap,
   Wifi,
+  Mail,
 } from 'lucide-react';
 import {
   KIT_PRODUCTS,
   KIT_LITE,
-  THERAPY_ADDON,
   LEGACY_THERAPY_ADDON_IDS,
   type AddonProduct,
 } from '@/lib/kitProducts';
+import {
+  EOS_ENTRY_DELTA_GBP,
+  EOS_ENTRY_DELTA_PRICE_ID,
+  EOS_ENTRY_PURCHASABLE,
+  formatProgrammePrice,
+} from '@/lib/programmes';
 import {
   getAffiliate,
   getAffiliateCoachOffer,
@@ -43,9 +49,20 @@ import {
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 import TrustBadge from '@/components/TrustBadge';
 
-const THERAPY_PRICE = THERAPY_ADDON.price / 100; // £295
-const THERAPY_AVAILABLE = !THERAPY_ADDON.priceId.includes('placeholder');
 const LITE_PRICE = KIT_LITE.price / 100; // £29
+
+// ─── What "Meo Coached" is ────────────────────────────────────────────
+//
+// The Coached plan IS the affiliate's entry coaching programme — for the
+// unattributed funnel, EoS's Metabolic Optimisation. Its price, name,
+// duration and bullets are read from the coach offer (which reads them
+// from lib/programmes.ts). Nothing about the programme is restated here.
+//
+// It is sold BY ENQUIRY unless ops has minted the Stripe delta price and
+// set NEXT_PUBLIC_EOS_OPTIMISATION_DELTA_PRICE_ID. That gate is the
+// reason this page can no longer show one price and charge another: the
+// old £444 plan quoted a £295 add-on whose Stripe price had drifted away
+// from the £850 the programme page published.
 
 // Where affiliate attribution is parked for the length of the visit, so
 // it survives a page reload or a hop to /pricing and back. Funnel
@@ -457,7 +474,6 @@ function AddonRow({
 function OrderSummary({
   plan,
   selectedAddons,
-  therapySelected,
   coachOffer,
   total,
   onPay,
@@ -467,7 +483,6 @@ function OrderSummary({
 }: {
   plan: Plan;
   selectedAddons: { addon: AddonProduct; qty: number }[];
-  therapySelected: boolean;
   coachOffer?: AffiliateCoachOffer;
   total: number;
   onPay: () => void;
@@ -475,27 +490,29 @@ function OrderSummary({
   error: string | null;
   glucoseSelected: boolean;
 }) {
-  const coachLabel = coachOffer?.label ?? THERAPY_ADDON.name;
   const isLite = plan === 'lite';
   const isCoached = plan === 'coached';
-  // Coached presents as a single bundled line at £444 — the user sees
-  // the plan price, not a Starter + coaching breakdown. Optional addons
+  const programme = coachOffer?.programme;
+  // Coached presents as a single programme line — the visitor sees the
+  // programme price, not a kit + coaching breakdown. Optional addons
   // (e.g. CGM) still itemise below.
   const headlinePrice = isLite
     ? LITE_PRICE
-    : isCoached
-    ? KIT_PRODUCTS.baseKit.price + THERAPY_PRICE
+    : isCoached && programme
+    ? programme.priceGBP
     : KIT_PRODUCTS.baseKit.price;
   const headlineName = isLite
     ? 'Meo Lite'
-    : isCoached
-    ? 'Meo Coached'
+    : isCoached && programme
+    ? programme.name
     : KIT_PRODUCTS.baseKit.name;
   const headlineSub = isLite
     ? 'eBook + 7-day AI trial'
-    : isCoached
-    ? 'Complete bundle + 3-month coaching'
+    : isCoached && programme
+    ? `${programme.duration} · Meo kit included`
     : 'Complete bundle';
+  // Coached is an enquiry, not a card sale, until ops wires the price.
+  const isEnquiry = isCoached && !EOS_ENTRY_PURCHASABLE;
   return (
     <div
       className="rounded-2xl p-5 sm:p-6 w-full overflow-hidden"
@@ -523,21 +540,20 @@ function OrderSummary({
               <span className="shrink-0" style={{ color: C.fg }}>£{addon.price * qty}</span>
             </div>
           ))}
-          {!isCoached && therapySelected && (
-            <div className="flex justify-between gap-3 text-sm">
-              <span className="min-w-0" style={{ color: C.muted }}>{coachLabel}</span>
-              <span className="shrink-0" style={{ color: C.fg }}>£{THERAPY_PRICE}</span>
-            </div>
-          )}
         </div>
       )}
-      {/* Edge case: no glucose addon, but the coach toggled on Starter
-          (without any other addon) — show coaching on its own row. */}
-      {!isLite && !isCoached && therapySelected && selectedAddons.length === 0 && (
+      {/* Coached itemises WHAT the programme price covers, so the single
+          headline figure is never mistaken for a device-only charge.
+          Read from the programme, so it cannot contradict /coaching. */}
+      {isCoached && programme && (
         <div className="space-y-2 mb-3 pb-3" style={{ borderBottom: `1px solid ${C.border}` }}>
           <div className="flex justify-between gap-3 text-sm">
-            <span className="min-w-0" style={{ color: C.muted }}>{coachLabel}</span>
-            <span className="shrink-0" style={{ color: C.fg }}>£{THERAPY_PRICE}</span>
+            <span className="min-w-0" style={{ color: C.muted }}>Meo Starter kit + 6 months of Meo AI</span>
+            <span className="shrink-0" style={{ color: C.muted }}>included</span>
+          </div>
+          <div className="flex justify-between gap-3 text-sm">
+            <span className="min-w-0" style={{ color: C.muted }}>{coachOffer?.label}</span>
+            <span className="shrink-0" style={{ color: C.muted }}>included</span>
           </div>
         </div>
       )}
@@ -558,38 +574,65 @@ function OrderSummary({
         <span className="text-2xl font-bold" style={{ color: C.fg }}>£{total}</span>
       </div>
 
-      {!isLite && !glucoseSelected && (
+      {!isLite && !isEnquiry && !glucoseSelected && (
         <p className="text-xs text-center mb-3" style={{ color: C.muted }}>
           Select a glucose option above to continue
         </p>
       )}
 
-      <button
-        onClick={onPay}
-        disabled={isPending || (!isLite && !glucoseSelected)}
-        className="w-full inline-flex items-center justify-center gap-2 rounded-xl font-semibold text-base py-3.5 transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
-        style={{ background: C.primary, color: C.primaryFg }}
-      >
-        {isPending ? 'Redirecting…' : (
-          <>Pay £{total} <ArrowRight className="h-4 w-4" /></>
-        )}
-      </button>
+      {isEnquiry ? (
+        // The programme books a clinician's diary, so it closes the same
+        // way it does on /coaching and /kraft-test — by enquiry. One sale
+        // path per offer; a card button here would be a second one at a
+        // price Stripe has no object for.
+        <a
+          href={coachOffer?.enquiryHref}
+          className="w-full inline-flex items-center justify-center gap-2 rounded-xl font-semibold text-base py-3.5 transition-opacity hover:opacity-90"
+          style={{ background: C.primary, color: C.primaryFg }}
+        >
+          <Mail className="h-4 w-4" aria-hidden />
+          Enquire about this programme
+        </a>
+      ) : (
+        <button
+          onClick={onPay}
+          disabled={isPending || (!isLite && !glucoseSelected)}
+          className="w-full inline-flex items-center justify-center gap-2 rounded-xl font-semibold text-base py-3.5 transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+          style={{ background: C.primary, color: C.primaryFg }}
+        >
+          {isPending ? 'Redirecting…' : (
+            <>Pay £{total} <ArrowRight className="h-4 w-4" /></>
+          )}
+        </button>
+      )}
 
-      {error && (
+      {error && !isEnquiry && (
         <p className="mt-3 text-sm text-center" style={{ color: '#f87171' }}>{error}</p>
       )}
 
       <div className="mt-4 flex items-center justify-center gap-1.5 text-xs" style={{ color: C.muted }}>
-        <Lock className="h-3 w-3" />
-        Secured by Stripe · 30-day money-back
+        {isEnquiry ? (
+          <>
+            <Mail className="h-3 w-3" />
+            Goes to the EoS programme inbox · no payment taken online
+          </>
+        ) : (
+          <>
+            <Lock className="h-3 w-3" />
+            Secured by Stripe · 30-day money-back
+          </>
+        )}
       </div>
     </div>
   );
 }
 
 // ─── Mobile Pay bar ───────────────────────────────────────────────────
-function MobilePayBar({ plan, total, onPay, isPending, glucoseSelected }: { plan: Plan; total: number; onPay: () => void; isPending: boolean; glucoseSelected: boolean }) {
+function MobilePayBar({ plan, total, onPay, isPending, glucoseSelected, coachOffer }: { plan: Plan; total: number; onPay: () => void; isPending: boolean; glucoseSelected: boolean; coachOffer?: AffiliateCoachOffer }) {
   const isLite = plan === 'lite';
+  // Same rule as the desktop summary: Coached closes by enquiry until
+  // the delta price exists, so the sticky bar must not offer to charge.
+  const isEnquiry = plan === 'coached' && !EOS_ENTRY_PURCHASABLE;
   return (
     <div
       className="md:hidden fixed bottom-0 left-0 right-0 z-40 p-3 flex items-center gap-3"
@@ -603,14 +646,73 @@ function MobilePayBar({ plan, total, onPay, isPending, glucoseSelected }: { plan
         <p className="text-[10px] uppercase tracking-wide" style={{ color: C.muted }}>Total</p>
         <p className="text-lg font-bold leading-none" style={{ color: C.fg }}>£{total}</p>
       </div>
-      <button
-        onClick={onPay}
-        disabled={isPending || (!isLite && !glucoseSelected)}
-        className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl font-semibold text-sm py-3 transition-opacity disabled:opacity-40"
-        style={{ background: C.primary, color: C.primaryFg }}
-      >
-        {isPending ? 'Redirecting…' : <>Pay <ArrowRight className="h-4 w-4" /></>}
-      </button>
+      {isEnquiry ? (
+        <a
+          href={coachOffer?.enquiryHref}
+          className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl font-semibold text-sm py-3 transition-opacity"
+          style={{ background: C.primary, color: C.primaryFg }}
+        >
+          <Mail className="h-4 w-4" aria-hidden />
+          Enquire
+        </a>
+      ) : (
+        <button
+          onClick={onPay}
+          disabled={isPending || (!isLite && !glucoseSelected)}
+          className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl font-semibold text-sm py-3 transition-opacity disabled:opacity-40"
+          style={{ background: C.primary, color: C.primaryFg }}
+        >
+          {isPending ? 'Redirecting…' : <>Pay <ArrowRight className="h-4 w-4" /></>}
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ─── Coach card body ──────────────────────────────────────────────────
+//
+// Rendered by both the "your programme" panel (Coached) and the
+// invitation (Starter). Kept as one component on purpose: two copies of
+// this markup is how a page ends up quoting two different session
+// counts for the same coach.
+function CoachCardBody({
+  coachOffer,
+  priceLabel,
+}: {
+  coachOffer: AffiliateCoachOffer;
+  priceLabel: string;
+}) {
+  const { practitioner, programme } = coachOffer;
+  return (
+    <div className="flex items-start gap-4">
+      <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0">
+        <Image src={practitioner.photo} alt={practitioner.name} fill className="object-cover object-top" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 flex-wrap mb-1">
+          <span className="font-semibold text-base" style={{ color: C.fg }}>{practitioner.name}</span>
+          <span
+            className="text-[10px] font-semibold px-2 py-0.5 rounded"
+            style={{ background: C.pill, color: C.pillFg }}
+          >
+            {practitioner.role}
+          </span>
+          <span className="text-xs ml-auto shrink-0 font-semibold" style={{ color: C.primary }}>
+            {priceLabel}
+          </span>
+        </div>
+        <p className="text-sm mb-2" style={{ color: C.muted }}>
+          <span style={{ color: C.fg }}>{programme.name}</span> · {programme.duration} — {programme.tagline}
+        </p>
+        <ul className="space-y-0.5">
+          {programme.highlights.map((item) => (
+            <li key={item} className="flex items-center gap-1.5 text-xs" style={{ color: C.muted }}>
+              <Check className="h-3 w-3 shrink-0" style={{ color: C.primary }} />
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
@@ -625,7 +727,6 @@ export default function CheckoutPage() {
   const [quantities, setQuantities] = useState<Record<string, number>>(
     Object.fromEntries(KIT_PRODUCTS.addons.map((a) => [a.id, 0])),
   );
-  const [therapySelected, setTherapySelected] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   // Affiliate attribution + where the back arrow returns to. Resolved
@@ -653,9 +754,9 @@ export default function CheckoutPage() {
 
     const planParam = params.get('plan');
     const addonParam = params.get('addon');
-    const wantsCoaching =
-      addonParam === THERAPY_ADDON.id ||
-      (LEGACY_THERAPY_ADDON_IDS as readonly string[]).includes(addonParam ?? '');
+    const wantsCoaching = (LEGACY_THERAPY_ADDON_IDS as readonly string[]).includes(
+      addonParam ?? '',
+    );
 
     // Attribution: ?aff wins, then ?utm_source, then whatever an
     // earlier page in this visit stored. Unknown slugs are ignored
@@ -694,10 +795,7 @@ export default function CheckoutPage() {
 
     if (planParam === 'lite') setPlan('lite');
     else if (planParam === 'coached' || wantsCoaching) {
-      if (offer) {
-        setPlan('coached');
-        setTherapySelected(true);
-      }
+      if (offer) setPlan('coached');
       // else: stay on Starter. We do not sell a rival's coach.
     }
   }, []);
@@ -705,15 +803,13 @@ export default function CheckoutPage() {
   const isLite = plan === 'lite';
   const isCoached = plan === 'coached';
 
-  // Coached plan force-locks the coaching addon on. If the user toggles
-  // away from Coached we leave therapySelected as-is so they can keep
-  // it manually if they like. Switching INTO Coached force-enables it.
+  // There is no separate coaching toggle any more: choosing Coached IS
+  // choosing the programme, so the plan pill is the single control.
   const handlePlanChange = (next: Plan) => {
     // Coached is only selectable when someone is actually contracted to
     // deliver the coaching for this visitor.
     if (next === 'coached' && !coachOffer) return;
     setPlan(next);
-    if (next === 'coached') setTherapySelected(true);
   };
 
   const handleGlucoseSelect = (optionId: string, addonId: string | null) => {
@@ -742,14 +838,16 @@ export default function CheckoutPage() {
       ),
     [quantities],
   );
-  // Visible total reflects whatever the user has selected; the Stripe
-  // line-items list is what's gated by THERAPY_AVAILABLE (handleCheckout
-  // below). This avoids a "£0 surprise" where selecting the coach
-  // showed no price change in dev environments using the placeholder ID.
-  // Lite is a flat £29 downsell — no addons, no glucose, no coach.
+  // The displayed total and the Stripe basket are derived from the SAME
+  // numbers: Coached = the programme price (kit inclusive), Starter =
+  // kit price, both plus any measurement addons. Lite is a flat £29
+  // downsell — no addons, no glucose, no coaching.
+  const coachedTotal = coachOffer
+    ? coachOffer.programme.priceGBP
+    : KIT_PRODUCTS.baseKit.price;
   const total = isLite
     ? LITE_PRICE
-    : KIT_PRODUCTS.baseKit.price + addonsTotal + (therapySelected ? THERAPY_PRICE : 0);
+    : (isCoached ? coachedTotal : KIT_PRODUCTS.baseKit.price) + addonsTotal;
 
   const selectedAddons = useMemo(
     () =>
@@ -777,8 +875,19 @@ export default function CheckoutPage() {
                 .filter((a) => (quantities[a.id] ?? 0) > 0)
                 .map((a) => ({ priceId: a.priceId, quantity: quantities[a.id] })),
             };
-        if (!isLite && therapySelected && THERAPY_AVAILABLE) {
-          body.addons.push({ priceId: THERAPY_ADDON.priceId, quantity: 1 });
+        // Coached = kit + the coaching delta, so the Stripe basket sums
+        // to the programme price published on /coaching. Guarded by
+        // EOS_ENTRY_PURCHASABLE: with no delta price minted, the Coached
+        // plan never reaches this function (the summary renders an
+        // enquiry link instead), and this branch is belt-and-braces so a
+        // future caller cannot charge kit-only for a programme.
+        if (isCoached) {
+          if (!EOS_ENTRY_PURCHASABLE) {
+            throw new Error(
+              'This programme is arranged by enquiry — please use the enquiry button.',
+            );
+          }
+          body.addons.push({ priceId: EOS_ENTRY_DELTA_PRICE_ID, quantity: 1 });
         }
         const res = await fetch('/api/kit-checkout', {
           method: 'POST',
@@ -864,7 +973,8 @@ export default function CheckoutPage() {
 
         {/* Tier toggle — three-pill switch matching /pricing tiers.
             Lite (£29) is the downsell, Starter (£149) is the default,
-            Coached (£444) is Starter + the EoS coaching locked on.
+            Coached is the EoS entry programme — kit, AI and coaching in
+            one price, read from lib/programmes.ts.
             Order is cheapest → most premium so the eye reads naturally.
             Each pill wears the shared `.card-interactive` selected
             styling (globals.css) so the active plan reads as a ring +
@@ -878,7 +988,14 @@ export default function CheckoutPage() {
           {([
             { id: 'lite' as const, label: 'Meo Lite', price: '£29' },
             { id: 'starter' as const, label: 'Meo Starter', price: '£149' },
-            { id: 'coached' as const, label: 'Meo Coached', price: '£444' },
+            {
+              id: 'coached' as const,
+              label: 'Meo Coached',
+              // Never a literal — the programme page owns this figure.
+              price: coachOffer
+                ? formatProgrammePrice(coachOffer.programme)
+                : `£${KIT_PRODUCTS.baseKit.price + EOS_ENTRY_DELTA_GBP}`,
+            },
           ]
             // Before attribution resolves we keep Coached visible (the
             // unattributed majority case) — the pill names no
@@ -1097,14 +1214,19 @@ export default function CheckoutPage() {
               </section>
             )}
 
-            {/* ── Metabolic Coach (Dr Arup Sen · EoS) ──
-                Optional add-on for the Starter plan; locked-on and
-                presented as "Included" when Coached is active so the
-                user has a single source of truth (the plan toggle).
-                Coach identity comes from getAffiliateCoachOffer() —
-                the affiliate registry is the one source for the name,
-                the credential and the photo. The whole section is
-                absent for an affiliate that supplies no coach. */}
+            {/* ── The coaching programme (Dr Arup Sen · EoS) ──
+                Coach identity comes from getAffiliateCoachOffer(); the
+                affiliate registry is the one source for the name, the
+                credential and the photo, and lib/programmes.ts is the
+                one source for the price, the span and the sessions.
+                Nothing about the offer is written literally here.
+
+                There is no longer an "add a coach" toggle: the site
+                sells ONE coaching offer, so the invitation on Starter
+                switches to the Coached programme rather than adding a
+                second, differently-priced coaching SKU. The whole
+                section is absent for an affiliate that supplies no
+                coach. */}
             {attributionReady && coachOffer && (
             <section>
               <div className="flex items-baseline gap-3 mb-1">
@@ -1112,7 +1234,7 @@ export default function CheckoutPage() {
                   className="m-0"
                   style={{ color: C.fg, fontFamily: 'var(--font-serif)', fontSize: 'clamp(22px, 2.5vw, 26px)' }}
                 >
-                  {isCoached ? 'Your Metabolic Coach' : 'Add a Metabolic Coach'}
+                  {isCoached ? 'Your coaching programme' : 'Add 1:1 coaching'}
                 </h2>
                 <span
                   className="text-xs font-semibold px-2 py-0.5 rounded"
@@ -1126,14 +1248,14 @@ export default function CheckoutPage() {
               </div>
               <p className="text-sm mb-5" style={{ color: C.muted }}>
                 {isCoached
-                  ? `The 3-month coaching upgrade with ${coachOffer.practitioner.name} is bundled with the Coached plan — no extra step needed.`
+                  ? `${coachOffer.programme.name} is ${coachOffer.affiliateName}'s ${coachOffer.programme.duration.toLowerCase()}, delivered 1-to-1 by ${coachOffer.practitioner.name}. The kit and your Meo AI access are part of it.`
                   : `Work 1-to-1 with ${coachOffer.practitioner.name} of ${coachOffer.affiliateName} to interpret your data and build an action plan.`}
               </p>
+
+              {/* Coached: the programme, stated once. Starter: the same
+                  card as a live control that switches plan — so the
+                  price the visitor is shown is the price they get. */}
               {isCoached ? (
-                // Coached: render as a static "included" panel — no
-                // toggle, no extra price line (the £444 plan price
-                // already covers it). Switching the plan toggle off
-                // Coached is the way to remove it.
                 <div
                   className="card-interactive w-full text-left rounded-2xl p-5"
                   data-selected="true"
@@ -1143,102 +1265,29 @@ export default function CheckoutPage() {
                     cursor: 'default',
                   }}
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0">
-                      <Image
-                        src={coachOffer.practitioner.photo}
-                        alt={coachOffer.practitioner.name}
-                        fill
-                        className="object-cover object-top"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <span className="font-semibold text-base" style={{ color: C.fg }}>{coachOffer.practitioner.name}</span>
-                        <span
-                          className="text-[10px] font-semibold px-2 py-0.5 rounded"
-                          style={{ background: C.pill, color: C.pillFg }}
-                        >
-                          {coachOffer.practitioner.role}
-                        </span>
-                        <span className="text-xs ml-auto shrink-0 font-semibold" style={{ color: C.primary }}>
-                          Included
-                        </span>
-                      </div>
-                      <p className="text-sm mb-2" style={{ color: C.muted }}>
-                        3-month coaching upgrade — direct access to a specialist who reads your data with you.
-                      </p>
-                      <ul className="space-y-0.5">
-                        {['Initial 40-minute consultation', 'Two 30-minute follow-up consultations', 'Direct messaging between sessions'].map((item) => (
-                          <li key={item} className="flex items-center gap-1.5 text-xs" style={{ color: C.muted }}>
-                            <Check className="h-3 w-3 shrink-0" style={{ color: C.primary }} />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                      <p className="text-xs mt-2" style={{ color: C.muted }}>
-                        Looking for the full {coachOffer.affiliateName} programmes?{' '}
-                        <Link href={coachOffer.programmesHref} className="underline" style={{ color: C.pillFg }}>
-                          the full coaching programmes
-                        </Link>
-                        {' '}are run by {coachOffer.practitioner.name} at {coachOffer.affiliateName}.
-                      </p>
-                    </div>
-                  </div>
+                  <CoachCardBody coachOffer={coachOffer} priceLabel="Included" />
+                  <p className="text-xs mt-3" style={{ color: C.muted }}>
+                    {coachOffer.programme.name} is the entry programme.{' '}
+                    <Link href={coachOffer.programmesHref} className="underline" style={{ color: C.pillFg }}>
+                      See both {coachOffer.affiliateName} programmes
+                    </Link>
+                    {' '}— or reply to your enquiry to talk the options
+                    through with {coachOffer.practitioner.name}.
+                  </p>
                 </div>
               ) : (
                 <button
-                  onClick={() => setTherapySelected((v) => !v)}
-                  aria-pressed={therapySelected}
-                  data-selected={therapySelected ? 'true' : 'false'}
+                  onClick={() => handlePlanChange('coached')}
                   className="card-interactive w-full text-left rounded-2xl p-5"
-                  style={{
-                    background: therapySelected ? 'rgba(164,214,94,0.08)' : C.bgCard,
-                    border: `1px solid ${therapySelected ? C.primary : C.border}`,
-                  }}
+                  style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0">
-                      <Image
-                        src={coachOffer.practitioner.photo}
-                        alt={coachOffer.practitioner.name}
-                        fill
-                        className="object-cover object-top"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <span className="font-semibold text-base" style={{ color: C.fg }}>{coachOffer.practitioner.name}</span>
-                        <span
-                          className="text-[10px] font-semibold px-2 py-0.5 rounded"
-                          style={{ background: C.pill, color: C.pillFg }}
-                        >
-                          {coachOffer.practitioner.role}
-                        </span>
-                        <span className="font-semibold text-sm ml-auto shrink-0" style={{ color: C.fg }}>+£{THERAPY_PRICE}</span>
-                      </div>
-                      <p className="text-sm mb-2" style={{ color: C.muted }}>
-                        3-month coaching upgrade — direct access to a specialist who reads your data with you.
-                      </p>
-                      <ul className="space-y-0.5">
-                        {['Initial 40-minute consultation', 'Two 30-minute follow-up consultations', 'Direct messaging between sessions'].map((item) => (
-                          <li key={item} className="flex items-center gap-1.5 text-xs" style={{ color: C.muted }}>
-                            <Check className="h-3 w-3 shrink-0" style={{ color: C.primary }} />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div
-                      className="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 mt-1"
-                      style={{
-                        borderColor: therapySelected ? C.primary : C.border,
-                        background: therapySelected ? C.primary : 'transparent',
-                      }}
-                    >
-                      {therapySelected && <Check className="h-3 w-3" style={{ color: C.primaryFg }} />}
-                    </div>
-                  </div>
+                  <CoachCardBody
+                    coachOffer={coachOffer}
+                    priceLabel={formatProgrammePrice(coachOffer.programme)}
+                  />
+                  <p className="text-xs mt-3" style={{ color: C.pillFg }}>
+                    Switch to Meo Coached →
+                  </p>
                 </button>
               )}
             </section>
@@ -1311,7 +1360,6 @@ export default function CheckoutPage() {
             <OrderSummary
               plan={plan}
               selectedAddons={selectedAddons}
-              therapySelected={therapySelected}
               coachOffer={coachOffer}
               total={total}
               onPay={handleCheckout}
@@ -1323,7 +1371,7 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      <MobilePayBar plan={plan} total={total} onPay={handleCheckout} isPending={isPending} glucoseSelected={glucoseSelected} />
+      <MobilePayBar plan={plan} total={total} onPay={handleCheckout} isPending={isPending} glucoseSelected={glucoseSelected} coachOffer={coachOffer} />
       <Footer affiliate={affiliate ? { slug: affiliate.slug, name: affiliate.name } : null} />
     </div>
   );

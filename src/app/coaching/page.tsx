@@ -1,14 +1,17 @@
 // ─────────────────────────────────────────────────────────────────────
-// /eos — partner-brand ALIAS for /coaching.
+// /coaching — CANONICAL page for the metabolic coaching programmes.
 //
-// Serves the identical page with rel=canonical pointing at /coaching,
-// so search engines consolidate on the category path while every /eos
-// link already shared (or cached as the target of the old 308 from
-// /coaching) still resolves to a real page.
+// This is the document that publishes the EoS programme prices; every
+// other surface that quotes them (/checkout's Coached plan, the
+// homepage tier card, /pricing, /a/EoS) reads them from
+// lib/programmes.ts rather than restating them.
 //
-// NOT a redirect, and it must not become one — see the comment at the
-// top of components/coaching/CoachingProgrammePage.tsx for the
-// redirect-loop this avoids.
+// The path is category-level on purpose. It survives a change of
+// coaching partner, which a brand path like /eos does not — partner-
+// branded entry points belong under /a/<Affiliate>.
+//
+// /eos serves the same page as an alias. See CoachingProgrammePage for
+// why neither path redirects to the other.
 // ─────────────────────────────────────────────────────────────────────
 import type { Metadata } from 'next';
 import CoachingProgrammePage, {
@@ -21,6 +24,6 @@ export const metadata: Metadata = {
   alternates: { canonical: EOS_PROGRAMME_URL },
 };
 
-export default function EosAliasPage() {
+export default function CoachingPage() {
   return <CoachingProgrammePage />;
 }

@@ -8,8 +8,14 @@
 // affiliate or vertical here, add the row there in the same commit.
 // ═══════════════════════════════════════════════════════════════════
 
-import { EOS_PROGRAMMES, EOS_PROGRAMME_URL, type Programme } from '@/lib/programmes';
-import { THERAPY_ADDON } from '@/lib/kitProducts';
+import {
+  EOS_ENTRY_PROGRAMME,
+  EOS_PROGRAMMES,
+  EOS_PROGRAMME_URL,
+  formatProgrammePrice,
+  programmeEnquiryMailto,
+  type Programme,
+} from '@/lib/programmes';
 
 export interface Practitioner {
   name: string;
@@ -216,16 +222,16 @@ export const GENERIC_AFFILIATE_TIERS: readonly Tier[] = [
  * tier card in the affiliate ladder. The £850/£1,450 figures are read,
  * never retyped, so /eos and /a/EoS cannot drift apart.
  *
- * The CTA points at /eos#pricing rather than /checkout: the programmes
- * have no Stripe checkout (they are sold by enquiry to eos@meterbolic
- * .com), and /eos is the canonical page for them. It also keeps the
- * visitor inside the EoS funnel.
+ * The CTA points at /coaching#pricing rather than /checkout: the
+ * programmes are sold by enquiry to eos@meterbolic.com, and /coaching
+ * is the canonical page for them. It also keeps the visitor inside the
+ * EoS funnel.
  */
 function programmeToTier(p: Programme): Tier {
   return {
     id: p.id,
     name: p.name,
-    price: p.price,
+    price: formatProgrammePrice(p),
     priceNote: 'introductory',
     blurb: p.tagline,
     features: p.highlights,
@@ -271,43 +277,48 @@ export function getAffiliateOffer(slug: string | undefined | null): AffiliateOff
 // ─────────────────────────────────────────────────────────────────────
 // Coach offers — AFFILIATE-SCOPED, same discipline as the tier ladder.
 //
-// "Meo Coached" adds a 3-month 1:1 coaching upgrade. WHO delivers that
-// coaching is not a global fact — it is supplied by an affiliate's
-// principal. A single global coach constant is the same funnel-
-// isolation bug getAffiliateOffer() fixed for tiers: it was selling
-// EoS's Dr Arup Sen to Fiori-attributed visitors at the payment step.
+// "Meo Coached" IS an affiliate's entry coaching programme. WHO delivers
+// it is not a global fact — it is supplied by an affiliate's principal.
+// A single global coach constant is the same funnel-isolation bug
+// getAffiliateOffer() fixed for tiers: it was selling EoS's Dr Arup Sen
+// to Fiori-attributed visitors at the payment step.
 //
 //   • no affiliate (the unattributed consumer funnel: /, /pricing,
 //     /checkout) → DEFAULT_COACH_OFFER, currently EoS. That is a
 //     commercial fact, not a fallback: "Meo Coached" IS the EoS entry
-//     coach product.
+//     programme.
 //   • an affiliate that supplies a coach → that affiliate's principal.
 //   • an affiliate that supplies none (Fiori, Arup) → undefined, and
 //     every coaching surface must then render NOTHING. No substitute,
 //     no generic coach.
 //
 // Identity is READ from AFFILIATES[…].practitioner — the name, the
-// credential and the photo are never restated here. That is what keeps
-// one credential string with one spelling across the whole site.
+// credential and the photo are never restated here. The offer itself is
+// READ from lib/programmes.ts — the price, the sessions and the bullets
+// are never restated here either. That is what keeps one price and one
+// credential spelling across the whole site.
 // ─────────────────────────────────────────────────────────────────────
 export interface AffiliateCoachOffer {
   affiliateSlug: string;
   affiliateName: string;
   /** SSOT for name / credential (`role`) / photo. Never restate these. */
   practitioner: Practitioner;
-  /** Order-summary label, e.g. "Metabolic Coach — Dr Arup Sen (EoS)". */
+  /**
+   * The entry programme this coach delivers — the offer behind "Meo
+   * Coached". SSOT for its price, duration, tagline and bullets.
+   */
+  programme: Programme;
+  /** Order-summary label, e.g. "Metabolic Optimisation — Dr Arup Sen (EoS)". */
   label: string;
-  /** The Stripe-backed add-on that carries the upgrade. */
-  addonId: string;
-  addonPriceId: string;
-  /** Pence. */
-  addonPrice: number;
   /** Canonical page for this affiliate's full programme ladder. */
   programmesHref: string;
+  /** `mailto:` that sells the entry programme, subject pre-filled. */
+  enquiryHref: string;
 }
 
 function buildCoachOffer(
   slug: string,
+  programme: Programme,
   programmesHref: string,
 ): AffiliateCoachOffer | undefined {
   const entry = AFFILIATES[slug];
@@ -316,11 +327,10 @@ function buildCoachOffer(
     affiliateSlug: entry.slug,
     affiliateName: entry.name,
     practitioner: entry.practitioner,
-    label: `Metabolic Coach — ${entry.practitioner.name} (${entry.name})`,
-    addonId: THERAPY_ADDON.id,
-    addonPriceId: THERAPY_ADDON.priceId,
-    addonPrice: THERAPY_ADDON.price,
+    programme,
+    label: `${programme.name} — ${entry.practitioner.name} (${entry.name})`,
     programmesHref,
+    enquiryHref: programmeEnquiryMailto(programme),
   };
 }
 
@@ -328,7 +338,7 @@ function buildCoachOffer(
 // no coaching layer — that is the default, and it is why there is no
 // `slug === 'Fiori'` check anywhere.
 const AFFILIATE_COACH_OFFERS: Record<string, AffiliateCoachOffer | undefined> = {
-  eos: buildCoachOffer('EoS', EOS_PROGRAMME_URL),
+  eos: buildCoachOffer('EoS', EOS_ENTRY_PROGRAMME, EOS_PROGRAMME_URL),
 };
 
 /** The coach sold on the unattributed consumer funnel. */

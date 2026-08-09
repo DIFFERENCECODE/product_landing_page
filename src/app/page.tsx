@@ -14,8 +14,9 @@ import { Fragment } from 'react';
 //     interpretation of a real lipid panel reading.
 //   • What ships in the box — product imagery for the lipid meter
 //     and the Thin Book of Fat ebook.
-//   • Tiers — Lite £29 / Starter £149 / Coached £444, prices
-//     VAT-inclusive.
+//   • Tiers — Lite / Starter / Coached. Lite and Starter are card
+//     sales; Coached is the EoS entry coaching programme and is sold by
+//     enquiry. Every Coached figure comes from lib/programmes.ts.
 //   • MeO Care — B2B partnership block for clinics & practitioners.
 //   • Anonymised data callout — beta participant data; not a clinical
 //     claim.
@@ -51,7 +52,7 @@ import { NewsletterSection } from '@/components/NewsletterForm';
 import { KraftCurve } from '@/components/Visuals';
 import { MeoEnterpriseBonus } from '@/components/MeoEnterpriseBonus';
 import { SelectableCard, SelectableCardGroup } from '@/components/SelectableCard';
-import { AFFILIATES } from '@/lib/affiliates';
+import { AFFILIATES, DEFAULT_COACH_OFFER } from '@/lib/affiliates';
 import {
   KRAFT_AVAILABILITY_NOTE,
   KRAFT_TEST,
@@ -63,6 +64,10 @@ import {
 // affiliate registry — the name, quote and credential are defined once,
 // so this page cannot drift from /a/EoS or /checkout.
 const LAUNCH_PARTNER = AFFILIATES.EoS.practitioner;
+
+// The programme behind the Coached tier. Its price and feature list are
+// never retyped on this page — see lib/programmes.ts.
+const COACHED_PROGRAMME = DEFAULT_COACH_OFFER?.programme;
 
 export const metadata: Metadata = {
   title: 'Meo — Metabolic Intelligence System',
@@ -175,20 +180,18 @@ const TIERS: readonly Tier[] = [
     href: '/checkout',
     popular: true,
   },
+  // Meo Coached IS the launch partner's entry coaching programme. Price
+  // and bullets are read from lib/programmes.ts through the coach offer,
+  // so this card cannot disagree with /coaching. Sold by enquiry, so the
+  // CTA opens the programme page rather than a card checkout.
   {
     id: 'coached',
     name: 'Meo Coached',
-    price: 444,
+    price: COACHED_PROGRAMME?.priceGBP ?? 149,
     blurb: 'Everything in Starter, plus 1:1 coaching.',
-    features: [
-      'Everything in Meo Starter',
-      '3 months of coaching with Dr Arup Sen (EoS)',
-      '40-min onboarding consultation',
-      'Two 30-min follow-ups',
-      'Direct messaging between sessions',
-    ],
-    cta: 'Get Meo + Coach',
-    href: '/checkout?plan=coached',
+    features: COACHED_PROGRAMME?.highlights ?? ['Everything in Meo Starter'],
+    cta: 'Explore coaching',
+    href: DEFAULT_COACH_OFFER?.programmesHref ?? '/coaching',
   },
 ];
 
@@ -201,9 +204,12 @@ const TIER_COMPARE_ROWS: Array<{ label: string; retail: string; lite: CompareCel
   { label: '10 test strips + lancets + carry case',     retail: '£49',  lite: false,          starter: true, coached: true },
   { label: 'Biological Age Score + Target Score',       retail: '£29',  lite: false,          starter: true, coached: true },
   { label: 'Free retest at month six',                  retail: '£25',  lite: false,          starter: true, coached: true },
-  { label: '3 months 1:1 coaching (Dr Arup Sen · EoS)', retail: '£297', lite: false,          starter: false, coached: true },
-  { label: '40-min onboarding + two 30-min follow-ups', retail: 'included', lite: false,      starter: false, coached: true },
-  { label: 'Direct messaging with coach',               retail: 'included', lite: false,      starter: false, coached: true },
+  // Coaching rows describe the actual programme: 6 sessions across 12
+  // weeks, not the retired 40min + 2×30min add-on. No "typical retail"
+  // figure is invented for coaching — the programme price IS the price.
+  { label: `1:1 coaching programme (${DEFAULT_COACH_OFFER?.practitioner.name ?? 'your coach'} · EoS)`, retail: '—', lite: false, starter: false, coached: COACHED_PROGRAMME?.duration ?? true },
+  { label: '6 × 1:1 sessions (1×60min + 5×30min, fortnightly)', retail: 'included', lite: false, starter: false, coached: true },
+  { label: 'Messaging support between sessions',        retail: 'included', lite: false,      starter: false, coached: true },
 ];
 
 const FAQ = [
@@ -854,8 +860,10 @@ export default function HomePage() {
                 ))}
               </div>
               <p className="px-4 sm:px-5 py-3 text-xs" style={{ color: C.muted, borderTop: `1px solid ${C.border}` }}>
-                Typical retail values reflect standalone street pricing in the UK (Meo AI at £29/mo); coaching priced
-                at the standalone £99/mo coaching rate. Bundle pricing inclusive of VAT.
+                Typical retail values reflect standalone street pricing in the UK (Meo AI at £29/mo).
+                Meo Coached is the {COACHED_PROGRAMME?.name ?? 'coaching'} programme at introductory
+                pricing, inclusive of the kit and Meo AI — arranged by enquiry, not sold online.
+                Bundle pricing inclusive of VAT.
               </p>
             </div>
           </div>
@@ -952,7 +960,18 @@ export default function HomePage() {
                 className="p-7 sm:p-9 flex flex-col justify-between gap-6"
                 style={{ background: `linear-gradient(140deg, rgba(20,55,48,0.6), rgba(164,214,94,0.10))` }}
               >
-                <div>
+                {/* The whole practitioner card is one link to the
+                    canonical programme page. Deliberately NOT a
+                    stretched-link overlay: the partnerships CTA below
+                    lives in the same flex column, and an absolute
+                    overlay would swallow its clicks. Wrapping just the
+                    profile keeps both targets real and keeps the DOM
+                    free of nested anchors. */}
+                <Link
+                  href="/coaching"
+                  aria-label={`${LAUNCH_PARTNER?.name ?? 'Our launch partner'} — see the metabolic coaching programmes`}
+                  className="group block -m-3 p-3 rounded-2xl border border-transparent transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/[0.04] hover:border-[#a4d65e]/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#a4d65e] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+                >
                   <Quote className="h-5 w-5 mb-3" style={{ color: C.primary }} aria-hidden />
                   <p
                     className="text-base sm:text-lg italic leading-snug mb-4"
@@ -960,13 +979,26 @@ export default function HomePage() {
                   >
                     &ldquo;{LAUNCH_PARTNER?.quote}&rdquo;
                   </p>
-                  <p className="text-xs font-semibold" style={{ color: C.fg }}>
+                  <p
+                    className="text-xs font-semibold underline decoration-transparent underline-offset-2 transition-colors duration-200 group-hover:decoration-[#a4d65e]"
+                    style={{ color: C.fg }}
+                  >
                     {LAUNCH_PARTNER?.name}
                   </p>
                   <p className="text-xs mt-0.5" style={{ color: C.muted }}>
                     {LAUNCH_PARTNER?.role}
                   </p>
-                </div>
+                  <span
+                    className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold"
+                    style={{ color: C.primary }}
+                  >
+                    See the coaching programmes
+                    <ArrowRight
+                      className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
+                      aria-hidden
+                    />
+                  </span>
+                </Link>
 
                 <div>
                   <p className="text-sm font-semibold mb-3" style={{ color: C.fg }}>

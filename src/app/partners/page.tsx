@@ -10,6 +10,7 @@ import { ArrowLeft, Stethoscope, Activity, Briefcase, Watch, FlaskConical, Mail,
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 import TrustBadge from '@/components/TrustBadge';
+import { EOS_PROGRAMME_URL } from '@/lib/programmes';
 
 export const metadata: Metadata = {
   title: 'Partners — Meterbolic',
@@ -162,16 +163,18 @@ export default function PartnersPage() {
 
           {/* Primary CTA into the EoS sales page. Destination is /eos,
               not /a/EoS: /partners is a public, indexable page, and
-              /eos is the canonical, indexable programme page for the
-              EoS offer (/coaching 308-redirects there). /a/EoS is the
-              ATTRIBUTED UTM surface and is noindex — linking to it from
-              organic copy would attribute organic traffic to the
-              affiliate and put a noindex page in the crawl graph.
+              /coaching is the canonical, indexable programme page for
+              the EoS offer (/eos serves the same page as an alias).
+              /a/EoS is the ATTRIBUTED UTM surface and is noindex —
+              linking to it from organic copy would attribute organic
+              traffic to the affiliate and put a noindex page in the
+              crawl graph. The href is read from the registry so a
+              future rename cannot leave this button behind.
               Same button treatment as the "Ready to start?" CTA below
               and the site's other primary actions. */}
           <div className="flex justify-center mb-12">
             <Link
-              href="/eos"
+              href={EOS_PROGRAMME_URL}
               className="inline-flex items-center gap-2 rounded-xl font-semibold px-5 py-3 text-sm transition-opacity hover:opacity-90"
               style={{ background: C.primary, color: C.primaryFg }}
             >

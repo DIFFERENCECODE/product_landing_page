@@ -6,15 +6,19 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
-  // Route redirects. No auth redirects — this is a public storefront
-  // only; these are renames that must not break shared links.
+  // No redirects.
   //
-  //   /coaching → /eos   (renamed 2026-08-06, SCRUM Eos coaching page)
-  async redirects() {
-    return [
-      { source: '/coaching', destination: '/eos', permanent: true },
-    ];
-  },
+  // There WAS a permanent `/coaching → /eos` here (2026-08-06). It has
+  // been removed: /coaching is the canonical coaching page again, and
+  // /eos now serves the same page as a partner-brand alias with a
+  // rel=canonical back to /coaching.
+  //
+  // Do NOT replace it with the reverse redirect. That 308 was cached
+  // permanently by every browser that saw it, so `/eos → /coaching`
+  // would send those clients round in a loop: /coaching → (cache) /eos
+  // → /coaching → … which is exactly the "keeps retrying, never comes
+  // up" symptom. Two 200s and one canonical is the loop-free fix.
+  // See components/coaching/CoachingProgrammePage.tsx.
 
   //
   // Cache headers: temporarily set HTML to `no-store` to force-bust

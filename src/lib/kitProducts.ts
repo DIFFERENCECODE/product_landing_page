@@ -106,36 +106,33 @@ export const KIT_PRODUCT: KitProduct = {
 // Customers can buy any quantity from 0 to 9 of each (cart-side
 // behaviour, not modelled here — checkout UI handles the qty step).
 
-// ─── The 3-month coaching upgrade (the "Meo Coached" delta) ──────────
+// ─── RETIRED: the standalone 3-month coaching add-on ─────────────────
 //
-// This is the SKU only — price and Stripe price ID. It deliberately
-// names NO practitioner: who delivers the coaching is an affiliate-
-// scoped fact, resolved by getAffiliateCoachOffer() in lib/affiliates.
-// A global coach here is what let a Fiori-attributed visitor be sold
-// EoS's principal at the payment step.
+// There WAS a £295 "Metabolic Coach" add-on here (40-minute onboarding
+// + two 30-minute follow-ups) which made Meo Coached £149 + £295 =
+// £444. It was built around a previous coach and, when the offer moved
+// to EoS, kept its old price and session structure under a new name.
 //
-// ⚠ OPEN COMMERCIAL QUESTION (for Eric — deliberately NOT resolved in
-// code): the bundle economics still describe the OLD coach product.
-// Meo Coached is £444 = £149 kit + this £295 add-on, and the
-// comparison table values the coaching at £297. The equivalent EoS
-// entry programme, Metabolic Optimisation, is £850 (and is 6 sessions
-// over 12 weeks, not 40min + 2×30min). Names and links point at EoS;
-// the NUMBERS and the session structure are untouched, because
-// changing either is a pricing decision, not an implementation detail.
-export const THERAPY_ADDON: KitAddon = {
-  // Renamed from the legacy `therapy-spencer`. The old value is still
-  // accepted as a `?addon=` query param on /checkout so links already
-  // in the wild keep working — see the URL-param effect there.
-  id: 'coaching-eos',
-  name: 'Metabolic Coach — 3-month upgrade',
-  description:
-    '3-month subscription upgrade with private 1:1 health coaching. Includes initial 40-minute and two 30-minute follow-up consultations.',
-  price: 29500, // £295
-  priceId: process.env.NEXT_PUBLIC_ADDON_THERAPY_PRICE_ID || 'price_meo_therapy_placeholder',
-};
+// It is gone, and it is not coming back as a second coaching SKU. The
+// site sells ONE coaching offer: the EoS programme ladder in
+// lib/programmes.ts, whose entry tier (Metabolic Optimisation, £850,
+// 6 sessions over 12 weeks) IS "Meo Coached". Two coaching products at
+// two prices with two session structures, both attributed to Dr Arup
+// Sen, is precisely the internal contradiction this file must prevent.
+//
+// Resolved by Eric, 2026-08-09: the /coaching programme prices are
+// authoritative and /checkout follows them.
+//
+// Kept: the legacy `?addon=` values, so coaching links minted before
+// the change still land on the Coached programme rather than silently
+// dropping the visitor on plain Starter.
 
-/** Legacy `?addon=` values that must still resolve to the coach add-on. */
-export const LEGACY_THERAPY_ADDON_IDS = ['therapy-spencer', 'therapy'] as const;
+/** Legacy `?addon=` values that must still resolve to the Coached plan. */
+export const LEGACY_THERAPY_ADDON_IDS = [
+  'therapy-spencer',
+  'therapy',
+  'coaching-eos',
+] as const;
 
 export const KIT_ADDONS: KitAddon[] = [
   {

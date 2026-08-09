@@ -1,10 +1,10 @@
 // ─── Coaching · Enquiry inbox ─────────────────────────────────────────
 //
-// Single source of truth for where /eos enquiries go. Every CTA on the
-// page (pricing cards, closing CTA) mails this address — change it here
-// and the whole page follows.
+// Kept as a re-export so the coaching section components can carry on
+// importing a local name, but the address itself now lives with the
+// programmes in lib/programmes.ts — next to the prices and the subject
+// helpers that also have to reach /checkout and /pricing.
 //
-// This is deliberately NOT info@meterbolic.com: the coaching programmes
-// are run with EoS Longevity, and enquiries are handled by that inbox.
+// Do not reintroduce a literal address here: one inbox, one definition.
 // ──────────────────────────────────────────────────────────────────────
-export const ENQUIRY_EMAIL = 'eos@meterbolic.com';
+export { EOS_ENQUIRY_EMAIL as ENQUIRY_EMAIL } from '@/lib/programmes';

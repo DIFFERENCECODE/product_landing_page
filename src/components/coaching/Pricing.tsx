@@ -1,6 +1,7 @@
 // ─── Coaching · Pricing tiers ─────────────────────────────────────────
 //
-// Section 3 of the /eos page. Two programme cards side by side
+// Section 3 of the /coaching page (also served at /eos). Two programme
+// cards side by side
 // (Metabolic Optimisation · Metabolic Continuum), of EQUAL visual
 // weight — no "most popular" badge. Continuum carries a subtle
 // primary-tinted border and a slightly deeper card tone to read as the
@@ -14,10 +15,12 @@
 // +3×45min = 9 for Continuum — so they must be kept in step with the
 // bullets if the bullets ever change.
 //
-// The programme DATA (names, £850 / £1,450, includes) is NOT defined
-// here any more — it lives in lib/programmes.ts, the single source of
-// truth that /a/EoS also renders from, so the two pages cannot quote
-// different prices. This file is presentation only.
+// The programme DATA (names, prices, includes) is NOT defined here —
+// it lives in lib/programmes.ts, the single source of truth that
+// /checkout, /pricing, the homepage tier card and /a/EoS also render
+// from, so no two surfaces can quote different prices. This file is
+// presentation only: if you are tempted to type a price into it, the
+// number belongs in programmes.ts instead.
 //
 // id="pricing" is the scroll target for the Hero CTA. Copy is fixed
 // marketing/compliance-reviewed text — do not paraphrase.
@@ -26,10 +29,11 @@ import { Check, CalendarDays, Mail, MessageCircle, Package, UserRound } from 'lu
 import { C, FONT_SERIF, cardSurface } from '@/lib/design-tokens';
 import { MeoEnterpriseBonus } from '@/components/MeoEnterpriseBonus';
 import { SelectableCard, SelectableCardGroup } from '@/components/SelectableCard';
-import { ENQUIRY_EMAIL } from '@/components/coaching/contact';
 import {
   EOS_PROGRAMMES,
-  programmeEnquirySubject,
+  EOS_PRINCIPAL,
+  formatProgrammePrice,
+  programmeEnquiryMailto,
   type ProgrammeChipKind,
 } from '@/lib/programmes';
 
@@ -99,7 +103,7 @@ export default function Pricing() {
 
               <div className="mb-4">
                 <span className="text-4xl font-extrabold" style={{ color: C.fg }}>
-                  {t.price}
+                  {formatProgrammePrice(t)}
                 </span>
               </div>
 
@@ -150,15 +154,12 @@ export default function Pricing() {
                 ))}
               </ul>
 
-              {/* Live enquiry button — no checkout is wired for the
-                  coaching programmes, so both cards open an email to
-                  the Eos programme inbox with the tier pre-filled. */}
+              {/* Live enquiry button. The programmes commit a
+                  clinician's diary, so they are sold by enquiry rather
+                  than card — the same mailto the Coached plan on
+                  /checkout uses, built once in programmes.ts. */}
               <a
-                href={`mailto:${ENQUIRY_EMAIL}?subject=${encodeURIComponent(
-                  programmeEnquirySubject(t),
-                )}&body=${encodeURIComponent(
-                  `Hi,\n\nI'd like to know more about the ${t.name} (${t.duration}, ${t.price}).\n\nThank you,\n`,
-                )}`}
+                href={programmeEnquiryMailto(t)}
                 aria-label={`Enquire about the ${t.name} programme by email`}
                 className="w-full inline-flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition-opacity hover:opacity-90"
                 style={{
@@ -177,8 +178,8 @@ export default function Pricing() {
         {/* Pricing footnote — small print, centred, below both cards. */}
         <p className="text-center text-xs mt-10 max-w-2xl mx-auto leading-relaxed" style={{ color: C.muted }}>
           Introductory launch pricing. Prices include the Meo device, AI monitoring and
-          all listed coaching sessions with Dr Arup Sen. Coaching is wellness-focused and
-          does not constitute medical care.
+          all listed coaching sessions with {EOS_PRINCIPAL}. Coaching is wellness-focused
+          and does not constitute medical care.
         </p>
       </div>
     </section>
