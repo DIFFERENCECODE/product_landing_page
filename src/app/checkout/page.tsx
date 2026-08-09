@@ -41,6 +41,7 @@ import {
   type AffiliateCoachOffer,
 } from '@/lib/affiliates';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
+import TrustBadge from '@/components/TrustBadge';
 
 const THERAPY_PRICE = THERAPY_ADDON.price / 100; // £295
 const THERAPY_AVAILABLE = !THERAPY_ADDON.priceId.includes('placeholder');
@@ -1258,6 +1259,12 @@ export default function CheckoutPage() {
               </p>
             </section>
             )}
+
+            {/* Data-protection reassurance at the point of handing over
+                data. Deliberately BELOW the plan/add-on choices and
+                above the guarantee — it must not compete with the CTA,
+                but a buyer should not have to hunt for it either. */}
+            <TrustBadge variant="strip" audience="user" />
 
             {isLite && (
             <section

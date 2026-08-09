@@ -58,6 +58,7 @@ import {
   AlertCircle,
   Menu,
   X,
+  ShieldCheck,
 } from 'lucide-react';
 import {
   KIT_PRODUCT,
@@ -71,6 +72,7 @@ import {
 import { BioAgeDial, KraftCurve, EbookCover, LipidDroplet } from './Visuals';
 import { C } from '@/lib/design-tokens';
 import { DEFAULT_COACH_OFFER } from '@/lib/affiliates';
+import { ICO } from '@/lib/trust';
 import { PeopleCarousel } from './PeopleCarousel';
 
 // ─── Logo mark ───────────────────────────────────────────────────────
@@ -2558,6 +2560,7 @@ export function Footer({ affiliate }: { affiliate?: ChromeAffiliate | null } = {
         <nav aria-label="Legal">
           <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.fg }}>Legal</p>
           <ul className="space-y-2 text-sm">
+            <li><Link href="/trust" className="hover:underline" style={{ color: C.muted }}>Trust &amp; data protection</Link></li>
             <li><Link href="/privacy" className="hover:underline" style={{ color: C.muted }}>Privacy Policy</Link></li>
             <li><Link href="/terms" className="hover:underline" style={{ color: C.muted }}>Terms of Service</Link></li>
             <li><Link href="/cookies" className="hover:underline" style={{ color: C.muted }}>Cookies Policy</Link></li>
@@ -2565,6 +2568,25 @@ export function Footer({ affiliate }: { affiliate?: ChromeAffiliate | null } = {
           </ul>
         </nav>
       </div>
+
+      {/* Credential line — sits ABOVE the compliance small print, in
+          C.fg, because an ICO registration is a positive credential and
+          not a disclaimer. Reference number comes from src/lib/trust.ts;
+          it expires 10 Nov 2026, so never hard-code it here. */}
+      <Link
+        href="/trust"
+        className="group inline-flex flex-wrap items-center gap-x-2.5 gap-y-1 mb-5 text-xs"
+        style={{ color: C.fg }}
+      >
+        <ShieldCheck className="h-4 w-4 shrink-0" style={{ color: C.primary }} aria-hidden />
+        <span>
+          ICO-registered data controller · reference{' '}
+          <span style={{ color: C.pillFg }}>{ICO.reference}</span>
+        </span>
+        <span className="group-hover:underline" style={{ color: C.muted }}>
+          Trust &amp; data protection →
+        </span>
+      </Link>
 
       {/* Compliance + copyright */}
       <p className="text-xs leading-relaxed mb-3 max-w-3xl" style={{ color: C.muted }}>

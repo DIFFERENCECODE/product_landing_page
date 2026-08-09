@@ -34,7 +34,7 @@ export function MeoEnterpriseBonus({ variant = 'card' }: { variant?: 'card' | 'i
         style={{ background: C.pill, color: C.pillFg, border: `1px solid ${C.primary}40` }}
       >
         <Gift className="h-3.5 w-3.5 shrink-0" aria-hidden />
-        Includes {HEADLINE}, free
+        Includes {HEADLINE}, free — the professionally-supported tier
       </span>
     );
   }
@@ -70,9 +70,14 @@ export function MeoEnterpriseBonus({ variant = 'card' }: { variant?: 'card' | 'i
         >
           {HEADLINE}
         </p>
+        {/* No "for the length of your programme" — the EoS Continuum
+            programme runs six months, so that clause contradicted the
+            three months this actually grants. */}
         <p className="text-xs leading-relaxed" style={{ color: C.muted }}>
-          Full access to the Meo AI platform for the length of your programme — plain-English
-          interpretation of every reading, trend tracking, and your Biological Age Score.
+          The Meo tier for working alongside a professional — a clinician, practitioner or coach —
+          which is exactly how a coached programme runs. Full access to the Meo AI platform:
+          plain-English interpretation of every reading, trend tracking, and your Biological Age
+          Score.
         </p>
       </div>
     </div>

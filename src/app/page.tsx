@@ -52,12 +52,17 @@ import { KraftCurve } from '@/components/Visuals';
 import { MeoEnterpriseBonus } from '@/components/MeoEnterpriseBonus';
 import { SelectableCard, SelectableCardGroup } from '@/components/SelectableCard';
 import { AFFILIATES } from '@/lib/affiliates';
+import {
+  KRAFT_AVAILABILITY_NOTE,
+  KRAFT_TEST,
+  KRAFT_TEST_COACHED,
+  KRAFT_TEST_MAILTO,
+} from '@/lib/kitProducts';
 
 // The launch partner quoted in the MeO Care block. Read from the
 // affiliate registry — the name, quote and credential are defined once,
 // so this page cannot drift from /a/EoS or /checkout.
 const LAUNCH_PARTNER = AFFILIATES.EoS.practitioner;
-import { KRAFT_TEST, KRAFT_TEST_COACHED, KRAFT_TEST_MAILTO } from '@/lib/kitProducts';
 
 export const metadata: Metadata = {
   title: 'Meo — Metabolic Intelligence System',
@@ -1060,6 +1065,9 @@ export default function HomePage() {
                     {KRAFT_TEST.price} · with coaching {KRAFT_TEST_COACHED.price}
                   </span>
                 </div>
+                <p className="text-sm" style={{ color: C.muted }}>
+                  {KRAFT_AVAILABILITY_NOTE}
+                </p>
 
                 <div>
                   <MeoEnterpriseBonus variant="inline" />

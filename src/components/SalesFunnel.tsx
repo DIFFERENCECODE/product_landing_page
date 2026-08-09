@@ -39,6 +39,7 @@ import { C, FONT_SERIF, cardSurface } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 import { NewsletterSection } from '@/components/NewsletterForm';
 import { SelectableCard, SelectableCardGroup } from '@/components/SelectableCard';
+import TrustBadge from '@/components/TrustBadge';
 import type { AffiliateEntry, Tier } from '@/lib/affiliates';
 
 export interface FunnelUTM {
@@ -730,6 +731,16 @@ export default function SalesFunnel({ affiliate, vertical, tiers, pricingNote, u
               <span className="flex items-center gap-1.5"><Clock className="h-3 w-3" /> Ships in 72h</span>
               <span className="flex items-center gap-1.5"><RefreshCw className="h-3 w-3" /> Free retest at 6 months</span>
             </div>
+          </div>
+        </section>
+
+        {/* DATA PROTECTION — a visitor arriving through a partner link is
+            trusting two brands at once, and the partner's reputation is
+            on the line as much as ours. Certificate surfaced here rather
+            than left to the footer. */}
+        <section className="py-12 px-5 sm:px-6">
+          <div className="max-w-3xl mx-auto">
+            <TrustBadge variant="panel" audience="user" />
           </div>
         </section>
 

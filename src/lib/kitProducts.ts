@@ -215,22 +215,13 @@ export interface EnquiryProduct {
   price: string;
   duration: string;
   includes: readonly string[];
-  /** True for the tier that bundles 1:1 coaching with the test. */
-  coached: boolean;
-  /** Gives the fuller programme card its subtle primary-tinted border. */
-  accent: boolean;
-}
-
-/**
- * Subject line for a KRAFT enquiry. The inbox triages on the SUBJECT
- * alone, so it must name the tier, its price, and whether the coached
- * variant was chosen — "KRAFT Test enquiry" on its own told us nothing.
- * Derived from the product so the two can never disagree.
- */
-export function kraftEnquirySubject(p: EnquiryProduct): string {
-  return `KRAFT Test enquiry — ${p.name} (${p.price}, ${
-    p.coached ? 'coached' : 'test only'
-  })`;
+  enquirySubject: string;
+  /**
+   * Which card is lit on first paint. Selection is mutually exclusive —
+   * choosing the other card moves the highlight rather than adding a
+   * second one. See components/KraftPricingCards.tsx.
+   */
+  defaultSelected: boolean;
 }
 
 export const KRAFT_TEST: EnquiryProduct = {
@@ -247,8 +238,8 @@ export const KRAFT_TEST: EnquiryProduct = {
     'A written report in plain English, reviewed before it reaches you',
     'A follow-up conversation to walk through what it means',
   ],
-  coached: false,
-  accent: false,
+  enquirySubject: 'KRAFT Test enquiry',
+  defaultSelected: false,
 };
 
 export const KRAFT_TEST_COACHED: EnquiryProduct = {
@@ -265,17 +256,33 @@ export const KRAFT_TEST_COACHED: EnquiryProduct = {
     'Messaging support between sessions',
     'A progress review to see how the plan is landing',
   ],
-  coached: true,
-  accent: true,
+  enquirySubject: 'KRAFT Test + Coaching enquiry',
+  defaultSelected: true,
 };
 
 export const KRAFT_TIERS: readonly EnquiryProduct[] = [KRAFT_TEST, KRAFT_TEST_COACHED];
 
-/** `mailto:` href for a general KRAFT Test enquiry (hero / cross-page CTAs). */
-export const KRAFT_TEST_MAILTO = enquiryMailto(kraftEnquirySubject(KRAFT_TEST));
+/**
+ * `mailto:` for a general KRAFT enquiry — the hero, the closing block
+ * and the cross-page CTAs, where the visitor has not picked a tier.
+ *
+ * Deliberately its OWN subject rather than reusing the £397 tier's:
+ * info@ triages on the subject alone, and the closing block offers to
+ * help you choose between the two, so "undecided" must not arrive
+ * looking like "I want the test-only option".
+ */
+export const KRAFT_TEST_MAILTO = enquiryMailto('KRAFT Test enquiry — option not yet chosen');
 
 /** Lowest KRAFT price, for "from £397" teasers on other pages. */
 export const KRAFT_FROM_PRICE = KRAFT_TEST.price;
+
+/**
+ * One sentence, rendered on every surface that shows a KRAFT price, so
+ * the availability terms cannot drift between the homepage, /pricing
+ * and /kraft-test.
+ */
+export const KRAFT_AVAILABILITY_NOTE =
+  'Not sold online — booked by appointment with our team.';
 
 // ─── Biomarkers surfaced on the landing page ────────────────────────
 
