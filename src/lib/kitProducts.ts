@@ -106,14 +106,36 @@ export const KIT_PRODUCT: KitProduct = {
 // Customers can buy any quantity from 0 to 9 of each (cart-side
 // behaviour, not modelled here — checkout UI handles the qty step).
 
+// ─── The 3-month coaching upgrade (the "Meo Coached" delta) ──────────
+//
+// This is the SKU only — price and Stripe price ID. It deliberately
+// names NO practitioner: who delivers the coaching is an affiliate-
+// scoped fact, resolved by getAffiliateCoachOffer() in lib/affiliates.
+// A global coach here is what let a Fiori-attributed visitor be sold
+// EoS's principal at the payment step.
+//
+// ⚠ OPEN COMMERCIAL QUESTION (for Eric — deliberately NOT resolved in
+// code): the bundle economics still describe the OLD coach product.
+// Meo Coached is £444 = £149 kit + this £295 add-on, and the
+// comparison table values the coaching at £297. The equivalent EoS
+// entry programme, Metabolic Optimisation, is £850 (and is 6 sessions
+// over 12 weeks, not 40min + 2×30min). Names and links point at EoS;
+// the NUMBERS and the session structure are untouched, because
+// changing either is a pricing decision, not an implementation detail.
 export const THERAPY_ADDON: KitAddon = {
-  id: 'therapy-spencer',
-  name: 'Metabolic Coach — Spencer Martin',
+  // Renamed from the legacy `therapy-spencer`. The old value is still
+  // accepted as a `?addon=` query param on /checkout so links already
+  // in the wild keep working — see the URL-param effect there.
+  id: 'coaching-eos',
+  name: 'Metabolic Coach — 3-month upgrade',
   description:
-    '3-month subscription upgrade with private health coaching. Includes initial 40-minute and two 30-minute follow-up consultations.',
+    '3-month subscription upgrade with private 1:1 health coaching. Includes initial 40-minute and two 30-minute follow-up consultations.',
   price: 29500, // £295
   priceId: process.env.NEXT_PUBLIC_ADDON_THERAPY_PRICE_ID || 'price_meo_therapy_placeholder',
 };
+
+/** Legacy `?addon=` values that must still resolve to the coach add-on. */
+export const LEGACY_THERAPY_ADDON_IDS = ['therapy-spencer', 'therapy'] as const;
 
 export const KIT_ADDONS: KitAddon[] = [
   {
@@ -193,9 +215,22 @@ export interface EnquiryProduct {
   price: string;
   duration: string;
   includes: readonly string[];
-  enquirySubject: string;
+  /** True for the tier that bundles 1:1 coaching with the test. */
+  coached: boolean;
   /** Gives the fuller programme card its subtle primary-tinted border. */
   accent: boolean;
+}
+
+/**
+ * Subject line for a KRAFT enquiry. The inbox triages on the SUBJECT
+ * alone, so it must name the tier, its price, and whether the coached
+ * variant was chosen — "KRAFT Test enquiry" on its own told us nothing.
+ * Derived from the product so the two can never disagree.
+ */
+export function kraftEnquirySubject(p: EnquiryProduct): string {
+  return `KRAFT Test enquiry — ${p.name} (${p.price}, ${
+    p.coached ? 'coached' : 'test only'
+  })`;
 }
 
 export const KRAFT_TEST: EnquiryProduct = {
@@ -212,7 +247,7 @@ export const KRAFT_TEST: EnquiryProduct = {
     'A written report in plain English, reviewed before it reaches you',
     'A follow-up conversation to walk through what it means',
   ],
-  enquirySubject: 'KRAFT Test enquiry',
+  coached: false,
   accent: false,
 };
 
@@ -230,14 +265,14 @@ export const KRAFT_TEST_COACHED: EnquiryProduct = {
     'Messaging support between sessions',
     'A progress review to see how the plan is landing',
   ],
-  enquirySubject: 'KRAFT Test + Coaching enquiry',
+  coached: true,
   accent: true,
 };
 
 export const KRAFT_TIERS: readonly EnquiryProduct[] = [KRAFT_TEST, KRAFT_TEST_COACHED];
 
 /** `mailto:` href for a general KRAFT Test enquiry (hero / cross-page CTAs). */
-export const KRAFT_TEST_MAILTO = enquiryMailto(KRAFT_TEST.enquirySubject);
+export const KRAFT_TEST_MAILTO = enquiryMailto(kraftEnquirySubject(KRAFT_TEST));
 
 /** Lowest KRAFT price, for "from £397" teasers on other pages. */
 export const KRAFT_FROM_PRICE = KRAFT_TEST.price;

@@ -14,82 +14,33 @@
 // +3×45min = 9 for Continuum — so they must be kept in step with the
 // bullets if the bullets ever change.
 //
+// The programme DATA (names, £850 / £1,450, includes) is NOT defined
+// here any more — it lives in lib/programmes.ts, the single source of
+// truth that /a/EoS also renders from, so the two pages cannot quote
+// different prices. This file is presentation only.
+//
 // id="pricing" is the scroll target for the Hero CTA. Copy is fixed
 // marketing/compliance-reviewed text — do not paraphrase.
 // ──────────────────────────────────────────────────────────────────────
 import { Check, CalendarDays, Mail, MessageCircle, Package, UserRound } from 'lucide-react';
-import { C, FONT_SERIF } from '@/lib/design-tokens';
+import { C, FONT_SERIF, cardSurface } from '@/lib/design-tokens';
 import { MeoEnterpriseBonus } from '@/components/MeoEnterpriseBonus';
+import { SelectableCard, SelectableCardGroup } from '@/components/SelectableCard';
 import { ENQUIRY_EMAIL } from '@/components/coaching/contact';
+import {
+  EOS_PROGRAMMES,
+  programmeEnquirySubject,
+  type ProgrammeChipKind,
+} from '@/lib/programmes';
 
-const CHIP_ICONS = {
+const CHIP_ICONS: Record<ProgrammeChipKind, typeof UserRound> = {
   sessions: UserRound,
   span: CalendarDays,
   kit: Package,
   messaging: MessageCircle,
-} as const;
-
-type Chip = { kind: keyof typeof CHIP_ICONS; label: string };
-
-type Tier = {
-  id: string;
-  name: string;
-  duration: string;
-  price: string;
-  tagline: string;
-  chips: readonly Chip[];
-  includes: readonly string[];
-  accent: boolean;
 };
 
-const TIERS: readonly Tier[] = [
-  {
-    id: 'optimisation',
-    name: 'Metabolic Optimisation',
-    duration: '3-month programme',
-    price: '£850',
-    tagline:
-      'A focused 12-week programme to build sustainable metabolic habits, with regular 1:1 coaching from Dr Arup Sen.',
-    chips: [
-      { kind: 'sessions', label: '6 coaching sessions' },
-      { kind: 'span', label: '12 weeks' },
-      { kind: 'kit', label: 'Meo kit included' },
-      { kind: 'messaging', label: 'Messaging support' },
-    ],
-    includes: [
-      'Meo Starter: CE-marked digital lipid meter, 10 test strips + lancets + carry case',
-      '6 months of Meo AI plain-English interpretation',
-      'Your metabolic trend score, tracked from your lipids and body measurements',
-      'Free retest at month six',
-      '1 × 60-minute onboarding coaching session with Dr Arup Sen',
-      '5 × 30-minute fortnightly 1:1 coaching sessions across the 12-week programme',
-      'Messaging support between sessions',
-    ],
-    accent: false,
-  },
-  {
-    id: 'continuum',
-    name: 'Metabolic Continuum',
-    duration: '6-month programme',
-    price: '£1,450',
-    tagline:
-      'Sustained 1:1 coaching across 6 months — frequent support while you build new habits, then ongoing maintenance to keep them.',
-    chips: [
-      { kind: 'sessions', label: '9 coaching sessions' },
-      { kind: 'span', label: '6 months' },
-      { kind: 'kit', label: 'Meo kit included' },
-      { kind: 'messaging', label: 'Priority messaging' },
-    ],
-    includes: [
-      'Everything in Metabolic Optimisation',
-      '3 additional × 45-minute monthly maintenance coaching sessions (months 4–6)',
-      'Continued Meo monitoring and trend tracking across the full 6 months',
-      'Priority messaging support throughout',
-      'A personalised, evolving lifestyle plan covering nutrition, movement, sleep and stress',
-    ],
-    accent: true,
-  },
-];
+const TIERS = EOS_PROGRAMMES;
 
 export default function Pricing() {
   return (
@@ -113,15 +64,19 @@ export default function Pricing() {
           Choose your programme
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
+        {/* Shared selectable-card mechanism (components/SelectableCard)
+            — click a programme, or tab to its enquiry button, and the
+            card lifts with a ring and a tick. */}
+        <SelectableCardGroup
+          className="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch"
+          defaultSelected={TIERS.find((t) => t.accent)?.id ?? TIERS[0].id}
+        >
           {TIERS.map((t) => (
-            <div
+            <SelectableCard
               key={t.id}
-              className="relative rounded-2xl p-7 flex flex-col"
-              style={{
-                background: t.accent ? C.bgCardHover : C.bgCard,
-                border: `1px solid ${t.accent ? 'rgba(164,214,94,0.45)' : C.border}`,
-              }}
+              id={t.id}
+              className="rounded-2xl p-7 flex flex-col"
+              style={cardSurface(t.accent)}
             >
               {/* Introductory-pricing tag — keeps future price changes from
                   implying a reduction. */}
@@ -200,7 +155,7 @@ export default function Pricing() {
                   the Eos programme inbox with the tier pre-filled. */}
               <a
                 href={`mailto:${ENQUIRY_EMAIL}?subject=${encodeURIComponent(
-                  `${t.name} enquiry`,
+                  programmeEnquirySubject(t),
                 )}&body=${encodeURIComponent(
                   `Hi,\n\nI'd like to know more about the ${t.name} (${t.duration}, ${t.price}).\n\nThank you,\n`,
                 )}`}
@@ -215,9 +170,9 @@ export default function Pricing() {
                 <Mail className="h-4 w-4 shrink-0" aria-hidden />
                 Enquire about this programme
               </a>
-            </div>
+            </SelectableCard>
           ))}
-        </div>
+        </SelectableCardGroup>
 
         {/* Pricing footnote — small print, centred, below both cards. */}
         <p className="text-center text-xs mt-10 max-w-2xl mx-auto leading-relaxed" style={{ color: C.muted }}>

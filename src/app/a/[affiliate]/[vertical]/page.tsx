@@ -4,7 +4,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import SalesFunnel from '@/components/SalesFunnel';
-import { getAffiliate, isValidVertical, VERTICALS, AFFILIATE_TIERS } from '@/lib/affiliates';
+import { getAffiliate, isValidVertical, VERTICALS, getAffiliateOffer } from '@/lib/affiliates';
 
 interface PageProps {
   params: Promise<{ affiliate: string; vertical: string }>;
@@ -32,11 +32,14 @@ export default async function AffiliateVerticalPage({ params, searchParams }: Pa
   if (!isValidVertical(vertical)) notFound();
 
   const sp = await searchParams;
+  // Affiliate-scoped tier ladder — see getAffiliateOffer in lib/affiliates.
+  const offer = getAffiliateOffer(entry.slug);
   return (
     <SalesFunnel
       affiliate={entry}
       vertical={vertical}
-      tiers={AFFILIATE_TIERS}
+      tiers={offer.tiers}
+      pricingNote={offer.pricingNote}
       utm={{
         source: first(sp.utm_source)?.toLowerCase() ?? entry.slug.toLowerCase(),
         intent: first(sp.utm_intent),

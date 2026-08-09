@@ -70,6 +70,7 @@ import {
 } from '@/lib/kitProducts';
 import { BioAgeDial, KraftCurve, EbookCover, LipidDroplet } from './Visuals';
 import { C } from '@/lib/design-tokens';
+import { DEFAULT_COACH_OFFER } from '@/lib/affiliates';
 import { PeopleCarousel } from './PeopleCarousel';
 
 // ─── Logo mark ───────────────────────────────────────────────────────
@@ -165,7 +166,46 @@ function SectionHeader({
 }
 
 // ─── Navbar ──────────────────────────────────────────────────────────
-export function Navbar() {
+// ─── Affiliate-scoped chrome ─────────────────────────────────────────
+//
+// Nav and footer are rendered on affiliate pages too, and they were the
+// last hole in funnel isolation: a Fiori visitor could click "Pricing"
+// and land on the unattributed consumer ladder, which sells Meo Coached
+// with EoS's Dr Arup Sen. Attribution was dropped in the same click.
+//
+// Two rules, applied together:
+//   1. HIDE the destinations that carry another partner's offer or the
+//      unattributed consumer ladder — /, /pricing, /partners. In their
+//      place the visitor gets "Plans", pointing at their OWN tier
+//      anchor. The affiliate's landing page becomes "home".
+//   2. ATTRIBUTE everything that survives, so /kraft-test, /services,
+//      /about, /checkout etc. stay inside the funnel.
+//
+// Meterbolic-own destinations are never removed — this is a partnership,
+// not a walled garden.
+export interface ChromeAffiliate {
+  slug: string;
+  name: string;
+}
+
+const AFFILIATE_HIDDEN_PATHS = new Set(['/', '/pricing', '/partners']);
+
+function attributed(href: string, aff?: ChromeAffiliate | null): string {
+  if (!aff || !href.startsWith('/')) return href;
+  const [pathAndQuery, hash] = href.split('#');
+  const [path, query] = pathAndQuery.split('?');
+  const params = new URLSearchParams(query);
+  params.set('affiliate', aff.slug);
+  params.set('utm_source', aff.slug.toLowerCase());
+  return `${path}?${params.toString()}${hash ? `#${hash}` : ''}`;
+}
+
+/** Where the logo goes: the affiliate's own landing page, or /. */
+function chromeHome(aff?: ChromeAffiliate | null): string {
+  return aff ? attributed(`/a/${aff.slug}`, aff) : '/';
+}
+
+export function Navbar({ affiliate }: { affiliate?: ChromeAffiliate | null } = {}) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -194,7 +234,7 @@ export function Navbar() {
   // Real routes. Anchor links (#tiers, #faq) only work when the user
   // is on /, so the global nav now points at full pages — every link
   // resolves the same way from anywhere on the site.
-  const links = [
+  const baseLinks = [
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
     { label: 'How it works', href: '/how-it-works' },
@@ -205,10 +245,23 @@ export function Navbar() {
     { label: 'Chat', href: '/chat' },
   ];
 
+  // Inside an affiliate funnel: drop the rival/unattributed
+  // destinations, put the affiliate's own plans in their place, and
+  // stamp attribution on everything that remains.
+  const links = affiliate
+    ? [
+        { label: affiliate.name, href: `/a/${affiliate.slug}` },
+        ...baseLinks.filter((l) => !AFFILIATE_HIDDEN_PATHS.has(l.href)),
+        { label: 'Plans', href: `/a/${affiliate.slug}#tiers` },
+      ].map((l) => ({ ...l, href: attributed(l.href, affiliate) }))
+    : baseLinks;
+
   // Match exact for "/" so it doesn't light up on every page; prefix-
   // match for nested routes (e.g. /how-it-works/anything still counts).
-  const isActive = (href: string) =>
-    href === '/' ? pathname === '/' : pathname === href || pathname?.startsWith(href + '/');
+  const isActive = (href: string) => {
+    const path = href.split('?')[0].split('#')[0];
+    return path === '/' ? pathname === '/' : pathname === path || pathname?.startsWith(path + '/');
+  };
 
   return (
     <>
@@ -221,7 +274,7 @@ export function Navbar() {
           borderBottom: scrolled ? `1px solid ${C.border}` : '1px solid transparent',
         }}
       >
-        <Link href="/" className="flex items-center gap-2.5" aria-label="Meo by Meterbolic — home">
+        <Link href={chromeHome(affiliate)} className="flex items-center gap-2.5" aria-label="Meo by Meterbolic — home">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/meterbolic-logo.png"
@@ -282,7 +335,7 @@ export function Navbar() {
             <span>Sign in</span>
           </a>
           <Link
-            href="/pricing"
+            href={affiliate ? attributed(`/a/${affiliate.slug}#tiers`, affiliate) : '/pricing'}
             className="flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm transition-opacity hover:opacity-90"
             style={{ background: C.primary, color: C.primaryFg }}
           >
@@ -372,7 +425,7 @@ export function Navbar() {
                 Sign in
               </a>
               <Link
-                href="/checkout"
+                href={attributed('/checkout', affiliate)}
                 onClick={() => setMenuOpen(false)}
                 className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold text-base"
                 style={{ background: C.primary, color: C.primaryFg }}
@@ -1823,7 +1876,7 @@ function TiersSection() {
       name: 'Meo Coached',
       tagline: 'Add a human in the loop.',
       price: KIT_PRODUCT.price + THERAPY_ADDON.price,
-      blurb: 'Everything in Starter + 3 months of 1:1 metabolic coaching with Spencer Martin, our Metabolic Health Coach with 25+ years of experience.',
+      blurb: `Everything in Starter + 3 months of 1:1 metabolic coaching with ${DEFAULT_COACH_OFFER?.practitioner.name ?? 'your metabolic coach'}${DEFAULT_COACH_OFFER ? ` of ${DEFAULT_COACH_OFFER.affiliateName}` : ''}.`,
       valueNote: `Coaching alone is ${formatGBP(THERAPY_ADDON.price)} — same price here, paired with the full system.`,
       features: [
         'Everything in Meo Starter',
@@ -1832,7 +1885,7 @@ function TiersSection() {
         'Direct messaging with your coach',
       ],
       cta: 'Get Meo + Coach',
-      href: '/checkout?addon=therapy-spencer',
+      href: `/checkout?addon=${THERAPY_ADDON.id}`,
       featured: false,
     },
   ] as const;
@@ -2426,7 +2479,34 @@ function CloserSection() {
 }
 
 // ─── Footer (with compliance disclaimer) ────────────────────────────
-export function Footer() {
+export function Footer({ affiliate }: { affiliate?: ChromeAffiliate | null } = {}) {
+  // Same two rules as the Navbar: hide the rival/unattributed
+  // destinations, attribute everything that survives.
+  const product = [
+    { label: 'Home', href: '/' },
+    { label: 'How it works', href: '/how-it-works' },
+    { label: 'The KRAFT Test', href: '/kraft-test' },
+    { label: 'Services', href: '/services' },
+    { label: 'Pricing', href: '/pricing' },
+    { label: 'Open chat', href: '/chat' },
+  ];
+  const company = [
+    { label: 'About', href: '/about' },
+    { label: 'Partners', href: '/partners' },
+  ];
+  const scope = (items: { label: string; href: string }[]) =>
+    (affiliate ? items.filter((l) => !AFFILIATE_HIDDEN_PATHS.has(l.href)) : items).map((l) => ({
+      ...l,
+      href: attributed(l.href, affiliate),
+    }));
+  const productLinks = affiliate
+    ? [
+        { label: 'Plans', href: attributed(`/a/${affiliate.slug}#tiers`, affiliate) },
+        ...scope(product),
+      ]
+    : scope(product);
+  const companyLinks = scope(company);
+
   return (
     <footer
       className="px-6 pt-12 pb-28 sm:pb-12"
@@ -2435,7 +2515,7 @@ export function Footer() {
       {/* Top section: brand + 3 link columns */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10 pb-8" style={{ borderBottom: `1px solid ${C.border}` }}>
         <div>
-          <Link href="/" className="inline-flex items-center gap-2.5 mb-3" aria-label="Meo by Meterbolic — home">
+          <Link href={chromeHome(affiliate)} className="inline-flex items-center gap-2.5 mb-3" aria-label="Meo by Meterbolic — home">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/meterbolic-logo.png"
@@ -2458,20 +2538,18 @@ export function Footer() {
         <nav aria-label="Product">
           <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.fg }}>Product</p>
           <ul className="space-y-2 text-sm">
-            <li><Link href="/" className="hover:underline" style={{ color: C.muted }}>Home</Link></li>
-            <li><Link href="/how-it-works" className="hover:underline" style={{ color: C.muted }}>How it works</Link></li>
-            <li><Link href="/kraft-test" className="hover:underline" style={{ color: C.muted }}>The KRAFT Test</Link></li>
-            <li><Link href="/services" className="hover:underline" style={{ color: C.muted }}>Services</Link></li>
-            <li><Link href="/pricing" className="hover:underline" style={{ color: C.muted }}>Pricing</Link></li>
-            <li><Link href="/chat" className="hover:underline" style={{ color: C.muted }}>Open chat</Link></li>
+            {productLinks.map((l) => (
+              <li key={l.href}><Link href={l.href} className="hover:underline" style={{ color: C.muted }}>{l.label}</Link></li>
+            ))}
           </ul>
         </nav>
 
         <nav aria-label="Company">
           <p className="text-xs font-semibold tracking-wide mb-3" style={{ color: C.fg }}>Company</p>
           <ul className="space-y-2 text-sm">
-            <li><Link href="/about" className="hover:underline" style={{ color: C.muted }}>About</Link></li>
-            <li><Link href="/partners" className="hover:underline" style={{ color: C.muted }}>Partners</Link></li>
+            {companyLinks.map((l) => (
+              <li key={l.href}><Link href={l.href} className="hover:underline" style={{ color: C.muted }}>{l.label}</Link></li>
+            ))}
             <li><a href="mailto:hello@meterbolic.com" className="hover:underline" style={{ color: C.muted }}>Contact</a></li>
             <li><a href="mailto:partner@meterbolic.com" className="hover:underline" style={{ color: C.muted }}>Partner enquiries</a></li>
           </ul>

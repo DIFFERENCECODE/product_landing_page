@@ -241,4 +241,86 @@ html {
   .section-label {
     @apply text-xs font-semibold tracking-widest uppercase text-[var(--accent)];
   }
+
+  /* ─── Selectable card (the ONE card-selection mechanism) ─────
+     Every card the visitor can click or select — pricing tiers,
+     product cards, plan selectors, KRAFT cards, affiliate tier
+     cards — wears `.card-interactive` and carries
+     `data-selected="true|false"`. Nothing else re-implements this.
+
+     Selection is signalled by THREE things, so it survives a
+     colour-blind / greyscale review: a 2px ring, a lift, and a
+     tick badge (`.card-selected-mark`). Colours come from the
+     existing tokens only (--accent / --accent-fg, i.e.
+     design-tokens.ts C.primary / C.primaryFg) — no new colours.
+
+     Timing is 150ms, inside the 120-180ms "this is feedback, not
+     animation" band. The global prefers-reduced-motion block above
+     already collapses transition-duration to ~0; the rule at the
+     end of this block additionally cancels the translate so
+     nothing physically moves for those users.
+
+     `border-color: !important` is deliberate: the cards set their
+     border inline (style={{ border: '1px solid …' }}), and an
+     author !important declaration is the only thing that outranks
+     an inline style. */
+  .card-interactive {
+    position: relative;
+    cursor: pointer;
+    transition: transform 150ms ease-out, box-shadow 150ms ease-out,
+                border-color 150ms ease-out, background-color 150ms ease-out;
+  }
+  .card-interactive:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  }
+  .card-interactive:active {
+    transform: translateY(0) scale(0.995);
+  }
+  /* The card itself is not a tab stop — its CTA is — but if a host
+     page does make it focusable, the ring must be visible. */
+  .card-interactive:focus-visible,
+  .card-interactive:focus-within {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .card-interactive[data-selected='true'] {
+    transform: translateY(-4px);
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 2px var(--accent), 0 14px 30px rgba(0, 0, 0, 0.30);
+  }
+
+  /* Tick badge — the non-colour half of the selected signal. */
+  .card-selected-mark {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 150ms ease-out, transform 150ms ease-out;
+    pointer-events: none;
+  }
+  .card-interactive[data-selected='true'] .card-selected-mark {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-interactive:hover,
+    .card-interactive:active,
+    .card-interactive[data-selected='true'] {
+      transform: none;
+    }
+    .card-interactive[data-selected='true'] .card-selected-mark {
+      transform: none;
+    }
+  }
 }

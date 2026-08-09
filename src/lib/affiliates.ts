@@ -8,6 +8,9 @@
 // affiliate or vertical here, add the row there in the same commit.
 // ═══════════════════════════════════════════════════════════════════
 
+import { EOS_PROGRAMMES, EOS_PROGRAMME_URL, type Programme } from '@/lib/programmes';
+import { THERAPY_ADDON } from '@/lib/kitProducts';
+
 export interface Practitioner {
   name: string;
   role: string;
@@ -31,9 +34,12 @@ export interface AffiliateEntry {
 // docs/utm.md §3 — affiliate slug registry. Keys are the canonical
 // PascalCase slugs; lookup is case-insensitive (see getAffiliate).
 export const AFFILIATES: Record<string, AffiliateEntry> = {
+  // Naming rule (standing): the company is written exactly "EoS". The
+  // expanded form "Earth on Stage" is RETIRED and must not reappear in
+  // copy, metadata, alt text, page titles or assets.
   EoS: {
     slug: 'EoS',
-    name: 'Earth on Stage',
+    name: 'EoS',
     logo: '/eos-logo.svg',
     practitioner: {
       name: 'Dr Arup Sen',
@@ -81,10 +87,27 @@ export function isValidVertical(v: string): boolean {
 }
 
 // ─────────────────────────────────────────────────────────────────────
-// Tier sets. Each affiliate sales page renders four tiers. Prices and
-// copy are PLACEHOLDERS pending sign-off from MB Commercial (SCRUM-8) —
-// the structure (BASIC / MOST POPULAR / CONCIERGE / CORPORATE) is fixed;
-// the content is not.
+// Tier sets — AFFILIATE-SCOPED. Read this before changing anything here.
+//
+// These used to be one global `AFFILIATE_TIERS` array rendered for every
+// affiliate. That is safe only while every affiliate sells exactly the
+// same thing, and it stopped being true the moment EoS got its own
+// programmes: a global array would have put Dr Arup Sen's £850/£1,450
+// coaching on Fiori's page — a different company, a different principal.
+// That breaks funnel isolation, so the tier set is now resolved PER
+// AFFILIATE via getAffiliateOffer():
+//
+//   • EoS   → BASIC £49 · MOST POPULAR £149 · Metabolic Optimisation
+//             £850 · Metabolic Continuum £1,450. The two programmes are
+//             read from lib/programmes.ts — the same file /eos renders
+//             from, so the two pages can never quote different prices.
+//             CONCIERGE (£299, an unattributed generic coach) and
+//             CORPORATE are deliberately ABSENT: inside an affiliate
+//             funnel they compete with the affiliate's own offer.
+//   • every other affiliate → GENERIC_AFFILIATE_TIERS, the Meterbolic-
+//             only ladder. Adding an affiliate does NOT give it someone
+//             else's products; it has to opt in by registering its own
+//             set below.
 // ─────────────────────────────────────────────────────────────────────
 export interface Tier {
   id: string;
@@ -99,7 +122,10 @@ export interface Tier {
   popular?: boolean;
 }
 
-export const AFFILIATE_TIERS: readonly Tier[] = [
+// The two Meterbolic-own tiers. Every affiliate ladder starts with
+// these — they are Meterbolic product, so they carry no attribution
+// problem — and then appends whatever that affiliate itself supplies.
+const METERBOLIC_CORE_TIERS: readonly Tier[] = [
   {
     id: 'basic',
     name: 'BASIC',
@@ -132,6 +158,12 @@ export const AFFILIATE_TIERS: readonly Tier[] = [
     href: '/checkout',
     popular: true,
   },
+];
+
+// Unattributed / generic-affiliate ladder. CONCIERGE is a generic,
+// unattributed "human coaching" tier — it must NOT appear inside an
+// affiliate funnel that has its own named practitioner.
+const GENERIC_ONLY_TIERS: readonly Tier[] = [
   {
     id: 'concierge',
     name: 'CONCIERGE',
@@ -164,6 +196,151 @@ export const AFFILIATE_TIERS: readonly Tier[] = [
     href: '/partners',
   },
 ];
+
+/**
+ * The generic Meterbolic ladder — BASIC / MOST POPULAR / CONCIERGE /
+ * CORPORATE. Used for unattributed traffic and for any affiliate that
+ * has not registered a bespoke offer.
+ */
+export const GENERIC_AFFILIATE_TIERS: readonly Tier[] = [
+  ...METERBOLIC_CORE_TIERS,
+  ...GENERIC_ONLY_TIERS,
+];
+
+/**
+ * Render an EoS programme (lib/programmes.ts — the price SSOT) as a
+ * tier card in the affiliate ladder. The £850/£1,450 figures are read,
+ * never retyped, so /eos and /a/EoS cannot drift apart.
+ *
+ * The CTA points at /eos#pricing rather than /checkout: the programmes
+ * have no Stripe checkout (they are sold by enquiry to eos@meterbolic
+ * .com), and /eos is the canonical page for them. It also keeps the
+ * visitor inside the EoS funnel.
+ */
+function programmeToTier(p: Programme): Tier {
+  return {
+    id: p.id,
+    name: p.name,
+    price: p.price,
+    priceNote: 'introductory',
+    blurb: p.tagline,
+    features: p.highlights,
+    cta: 'See the programme',
+    href: `${EOS_PROGRAMME_URL}#pricing`,
+  };
+}
+
+export interface AffiliateOffer {
+  tiers: readonly Tier[];
+  /** Small print under the tier heading. Omitted when prices are firm. */
+  pricingNote?: string;
+}
+
+// Bespoke, affiliate-scoped offers. Keyed by LOWERCASED slug so lookup
+// matches getAffiliate()'s case-insensitivity. An affiliate absent from
+// this map gets the generic ladder — it does not inherit anyone else's
+// products.
+const AFFILIATE_OFFERS: Record<string, AffiliateOffer> = {
+  eos: {
+    tiers: [...METERBOLIC_CORE_TIERS, ...EOS_PROGRAMMES.map(programmeToTier)],
+    // No "indicative pricing" caveat: the programme prices are live
+    // introductory prices, and /eos states them as such.
+  },
+};
+
+/**
+ * Resolve the tier ladder for an affiliate slug. Falls back to the
+ * generic Meterbolic set — this is the funnel-isolation guarantee:
+ * an affiliate only ever sells Meterbolic product plus its OWN offer.
+ */
+export function getAffiliateOffer(slug: string | undefined | null): AffiliateOffer {
+  const key = slug?.toLowerCase() ?? '';
+  return (
+    AFFILIATE_OFFERS[key] ?? {
+      tiers: GENERIC_AFFILIATE_TIERS,
+      pricingNote:
+        'Indicative pricing — final tiers and prices to be confirmed by MB Commercial.',
+    }
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// Coach offers — AFFILIATE-SCOPED, same discipline as the tier ladder.
+//
+// "Meo Coached" adds a 3-month 1:1 coaching upgrade. WHO delivers that
+// coaching is not a global fact — it is supplied by an affiliate's
+// principal. A single global coach constant is the same funnel-
+// isolation bug getAffiliateOffer() fixed for tiers: it was selling
+// EoS's Dr Arup Sen to Fiori-attributed visitors at the payment step.
+//
+//   • no affiliate (the unattributed consumer funnel: /, /pricing,
+//     /checkout) → DEFAULT_COACH_OFFER, currently EoS. That is a
+//     commercial fact, not a fallback: "Meo Coached" IS the EoS entry
+//     coach product.
+//   • an affiliate that supplies a coach → that affiliate's principal.
+//   • an affiliate that supplies none (Fiori, Arup) → undefined, and
+//     every coaching surface must then render NOTHING. No substitute,
+//     no generic coach.
+//
+// Identity is READ from AFFILIATES[…].practitioner — the name, the
+// credential and the photo are never restated here. That is what keeps
+// one credential string with one spelling across the whole site.
+// ─────────────────────────────────────────────────────────────────────
+export interface AffiliateCoachOffer {
+  affiliateSlug: string;
+  affiliateName: string;
+  /** SSOT for name / credential (`role`) / photo. Never restate these. */
+  practitioner: Practitioner;
+  /** Order-summary label, e.g. "Metabolic Coach — Dr Arup Sen (EoS)". */
+  label: string;
+  /** The Stripe-backed add-on that carries the upgrade. */
+  addonId: string;
+  addonPriceId: string;
+  /** Pence. */
+  addonPrice: number;
+  /** Canonical page for this affiliate's full programme ladder. */
+  programmesHref: string;
+}
+
+function buildCoachOffer(
+  slug: string,
+  programmesHref: string,
+): AffiliateCoachOffer | undefined {
+  const entry = AFFILIATES[slug];
+  if (!entry?.practitioner) return undefined;
+  return {
+    affiliateSlug: entry.slug,
+    affiliateName: entry.name,
+    practitioner: entry.practitioner,
+    label: `Metabolic Coach — ${entry.practitioner.name} (${entry.name})`,
+    addonId: THERAPY_ADDON.id,
+    addonPriceId: THERAPY_ADDON.priceId,
+    addonPrice: THERAPY_ADDON.price,
+    programmesHref,
+  };
+}
+
+// Keyed by LOWERCASED slug. An affiliate absent from this map supplies
+// no coaching layer — that is the default, and it is why there is no
+// `slug === 'Fiori'` check anywhere.
+const AFFILIATE_COACH_OFFERS: Record<string, AffiliateCoachOffer | undefined> = {
+  eos: buildCoachOffer('EoS', EOS_PROGRAMME_URL),
+};
+
+/** The coach sold on the unattributed consumer funnel. */
+export const DEFAULT_COACH_OFFER = AFFILIATE_COACH_OFFERS.eos;
+
+/**
+ * Resolve who — if anyone — delivers coaching for this visitor.
+ * Returns undefined for an affiliate that supplies no coach, and every
+ * caller MUST then render no coaching surface at all.
+ */
+export function getAffiliateCoachOffer(
+  slug: string | undefined | null,
+): AffiliateCoachOffer | undefined {
+  if (!slug) return DEFAULT_COACH_OFFER;
+  return AFFILIATE_COACH_OFFERS[slug.toLowerCase()];
+}
 
 // ═══════════════════════════════════════════════════════════════════
 // UTM mint / parse / validate — docs/utm.md §6 and §8.
@@ -294,7 +471,8 @@ export function validateAffiliateURL(url: string): ValidationResult {
     if (!/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(hint) || hint.length > 40) {
       errors.push(`utm_hint "${hint}" malformed (docs/utm.md §6.5)`);
     } else {
-      const known = ['meter-pro', 'meter-free', 'ai-coach', 'ai-coach-plus', 'therapist-1on1', 'kraft-test'];
+      // Keep in lock-step with the product slug registry, docs/utm.md §6.5.
+      const known = ['meter-pro', 'meter-free', 'ai-coach', 'ai-coach-plus', 'therapist-1on1', 'kraft-test', 'coach-eos'];
       if (!known.some((slug) => hint === slug || hint.startsWith(slug + '-'))) {
         warnings.push(`utm_hint "${hint}" not in seed product registry — analytics will show it as a fragment until the registry catches up`);
       }

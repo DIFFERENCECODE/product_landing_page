@@ -45,11 +45,18 @@ import {
   Briefcase,
   CalendarClock,
 } from 'lucide-react';
-import { C, FONT_SERIF } from '@/lib/design-tokens';
+import { C, FONT_SERIF, cardSurface } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 import { NewsletterSection } from '@/components/NewsletterForm';
 import { KraftCurve } from '@/components/Visuals';
 import { MeoEnterpriseBonus } from '@/components/MeoEnterpriseBonus';
+import { SelectableCard, SelectableCardGroup } from '@/components/SelectableCard';
+import { AFFILIATES } from '@/lib/affiliates';
+
+// The launch partner quoted in the MeO Care block. Read from the
+// affiliate registry — the name, quote and credential are defined once,
+// so this page cannot drift from /a/EoS or /checkout.
+const LAUNCH_PARTNER = AFFILIATES.EoS.practitioner;
 import { KRAFT_TEST, KRAFT_TEST_COACHED, KRAFT_TEST_MAILTO } from '@/lib/kitProducts';
 
 export const metadata: Metadata = {
@@ -170,7 +177,7 @@ const TIERS: readonly Tier[] = [
     blurb: 'Everything in Starter, plus 1:1 coaching.',
     features: [
       'Everything in Meo Starter',
-      '3 months of coaching with Spencer Martin',
+      '3 months of coaching with Dr Arup Sen (EoS)',
       '40-min onboarding consultation',
       'Two 30-min follow-ups',
       'Direct messaging between sessions',
@@ -189,7 +196,7 @@ const TIER_COMPARE_ROWS: Array<{ label: string; retail: string; lite: CompareCel
   { label: '10 test strips + lancets + carry case',     retail: '£49',  lite: false,          starter: true, coached: true },
   { label: 'Biological Age Score + Target Score',       retail: '£29',  lite: false,          starter: true, coached: true },
   { label: 'Free retest at month six',                  retail: '£25',  lite: false,          starter: true, coached: true },
-  { label: '3 months 1:1 coaching (Spencer Martin)',    retail: '£297', lite: false,          starter: false, coached: true },
+  { label: '3 months 1:1 coaching (Dr Arup Sen · EoS)', retail: '£297', lite: false,          starter: false, coached: true },
   { label: '40-min onboarding + two 30-min follow-ups', retail: 'included', lite: false,      starter: false, coached: true },
   { label: 'Direct messaging with coach',               retail: 'included', lite: false,      starter: false, coached: true },
 ];
@@ -672,15 +679,17 @@ export default function HomePage() {
                 Pick the version that fits how you want to start. Prices include VAT.
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {/* Shared selectable-card mechanism — components/SelectableCard */}
+            <SelectableCardGroup
+              className="grid grid-cols-1 md:grid-cols-3 gap-5"
+              defaultSelected={TIERS.find((t) => t.popular)?.id ?? TIERS[0].id}
+            >
               {TIERS.map((tier) => (
-                <div
+                <SelectableCard
                   key={tier.id}
-                  className="relative rounded-2xl p-7 flex flex-col"
-                  style={{
-                    background: 'rgba(30,70,60,0.85)',
-                    border: `${tier.popular ? 2 : 1}px solid ${tier.popular ? C.primary : C.border}`,
-                  }}
+                  id={tier.id}
+                  className="rounded-2xl p-7 flex flex-col"
+                  style={cardSurface(Boolean(tier.popular))}
                 >
                   {tier.popular && (
                     <div
@@ -719,9 +728,9 @@ export default function HomePage() {
                   >
                     {tier.cta}
                   </Link>
-                </div>
+                </SelectableCard>
               ))}
-            </div>
+            </SelectableCardGroup>
           </div>
         </section>
 
@@ -841,7 +850,7 @@ export default function HomePage() {
               </div>
               <p className="px-4 sm:px-5 py-3 text-xs" style={{ color: C.muted, borderTop: `1px solid ${C.border}` }}>
                 Typical retail values reflect standalone street pricing in the UK (Meo AI at £29/mo); coaching priced
-                at the standalone £99/mo Spencer Martin rate. Bundle pricing inclusive of VAT.
+                at the standalone £99/mo coaching rate. Bundle pricing inclusive of VAT.
               </p>
             </div>
           </div>
@@ -944,14 +953,13 @@ export default function HomePage() {
                     className="text-base sm:text-lg italic leading-snug mb-4"
                     style={{ color: C.fg, fontFamily: FONT_SERIF }}
                   >
-                    &ldquo;Longevity is not simply about living longer — it is about preserving
-                    vitality, independence, and quality of life for as long as possible.&rdquo;
+                    &ldquo;{LAUNCH_PARTNER?.quote}&rdquo;
                   </p>
                   <p className="text-xs font-semibold" style={{ color: C.fg }}>
-                    Dr Arup Sen
+                    {LAUNCH_PARTNER?.name}
                   </p>
                   <p className="text-xs mt-0.5" style={{ color: C.muted }}>
-                    Founder, Eos Longevity · MRCP · Consultant Physician
+                    {LAUNCH_PARTNER?.role}
                   </p>
                 </div>
 

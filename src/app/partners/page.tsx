@@ -44,7 +44,7 @@ const PARTNER_TYPES = [
   },
   {
     icon: Sun,
-    title: 'Eos Longevity',
+    title: 'EoS Longevity',
     body: 'Our launch partner in longevity medicine — consultant-led care that acts on the daily metabolic signal Meo surfaces at home.',
   },
 ] as const;
@@ -140,7 +140,7 @@ export default function PartnersPage() {
         </div>
       </section>
 
-      {/* Partner spotlight — Dr Arup Sen / Eos Longevity. Copy and
+      {/* Partner spotlight — Dr Arup Sen / EoS Longevity. Copy and
           credentials drawn from eos-longevity.pages.dev so nothing is
           fabricated. */}
       <section className="px-5 sm:px-6 py-16 sm:py-24" style={{ background: C.bgDeep }}>
@@ -152,12 +152,32 @@ export default function PartnersPage() {
             className="font-extrabold mb-3 text-center leading-tight"
             style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 38px)', textWrap: 'balance' }}
           >
-            Dr Arup Sen — <span style={{ color: C.primary }}>Eos Longevity</span>
+            Dr Arup Sen — <span style={{ color: C.primary }}>EoS Longevity</span>
           </h2>
-          <p className="text-center text-base mb-12 max-w-2xl mx-auto" style={{ color: C.muted }}>
-            Founder of Eos Longevity and consultant physician specialising in longevity medicine —
+          <p className="text-center text-base mb-6 max-w-2xl mx-auto" style={{ color: C.muted }}>
+            Founder of EoS Longevity and consultant physician specialising in longevity medicine —
             a UK-based personalised health-optimisation service.
           </p>
+
+          {/* Primary CTA into the EoS sales page. Destination is /eos,
+              not /a/EoS: /partners is a public, indexable page, and
+              /eos is the canonical, indexable programme page for the
+              EoS offer (/coaching 308-redirects there). /a/EoS is the
+              ATTRIBUTED UTM surface and is noindex — linking to it from
+              organic copy would attribute organic traffic to the
+              affiliate and put a noindex page in the crawl graph.
+              Same button treatment as the "Ready to start?" CTA below
+              and the site's other primary actions. */}
+          <div className="flex justify-center mb-12">
+            <Link
+              href="/eos"
+              className="inline-flex items-center gap-2 rounded-xl font-semibold px-5 py-3 text-sm transition-opacity hover:opacity-90"
+              style={{ background: C.primary, color: C.primaryFg }}
+            >
+              See the EoS coaching programmes
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-5 items-stretch">
             {/* What he does */}
@@ -170,7 +190,7 @@ export default function PartnersPage() {
               </h3>
               <div className="space-y-4 text-sm sm:text-base leading-relaxed" style={{ color: C.muted }}>
                 <p>
-                  Dr Sen founded Eos Longevity to &ldquo;shift medicine from reacting to disease to
+                  Dr Sen founded EoS Longevity to &ldquo;shift medicine from reacting to disease to
                   proactively optimising health and longevity.&rdquo; The practice combines precision
                   diagnostics, personalised interventions and integrative expertise — delivered
                   through consultant-led care, advanced diagnostics and digital health tracking.
@@ -200,7 +220,7 @@ export default function PartnersPage() {
                 independence, and quality of life for as long as possible.&rdquo;
               </p>
               <p className="text-xs mt-4 font-semibold" style={{ color: C.pillFg }}>
-                — Dr Arup Sen, Eos Longevity
+                — Dr Arup Sen, EoS Longevity
               </p>
             </div>
           </div>

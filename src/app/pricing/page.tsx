@@ -9,9 +9,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight, CalendarClock, Check } from 'lucide-react';
-import { C, FONT_SERIF } from '@/lib/design-tokens';
+import { C, FONT_SERIF, cardSurface } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 import { MeoEnterpriseBonus } from '@/components/MeoEnterpriseBonus';
+import { SelectableCard, SelectableCardGroup } from '@/components/SelectableCard';
 import { KRAFT_TEST, KRAFT_TEST_COACHED, KRAFT_TEST_MAILTO } from '@/lib/kitProducts';
 
 export const metadata: Metadata = {
@@ -69,7 +70,7 @@ const PLANS: Plan[] = [
     blurb: 'Everything in Starter, plus a metabolic coach.',
     features: [
       'Everything in Meo Starter',
-      '3 months of 1:1 metabolic coaching with Spencer Martin',
+      '3 months of 1:1 metabolic coaching with Dr Arup Sen (EoS)',
       '40-min onboarding consultation',
       'Two 30-min follow-ups',
       'Direct messaging between sessions',
@@ -117,15 +118,17 @@ export default function PricingPage() {
 
       {/* Tier grid */}
       <section className="px-5 sm:px-6 pb-28 sm:pb-40">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-5">
+        {/* Shared selectable-card mechanism — components/SelectableCard */}
+        <SelectableCardGroup
+          className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-5"
+          defaultSelected={PLANS.find((p) => p.popular)?.id ?? PLANS[0].id}
+        >
           {PLANS.map((plan) => (
-            <div
+            <SelectableCard
               key={plan.id}
-              className="relative rounded-2xl p-7 flex flex-col"
-              style={{
-                background: C.bgCard,
-                border: `${plan.popular ? 2 : 1}px solid ${plan.popular ? C.primary : C.border}`,
-              }}
+              id={plan.id}
+              className="rounded-2xl p-7 flex flex-col"
+              style={cardSurface(Boolean(plan.popular))}
             >
               {plan.popular && (
                 <div
@@ -171,9 +174,9 @@ export default function PricingPage() {
               >
                 {plan.cta}
               </Link>
-            </div>
+            </SelectableCard>
           ))}
-        </div>
+        </SelectableCardGroup>
         <p className="text-center text-xs mt-10" style={{ color: C.muted }}>
           One-time purchases. Prices in GBP. Shipping calculated at checkout.
         </p>

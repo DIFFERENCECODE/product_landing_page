@@ -11,7 +11,7 @@ import { C, FONT_SERIF } from '@/lib/design-tokens';
 const FAQ = [
   {
     q: 'Is this a medical programme?',
-    a: 'No. This is a wellness coaching programme delivered by Dr Arup Sen of Eos Longevity in partnership with Meterbolic. It does not diagnose or treat any condition.',
+    a: 'No. This is a wellness coaching programme delivered by Dr Arup Sen of EoS Longevity in partnership with Meterbolic. It does not diagnose or treat any condition.',
   },
   {
     q: 'What if my readings show something concerning?',
@@ -19,11 +19,11 @@ const FAQ = [
   },
   {
     q: 'Who delivers the coaching?',
-    a: 'Dr Arup Sen, founder of Eos Longevity, delivers every session personally.',
+    a: 'Dr Arup Sen, founder of EoS Longevity, delivers every session personally.',
   },
   {
     q: 'What happens after my programme ends?',
-    a: "You can continue monitoring with Meo independently, or speak to us about Eos Longevity's full longevity assessment services.",
+    a: "You can continue monitoring with Meo independently, or speak to us about EoS Longevity's full longevity assessment services.",
   },
   {
     q: 'Is the Meo device accurate?',

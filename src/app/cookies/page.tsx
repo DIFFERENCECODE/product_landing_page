@@ -3,7 +3,7 @@ import { LegalPageShell, LegalH2 } from '@/components/LegalPageShell';
 
 export const metadata: Metadata = {
   title: 'Cookies Policy — Meo by Meterbolic',
-  description: 'How Metabolic Health Ltd uses cookies on shop.meterbolic.com.',
+  description: 'How Metabolic Health Ltd uses cookies on meterbolic.com.',
   robots: { index: true, follow: true },
 };
 

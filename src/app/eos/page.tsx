@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────
-// /eos — Metabolic coaching programme (Dr Arup Sen · Eos Longevity).
+// /eos — Metabolic coaching programme (Dr Arup Sen · EoS Longevity).
 //
 // Was /coaching until 2026-08-06; next.config.mjs holds a permanent
 // redirect from the old path so anything already shared keeps working.
@@ -30,9 +30,9 @@ import Faq from '@/components/coaching/Faq';
 import CtaClosing from '@/components/coaching/CtaClosing';
 
 export const metadata: Metadata = {
-  title: 'Metabolic coaching — Meo × Eos Longevity',
+  title: 'Metabolic coaching — Meo × EoS',
   description:
-    "Meo's CE-marked at-home lipid testing system, paired with 1:1 wellness coaching from Dr Arup Sen, founder of Eos Longevity. Understand your metabolic trends and build habits that last. Limited launch pricing.",
+    "Meo's CE-marked at-home lipid testing system, paired with 1:1 wellness coaching from Dr Arup Sen, founder of EoS Longevity. Understand your metabolic trends and build habits that last. Limited launch pricing.",
   alternates: { canonical: '/eos' },
 };
 

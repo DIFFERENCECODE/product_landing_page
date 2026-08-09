@@ -16,7 +16,6 @@
 //     and tune the hero sub-headline (SCRUM-8 AC 4.2). Fail-soft: an
 //     unknown/absent value renders the default (docs/utm.md §6.4/§6.5).
 // ─────────────────────────────────────────────────────────────────────
-import { Fragment } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -36,9 +35,10 @@ import {
   Mail,
   Briefcase,
 } from 'lucide-react';
-import { C, FONT_SERIF } from '@/lib/design-tokens';
+import { C, FONT_SERIF, cardSurface } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 import { NewsletterSection } from '@/components/NewsletterForm';
+import { SelectableCard, SelectableCardGroup } from '@/components/SelectableCard';
 import type { AffiliateEntry, Tier } from '@/lib/affiliates';
 
 export interface FunnelUTM {
@@ -51,9 +51,51 @@ interface SalesFunnelProps {
   affiliate?: AffiliateEntry;
   /** Vertical slug (affiliate pages only) — tunes one hero line. */
   vertical?: string;
-  /** Pricing ladder. Defaults to the consumer three-tier set. */
-  tiers?: readonly Tier[];
+  /**
+   * Pricing ladder. REQUIRED — there is deliberately no default here.
+   * A built-in fallback ladder was a dormant second copy of the
+   * consumer prices in src/app/page.tsx; it agreed by luck, not by
+   * construction. Callers resolve tiers from the registry instead.
+   */
+  tiers: readonly Tier[];
+  /**
+   * Small print under the tier heading. Supplied by the registry
+   * (getAffiliateOffer) so an affiliate with FIRM prices — EoS, whose
+   * programmes are live introductory prices — is not captioned with
+   * the generic "indicative pricing" caveat.
+   */
+  pricingNote?: string;
   utm?: FunnelUTM;
+}
+
+/**
+ * Carry affiliate attribution onto every outbound funnel link
+ * (funnel isolation: attribution must survive landing → tiers →
+ * checkout). Only touches same-site paths; mailto/external hrefs and
+ * unattributed traffic pass through untouched.
+ */
+function withAttribution(
+  href: string,
+  affiliate?: AffiliateEntry,
+  source?: string,
+): string {
+  if (!affiliate || !href.startsWith('/')) return href;
+  const [pathAndQuery, hash] = href.split('#');
+  const [path, query] = pathAndQuery.split('?');
+  const params = new URLSearchParams(query);
+  // Param name follows the house convention documented in
+  // .claude/skills/create-affiliate-product (`?plan=…&affiliate=<slug>`).
+  params.set('affiliate', affiliate.slug);
+  params.set('utm_source', source ?? affiliate.slug.toLowerCase());
+  return `${path}?${params.toString()}${hash ? `#${hash}` : ''}`;
+}
+
+// Tier headings are written over a DYNAMIC array — an affiliate with
+// three or five tiers must not be announced as "Four tiers". Falls back
+// to the digit beyond the spelled-out range.
+const COUNT_WORDS = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight'];
+function countWord(n: number): string {
+  return COUNT_WORDS[n] ?? String(n);
 }
 
 const TRUST_CHIPS = [
@@ -129,73 +171,6 @@ const IN_THE_BOX = [
   },
 ];
 
-// Default consumer pricing ladder (homepage). Affiliate pages pass their
-// own four-tier set (BASIC / MOST POPULAR / CONCIERGE / CORPORATE).
-const DEFAULT_TIERS: readonly Tier[] = [
-  {
-    id: 'lite',
-    name: 'Meo Lite',
-    price: '£29',
-    priceNote: 'one-time, inc. VAT',
-    blurb: 'eBook + 7-day Meo AI trial. No device.',
-    features: [
-      'The Thin Book of Fat (digital)',
-      '7-day Meo AI trial',
-      'Manual entry of past blood results',
-      'Credit £29 toward Starter within 30 days',
-    ],
-    cta: 'Start with the book',
-    href: '/checkout?plan=lite',
-  },
-  {
-    id: 'starter',
-    name: 'Meo Starter',
-    price: '£149',
-    priceNote: 'one-time, inc. VAT',
-    blurb: 'The full bundle — meter, AI, score, six months.',
-    features: [
-      'Lab-grade Digital Lipid Meter',
-      '6 months of Meo AI included',
-      '10 test strips + lancets + carry case',
-      'Biological Age Score + Target Score',
-      'Free retest at month six',
-    ],
-    cta: 'Get Meo Starter',
-    href: '/checkout',
-    popular: true,
-  },
-  {
-    id: 'coached',
-    name: 'Meo Coached',
-    price: '£444',
-    priceNote: 'one-time, inc. VAT',
-    blurb: 'Everything in Starter, plus 1:1 coaching.',
-    features: [
-      'Everything in Meo Starter',
-      '3 months of coaching with Spencer Martin',
-      '40-min onboarding consultation',
-      'Two 30-min follow-ups',
-      'Direct messaging between sessions',
-    ],
-    cta: 'Get Meo + Coach',
-    href: '/checkout?plan=coached',
-  },
-];
-
-type CompareCell = string | true | false;
-const TIER_COMPARE_ROWS: Array<{ label: string; retail: string; lite: CompareCell; starter: CompareCell; coached: CompareCell }> = [
-  { label: 'The Thin Book of Fat (digital)',           retail: '£19',  lite: true,           starter: true, coached: true },
-  { label: 'Meo AI access',                             retail: '£174', lite: '7-day trial', starter: '6 months', coached: '6 months' },
-  { label: 'Manual entry of past blood results',        retail: 'included', lite: true,       starter: true, coached: true },
-  { label: 'Lab-grade Digital Lipid Meter',             retail: '£119', lite: false,          starter: true, coached: true },
-  { label: '10 test strips + lancets + carry case',     retail: '£49',  lite: false,          starter: true, coached: true },
-  { label: 'Biological Age Score + Target Score',       retail: '£29',  lite: false,          starter: true, coached: true },
-  { label: 'Free retest at month six',                  retail: '£25',  lite: false,          starter: true, coached: true },
-  { label: '3 months 1:1 coaching (Spencer Martin)',    retail: '£297', lite: false,          starter: false, coached: true },
-  { label: '40-min onboarding + two 30-min follow-ups', retail: 'included', lite: false,      starter: false, coached: true },
-  { label: 'Direct messaging with coach',               retail: 'included', lite: false,      starter: false, coached: true },
-];
-
 const FAQ = [
   {
     q: 'How accurate is the meter?',
@@ -218,12 +193,20 @@ function featuredTierId(utm: FunnelUTM | undefined, tiers: readonly Tier[]): str
   if (!utm) return undefined;
   const has = (id: string) => tiers.some((t) => t.id === id);
   const hint = utm.hint ?? '';
-  if (hint.startsWith('therapist') && has('concierge')) return 'concierge';
-  if (hint.startsWith('ai-coach-plus') && has('concierge')) return 'concierge';
+  // "human coaching" resolves to whatever coaching tier THIS ladder
+  // actually has: the generic CONCIERGE, or — inside an affiliate
+  // funnel with its own programmes — that affiliate's entry programme.
+  const coachingTier = has('concierge')
+    ? 'concierge'
+    : has('optimisation')
+    ? 'optimisation'
+    : undefined;
+  if (hint.startsWith('therapist') && coachingTier) return coachingTier;
+  if (hint.startsWith('ai-coach-plus') && coachingTier) return coachingTier;
   if (hint.startsWith('ai-coach') && has('popular')) return 'popular';
   if (hint.startsWith('meter') && has('basic')) return 'basic';
   switch (utm.intent) {
-    case 'therapist': return has('concierge') ? 'concierge' : undefined;
+    case 'therapist': return coachingTier;
     case 'ai':        return has('popular') ? 'popular' : undefined;
     case 'meter':     return has('basic') ? 'basic' : undefined;
     default:          return undefined;
@@ -350,18 +333,21 @@ function AffiliateBand({ affiliate }: { affiliate: AffiliateEntry }) {
   );
 }
 
-export default function SalesFunnel({ affiliate, vertical, tiers, utm }: SalesFunnelProps) {
-  const tierSet = tiers ?? DEFAULT_TIERS;
+export default function SalesFunnel({ affiliate, vertical, tiers, pricingNote, utm }: SalesFunnelProps) {
+  const tierSet = tiers;
   const isAffiliate = Boolean(affiliate);
   const gridCols = tierSet.length >= 4 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3';
 
   // Server-side UTM variation (AC 4.2): which tier is featured, and an
   // optional intent-tuned hero sub-headline. Fail-soft throughout.
   const featuredId = featuredTierId(utm, tierSet);
-  const renderedTiers = featuredId
+  const renderedTiers = (featuredId
     ? tierSet.map((t) => ({ ...t, popular: t.id === featuredId }))
-    : tierSet;
+    : tierSet
+  ).map((t) => ({ ...t, href: withAttribution(t.href, affiliate, utm?.source) }));
   const utmSubline = heroSubline(utm);
+  // The card highlighted on first paint — the featured/popular tier.
+  const defaultSelectedTier = (renderedTiers.find((t) => t.popular) ?? renderedTiers[0])?.id ?? null;
 
   const heroName = affiliate ? affiliate.name : 'Meo';
   const verticalLabel = vertical && vertical !== 'metabolic' ? vertical : 'health';
@@ -372,7 +358,7 @@ export default function SalesFunnel({ affiliate, vertical, tiers, utm }: SalesFu
         Skip to main content
       </a>
 
-      <Navbar />
+      <Navbar affiliate={affiliate ? { slug: affiliate.slug, name: affiliate.name } : null} />
 
       <div id="main-content" tabIndex={-1} className="outline-none">
         {/* HERO */}
@@ -559,22 +545,30 @@ export default function SalesFunnel({ affiliate, vertical, tiers, utm }: SalesFu
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="font-bold mb-3 leading-tight" style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 40px)', textWrap: 'balance' }}>
-                {tierSet.length >= 4 ? <>Four tiers. <span style={{ color: C.primary }}>One goal.</span></> : 'Three ways in. Same destination.'}
+                {tierSet.length >= 4
+                  ? <>{countWord(tierSet.length)} tiers. <span style={{ color: C.primary }}>One goal.</span></>
+                  : `${countWord(tierSet.length)} ways in. Same destination.`}
               </h2>
               <p className="text-base sm:text-lg max-w-xl mx-auto" style={{ color: C.muted }}>
                 {isAffiliate
                   ? 'Every plan includes the core Meo metabolic intelligence system. Choose the level of support that fits your journey.'
                   : 'Pick the version that fits how you want to start. Prices include VAT.'}
               </p>
-              {isAffiliate && (
+              {pricingNote && (
                 <p className="text-xs mt-3 max-w-xl mx-auto" style={{ color: C.muted }}>
-                  Indicative pricing — final tiers and prices to be confirmed by MB Commercial.
+                  {pricingNote}
                 </p>
               )}
             </div>
-            <div className={`grid grid-cols-1 ${gridCols} gap-5`}>
+            {/* Tier cards use the shared selectable-card mechanism so a
+                click (or tabbing to a CTA) gives instant, visible
+                feedback — see components/SelectableCard.tsx. */}
+            <SelectableCardGroup
+              className={`grid grid-cols-1 ${gridCols} gap-5`}
+              defaultSelected={defaultSelectedTier}
+            >
               {renderedTiers.map((tier) => (
-                <div key={tier.id} className="relative rounded-2xl p-7 flex flex-col" style={{ background: 'rgba(30,70,60,0.85)', border: `${tier.popular ? 2 : 1}px solid ${tier.popular ? C.primary : C.border}` }}>
+                <SelectableCard key={tier.id} id={tier.id} className="rounded-2xl p-7 flex flex-col" style={cardSurface(Boolean(tier.popular))}>
                   {tier.popular && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-semibold" style={{ background: C.primary, color: C.primaryFg }}>
                       {tier.badge ?? 'Recommended'}
@@ -597,48 +591,11 @@ export default function SalesFunnel({ affiliate, vertical, tiers, utm }: SalesFu
                   <Link href={tier.href} className="w-full inline-flex items-center justify-center rounded-xl py-3 text-sm font-semibold transition-opacity hover:opacity-90" style={{ background: tier.popular ? C.primary : 'transparent', color: tier.popular ? C.primaryFg : C.primary, border: tier.popular ? 'none' : `1px solid ${C.primary}` }}>
                     {tier.cta}
                   </Link>
-                </div>
+                </SelectableCard>
               ))}
-            </div>
+            </SelectableCardGroup>
           </div>
         </section>
-
-        {/* TIER COMPARISON — default consumer ladder only */}
-        {!isAffiliate && (
-          <section className="py-16 sm:py-24 px-5 sm:px-6" aria-label="Tier comparison">
-            <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-10">
-                <h2 className="font-bold mb-3 leading-tight" style={{ color: C.fg, fontFamily: FONT_SERIF, fontSize: 'clamp(28px, 4vw, 40px)', textWrap: 'balance' }}>
-                  What&apos;s included, at a glance.
-                </h2>
-                <p className="text-base sm:text-lg max-w-2xl mx-auto" style={{ color: C.muted }}>Every component of the delivered package, across the three tiers.</p>
-              </div>
-              <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(30,70,60,0.85)', border: `1px solid ${C.border}` }}>
-                <div className="grid grid-cols-[1.6fr_auto_repeat(3,1fr)] sm:grid-cols-[2fr_auto_repeat(3,1fr)] text-sm" style={{ color: C.fg }}>
-                  <div className="p-4 sm:p-5 text-xs uppercase tracking-wide font-semibold" style={{ color: C.muted, borderBottom: `1px solid ${C.border}` }}>Component</div>
-                  <div className="p-4 sm:p-5 text-xs uppercase tracking-wide font-semibold text-right" style={{ color: C.muted, borderBottom: `1px solid ${C.border}`, borderLeft: `1px solid ${C.border}` }}>Typical retail</div>
-                  {DEFAULT_TIERS.map((t) => (
-                    <div key={t.id} className="p-4 sm:p-5 text-center" style={{ borderBottom: `1px solid ${C.border}`, borderLeft: `1px solid ${C.border}`, background: t.popular ? 'rgba(164,214,94,0.10)' : 'transparent' }}>
-                      <div className="font-bold text-base" style={{ color: C.fg, fontFamily: FONT_SERIF }}>{t.name}</div>
-                      <div className="text-xs mt-0.5 tabular-nums" style={{ color: C.primary }}>{t.price}</div>
-                    </div>
-                  ))}
-                  {TIER_COMPARE_ROWS.map((row) => (
-                    <Fragment key={row.label}>
-                      <div className="p-4 sm:p-5 leading-snug" style={{ borderBottom: `1px solid ${C.border}`, color: C.fg }}>{row.label}</div>
-                      <div className="p-4 sm:p-5 text-right tabular-nums" style={{ borderBottom: `1px solid ${C.border}`, borderLeft: `1px solid ${C.border}`, color: C.muted }}>{row.retail}</div>
-                      {([row.lite, row.starter, row.coached] as CompareCell[]).map((v, ci) => (
-                        <div key={ci} className="p-4 sm:p-5 text-center" style={{ borderBottom: `1px solid ${C.border}`, borderLeft: `1px solid ${C.border}`, background: ci === 1 ? 'rgba(164,214,94,0.06)' : 'transparent', color: v === true ? C.primary : C.muted }}>
-                          {v === true ? <Check className="h-4 w-4 inline-block" /> : v === false ? <span className="text-sm">—</span> : <span className="text-sm tabular-nums">{v}</span>}
-                        </div>
-                      ))}
-                    </Fragment>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
 
         {/* MEO CARE — B2B */}
         <section className="py-16 sm:py-24 px-5 sm:px-6">
@@ -673,23 +630,50 @@ export default function SalesFunnel({ affiliate, vertical, tiers, utm }: SalesFu
                   })}
                 </ul>
               </div>
+              {/* Practitioner column — driven ENTIRELY by the affiliate
+                  registry. This used to hard-code Dr Arup Sen's name,
+                  credential and a verbatim copy of his quote, so every
+                  affiliate funnel (Fiori, Arup) rendered EoS's principal
+                  and the site carried three spellings of one credential.
+                  No practitioner → a generic Meterbolic panel, never a
+                  substitute practitioner. */}
               <div className="p-7 sm:p-9 flex flex-col justify-between gap-6" style={{ background: `linear-gradient(140deg, rgba(20,55,48,0.6), rgba(164,214,94,0.10))` }}>
-                <div>
-                  <Quote className="h-5 w-5 mb-3" style={{ color: C.primary }} aria-hidden />
-                  <p className="text-base sm:text-lg italic leading-snug mb-4" style={{ color: C.fg, fontFamily: FONT_SERIF }}>
-                    &ldquo;Longevity is not simply about living longer — it is about preserving vitality, independence, and quality of life for as long as possible.&rdquo;
-                  </p>
-                  <p className="text-xs font-semibold" style={{ color: C.fg }}>Dr Arup Sen</p>
-                  <p className="text-xs mt-0.5" style={{ color: C.muted }}>Founder, Eos Longevity · MRCP · Consultant Physician</p>
-                </div>
+                {affiliate?.practitioner ? (
+                  <div>
+                    {affiliate.practitioner.quote && (
+                      <>
+                        <Quote className="h-5 w-5 mb-3" style={{ color: C.primary }} aria-hidden />
+                        <p className="text-base sm:text-lg italic leading-snug mb-4" style={{ color: C.fg, fontFamily: FONT_SERIF }}>
+                          &ldquo;{affiliate.practitioner.quote}&rdquo;
+                        </p>
+                      </>
+                    )}
+                    <p className="text-xs font-semibold" style={{ color: C.fg }}>{affiliate.practitioner.name}</p>
+                    <p className="text-xs mt-0.5" style={{ color: C.muted }}>{affiliate.practitioner.role}</p>
+                  </div>
+                ) : (
+                  <div>
+                    <Quote className="h-5 w-5 mb-3" style={{ color: C.primary }} aria-hidden />
+                    <p className="text-base sm:text-lg italic leading-snug mb-4" style={{ color: C.fg, fontFamily: FONT_SERIF }}>
+                      &ldquo;Run Meo inside your practice — your branding, your clinical context, your follow-up.&rdquo;
+                    </p>
+                    <p className="text-xs font-semibold" style={{ color: C.fg }}>Meterbolic partnerships</p>
+                    <p className="text-xs mt-0.5" style={{ color: C.muted }}>Clinic-grade procurement · practitioner dashboard · branded reports</p>
+                  </div>
+                )}
                 <div>
                   <p className="text-sm font-semibold mb-3" style={{ color: C.fg }}>Talk to partnerships.</p>
                   <a href="mailto:partner@meterbolic.com?subject=MeO%20Care%20enquiry" className="inline-flex items-center gap-2 rounded-xl font-semibold px-5 py-3 text-sm transition-opacity hover:opacity-90" style={{ background: C.primary, color: C.primaryFg }}>
                     <Mail className="h-4 w-4" />partner@meterbolic.com<ArrowRight className="h-4 w-4" />
                   </a>
-                  <p className="text-xs mt-3" style={{ color: C.muted }}>
-                    Or read the{' '}<Link href="/partners" className="underline" style={{ color: C.muted }}>partners page</Link>{' '}for the full offering.
-                  </p>
+                  {/* /partners carries the EoS partner spotlight, so it
+                      is a rival link inside another affiliate's funnel.
+                      Unattributed visitors still get it. */}
+                  {!affiliate && (
+                    <p className="text-xs mt-3" style={{ color: C.muted }}>
+                      Or read the{' '}<Link href="/partners" className="underline" style={{ color: C.muted }}>partners page</Link>{' '}for the full offering.
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -766,7 +750,7 @@ export default function SalesFunnel({ affiliate, vertical, tiers, utm }: SalesFu
         </section>
       </div>
 
-      <Footer />
+      <Footer affiliate={affiliate ? { slug: affiliate.slug, name: affiliate.name } : null} />
 
       <StickyMobileCTA tiers={renderedTiers} />
     </main>

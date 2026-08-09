@@ -15,7 +15,7 @@ import { Check } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 
 const POINTS = [
-  'Founder of Eos Longevity, with a background in longevity medicine',
+  'Founder of EoS Longevity, with a background in longevity medicine',
   'Delivers every coaching session personally, 1:1',
   'Works with you on nutrition, movement, sleep and stress',
 ] as const;

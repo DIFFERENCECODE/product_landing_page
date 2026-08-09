@@ -31,13 +31,66 @@ import {
   KIT_PRODUCTS,
   KIT_LITE,
   THERAPY_ADDON,
+  LEGACY_THERAPY_ADDON_IDS,
   type AddonProduct,
 } from '@/lib/kitProducts';
+import {
+  getAffiliate,
+  getAffiliateCoachOffer,
+  type AffiliateEntry,
+  type AffiliateCoachOffer,
+} from '@/lib/affiliates';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 
 const THERAPY_PRICE = THERAPY_ADDON.price / 100; // £295
 const THERAPY_AVAILABLE = !THERAPY_ADDON.priceId.includes('placeholder');
 const LITE_PRICE = KIT_LITE.price / 100; // £29
+
+// Where affiliate attribution is parked for the length of the visit, so
+// it survives a page reload or a hop to /pricing and back. Funnel
+// isolation requires attribution to reach checkout intact — if
+// /checkout forgets who sent the visitor, the isolation is broken even
+// though every page looked right on its own.
+const AFF_STORAGE_KEY = 'mb.affiliate';
+
+/**
+ * Work out where the "Continue browsing" arrow should go. It must
+ * CONTINUE the journey, not dead-end on the homepage, and it must not
+ * tip an attributed visitor out into a generic or rival funnel.
+ *
+ * Order of preference:
+ *   1. the same-origin page they actually came from (but never
+ *      /checkout itself, and never another affiliate's landing page);
+ *   2. this affiliate's own landing page, attribution intact;
+ *   3. the homepage, as a last resort.
+ */
+function resolveContinueHref(entry: AffiliateEntry | null): string {
+  const affiliateHome = entry
+    ? `/a/${entry.slug}?affiliate=${entry.slug}&utm_source=${entry.slug.toLowerCase()}&utm_medium=affiliate`
+    : null;
+
+  const ref = typeof document !== 'undefined' ? document.referrer : '';
+  if (ref) {
+    try {
+      const url = new URL(ref);
+      if (url.origin === window.location.origin && !url.pathname.startsWith('/checkout')) {
+        // Don't hand an attributed visitor back into someone else's
+        // funnel — if the referrer is a DIFFERENT affiliate's page,
+        // fall through to this affiliate's own landing page.
+        const refAffiliate = url.pathname.startsWith('/a/')
+          ? getAffiliate(url.pathname.split('/')[2])
+          : undefined;
+        const rival =
+          entry && refAffiliate && refAffiliate.slug !== entry.slug;
+        if (!rival) return url.pathname + url.search + url.hash;
+      }
+    } catch {
+      /* opaque or malformed referrer — fall through */
+    }
+  }
+
+  return affiliateHome ?? '/';
+}
 
 type Plan = 'lite' | 'starter' | 'coached';
 
@@ -309,10 +362,14 @@ function AddonRow({
   const selected = qty > 0;
   return (
     <div
-      className="rounded-xl p-4 sm:p-5 transition-colors"
+      className="card-interactive rounded-xl p-4 sm:p-5"
+      data-selected={selected ? 'true' : 'false'}
       style={{
         background: selected ? 'rgba(164,214,94,0.06)' : C.bgCard,
         border: `1px solid ${selected ? C.primary : C.border}`,
+        // The row's controls are the +/- buttons; the card itself is
+        // not clickable, so don't promise a pointer.
+        cursor: 'default',
       }}
     >
       <div className="flex items-start justify-between gap-3 mb-2 flex-wrap">
@@ -400,6 +457,7 @@ function OrderSummary({
   plan,
   selectedAddons,
   therapySelected,
+  coachOffer,
   total,
   onPay,
   isPending,
@@ -409,16 +467,18 @@ function OrderSummary({
   plan: Plan;
   selectedAddons: { addon: AddonProduct; qty: number }[];
   therapySelected: boolean;
+  coachOffer?: AffiliateCoachOffer;
   total: number;
   onPay: () => void;
   isPending: boolean;
   error: string | null;
   glucoseSelected: boolean;
 }) {
+  const coachLabel = coachOffer?.label ?? THERAPY_ADDON.name;
   const isLite = plan === 'lite';
   const isCoached = plan === 'coached';
   // Coached presents as a single bundled line at £444 — the user sees
-  // the plan price, not a Starter + Spencer breakdown. Optional addons
+  // the plan price, not a Starter + coaching breakdown. Optional addons
   // (e.g. CGM) still itemise below.
   const headlinePrice = isLite
     ? LITE_PRICE
@@ -464,18 +524,18 @@ function OrderSummary({
           ))}
           {!isCoached && therapySelected && (
             <div className="flex justify-between gap-3 text-sm">
-              <span className="min-w-0" style={{ color: C.muted }}>Metabolic Coach — Spencer Martin</span>
+              <span className="min-w-0" style={{ color: C.muted }}>{coachLabel}</span>
               <span className="shrink-0" style={{ color: C.fg }}>£{THERAPY_PRICE}</span>
             </div>
           )}
         </div>
       )}
-      {/* Edge case: no glucose addon, but Spencer toggled on Starter
-          (without any other addon) — show Spencer on its own row. */}
+      {/* Edge case: no glucose addon, but the coach toggled on Starter
+          (without any other addon) — show coaching on its own row. */}
       {!isLite && !isCoached && therapySelected && selectedAddons.length === 0 && (
         <div className="space-y-2 mb-3 pb-3" style={{ borderBottom: `1px solid ${C.border}` }}>
           <div className="flex justify-between gap-3 text-sm">
-            <span className="min-w-0" style={{ color: C.muted }}>Metabolic Coach — Spencer Martin</span>
+            <span className="min-w-0" style={{ color: C.muted }}>{coachLabel}</span>
             <span className="shrink-0" style={{ color: C.fg }}>£{THERAPY_PRICE}</span>
           </div>
         </div>
@@ -567,30 +627,90 @@ export default function CheckoutPage() {
   const [therapySelected, setTherapySelected] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  // Affiliate attribution + where the back arrow returns to. Resolved
+  // on mount (needs window/document); the SSR pass renders the safe
+  // defaults below.
+  const [affiliate, setAffiliate] = useState<AffiliateEntry | null>(null);
+  const [continueHref, setContinueHref] = useState('/');
+  // WHO delivers the coaching, resolved from the affiliate registry.
+  // undefined = this visitor is offered no coach at all. Held in state
+  // (not derived at render) so the first paint can never flash a rival
+  // affiliate's practitioner before attribution has been read.
+  const [coachOffer, setCoachOffer] = useState<AffiliateCoachOffer | undefined>(undefined);
+  const [attributionReady, setAttributionReady] = useState(false);
 
   // Read URL query params on mount: `?plan=lite` → Lite downsell;
-  // `?plan=coached` (or legacy `?addon=therapy-spencer` from the
-  // Coached tier card) → Coached preset (Starter + Spencer locked-on).
+  // `?plan=coached` → Coached preset (Starter + coaching locked-on).
+  // `?addon=therapy-spencer` is the LEGACY value minted by the old
+  // Coached tier card; it is still honoured so links already in the
+  // wild resolve rather than silently landing on plain Starter.
   // Reads window.location directly to avoid forcing a Suspense
   // boundary on the whole page.
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
+
     const planParam = params.get('plan');
+    const addonParam = params.get('addon');
+    const wantsCoaching =
+      addonParam === THERAPY_ADDON.id ||
+      (LEGACY_THERAPY_ADDON_IDS as readonly string[]).includes(addonParam ?? '');
+
+    // Attribution: ?aff wins, then ?utm_source, then whatever an
+    // earlier page in this visit stored. Unknown slugs are ignored
+    // rather than trusted — getAffiliate is the registry gate.
+    let stored: string | null = null;
+    try {
+      stored = window.sessionStorage.getItem(AFF_STORAGE_KEY);
+    } catch {
+      /* private mode / storage disabled */
+    }
+    // `affiliate` is the documented house param; `aff` is accepted as a
+    // legacy alias so links minted before the convention landed resolve.
+    const entry =
+      getAffiliate(params.get('affiliate')) ??
+      getAffiliate(params.get('aff')) ??
+      getAffiliate(params.get('utm_source')) ??
+      getAffiliate(stored) ??
+      null;
+    if (entry) {
+      setAffiliate(entry);
+      try {
+        window.sessionStorage.setItem(AFF_STORAGE_KEY, entry.slug);
+      } catch {
+        /* non-fatal — attribution just won't survive a reload */
+      }
+    }
+    setContinueHref(resolveContinueHref(entry));
+
+    // Coach scoping. An affiliate that supplies no coaching layer gets
+    // NO coach — not a substitute, and specifically not another
+    // partner's principal. The Coached plan is therefore unreachable
+    // for them, including via a hand-typed ?plan=coached.
+    const offer = getAffiliateCoachOffer(entry?.slug);
+    setCoachOffer(offer);
+    setAttributionReady(true);
+
     if (planParam === 'lite') setPlan('lite');
-    else if (planParam === 'coached' || params.get('addon') === 'therapy-spencer') {
-      setPlan('coached');
-      setTherapySelected(true);
+    else if (planParam === 'coached' || wantsCoaching) {
+      if (offer) {
+        setPlan('coached');
+        setTherapySelected(true);
+      }
+      // else: stay on Starter. We do not sell a rival's coach.
     }
   }, []);
 
   const isLite = plan === 'lite';
   const isCoached = plan === 'coached';
 
-  // Coached plan force-locks the Spencer addon on. If the user toggles
+  // Coached plan force-locks the coaching addon on. If the user toggles
   // away from Coached we leave therapySelected as-is so they can keep
   // it manually if they like. Switching INTO Coached force-enables it.
   const handlePlanChange = (next: Plan) => {
+    // Coached is only selectable when someone is actually contracted to
+    // deliver the coaching for this visitor.
+    if (next === 'coached' && !coachOffer) return;
     setPlan(next);
     if (next === 'coached') setTherapySelected(true);
   };
@@ -684,17 +804,50 @@ export default function CheckoutPage() {
           Partners / Pricing / Chat links the rest of the site uses,
           plus Sign in + Get Meo CTAs. Replaces the previous custom
           checkout-only nav. */}
-      <Navbar />
+      <Navbar affiliate={affiliate ? { slug: affiliate.slug, name: affiliate.name } : null} />
 
       {/* Body */}
       <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-10 pt-20 sm:pt-24 pb-32 md:pb-16">
+        {/* Back arrow CONTINUES the journey: it returns the visitor to
+            the page they came from, or — for attributed traffic — to
+            that affiliate's own landing page with attribution intact.
+            It never dumps an affiliate visitor into a rival funnel.
+            See resolveContinueHref above. */}
         <Link
-          href="/"
+          href={continueHref}
           className="inline-flex items-center gap-2 text-sm mb-6 hover:text-white transition-colors"
           style={{ color: C.muted }}
         >
-          <ArrowLeft size={14} /> Continue browsing
+          <ArrowLeft size={14} />
+          {affiliate ? `Continue browsing ${affiliate.name} × Meo` : 'Continue browsing'}
         </Link>
+
+        {/* Attribution band — proof the affiliate context survived the
+            hop into checkout, and a live route back into their funnel. */}
+        {affiliate && (
+          <div
+            className="mb-6 rounded-2xl px-4 py-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
+            style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
+          >
+            <span className="font-semibold" style={{ color: C.fg }}>
+              {affiliate.name} × Meo
+            </span>
+            {affiliate.practitioner && (
+              <span style={{ color: C.muted }}>
+                Your programme partner is {affiliate.practitioner.name}.
+              </span>
+            )}
+            {/* Scoped to THIS affiliate — never a link into another
+                partner's offer. */}
+            <Link
+              href={`/a/${affiliate.slug}?affiliate=${affiliate.slug}&utm_source=${affiliate.slug.toLowerCase()}#tiers`}
+              className="underline hover:text-white transition-colors"
+              style={{ color: C.pillFg }}
+            >
+              See the {affiliate.name} plans
+            </Link>
+          </div>
+        )}
 
         <h1
           className="mb-2"
@@ -710,8 +863,11 @@ export default function CheckoutPage() {
 
         {/* Tier toggle — three-pill switch matching /pricing tiers.
             Lite (£29) is the downsell, Starter (£149) is the default,
-            Coached (£444) is Starter + Spencer's coaching locked on.
-            Order is cheapest → most premium so the eye reads naturally. */}
+            Coached (£444) is Starter + the EoS coaching locked on.
+            Order is cheapest → most premium so the eye reads naturally.
+            Each pill wears the shared `.card-interactive` selected
+            styling (globals.css) so the active plan reads as a ring +
+            lift, not colour alone. */}
         <div
           className="inline-flex flex-wrap items-center p-1 rounded-full mb-8 sm:mb-10"
           style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
@@ -722,18 +878,26 @@ export default function CheckoutPage() {
             { id: 'lite' as const, label: 'Meo Lite', price: '£29' },
             { id: 'starter' as const, label: 'Meo Starter', price: '£149' },
             { id: 'coached' as const, label: 'Meo Coached', price: '£444' },
-          ]).map((opt) => {
+          ]
+            // Before attribution resolves we keep Coached visible (the
+            // unattributed majority case) — the pill names no
+            // practitioner, so nothing leaks. Once we know the visitor
+            // has no coach, it goes.
+            .filter((opt) => opt.id !== 'coached' || !attributionReady || Boolean(coachOffer))
+          ).map((opt) => {
             const active = plan === opt.id;
             return (
               <button
                 key={opt.id}
                 role="tab"
                 aria-selected={active}
+                data-selected={active ? 'true' : 'false'}
                 onClick={() => handlePlanChange(opt.id)}
-                className="px-4 py-2 rounded-full text-sm font-semibold transition-colors"
+                className="card-interactive px-4 py-2 rounded-full text-sm font-semibold"
                 style={{
                   background: active ? C.primary : 'transparent',
                   color: active ? C.primaryFg : C.muted,
+                  border: '1px solid transparent',
                 }}
               >
                 {opt.label} <span className="opacity-70">· {opt.price}</span>
@@ -844,7 +1008,9 @@ export default function CheckoutPage() {
                     <button
                       key={opt.id}
                       onClick={() => handleGlucoseSelect(opt.id, opt.addonId ?? null)}
-                      className="w-full text-left rounded-2xl p-5 transition-all"
+                      aria-pressed={isSelected}
+                      data-selected={isSelected ? 'true' : 'false'}
+                      className="card-interactive w-full text-left rounded-2xl p-5"
                       style={{
                         background: isSelected ? 'rgba(164,214,94,0.08)' : C.bgCard,
                         border: `1px solid ${isSelected ? C.primary : C.border}`,
@@ -930,10 +1096,15 @@ export default function CheckoutPage() {
               </section>
             )}
 
-            {/* ── Metabolic Coach (Spencer Martin) ──
+            {/* ── Metabolic Coach (Dr Arup Sen · EoS) ──
                 Optional add-on for the Starter plan; locked-on and
                 presented as "Included" when Coached is active so the
-                user has a single source of truth (the plan toggle). */}
+                user has a single source of truth (the plan toggle).
+                Coach identity comes from getAffiliateCoachOffer() —
+                the affiliate registry is the one source for the name,
+                the credential and the photo. The whole section is
+                absent for an affiliate that supplies no coach. */}
+            {attributionReady && coachOffer && (
             <section>
               <div className="flex items-baseline gap-3 mb-1">
                 <h2
@@ -954,8 +1125,8 @@ export default function CheckoutPage() {
               </div>
               <p className="text-sm mb-5" style={{ color: C.muted }}>
                 {isCoached
-                  ? "Spencer's 3-month coaching upgrade is bundled with the Coached plan — no extra step needed."
-                  : 'Work 1-to-1 with a specialist to interpret your data and build an action plan.'}
+                  ? `The 3-month coaching upgrade with ${coachOffer.practitioner.name} is bundled with the Coached plan — no extra step needed.`
+                  : `Work 1-to-1 with ${coachOffer.practitioner.name} of ${coachOffer.affiliateName} to interpret your data and build an action plan.`}
               </p>
               {isCoached ? (
                 // Coached: render as a static "included" panel — no
@@ -963,29 +1134,31 @@ export default function CheckoutPage() {
                 // already covers it). Switching the plan toggle off
                 // Coached is the way to remove it.
                 <div
-                  className="w-full text-left rounded-2xl p-5"
+                  className="card-interactive w-full text-left rounded-2xl p-5"
+                  data-selected="true"
                   style={{
                     background: 'rgba(164,214,94,0.08)',
                     border: `1px solid ${C.primary}`,
+                    cursor: 'default',
                   }}
                 >
                   <div className="flex items-start gap-4">
                     <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0">
                       <Image
-                        src="/spencer-martin.jpg"
-                        alt="Spencer Martin"
+                        src={coachOffer.practitioner.photo}
+                        alt={coachOffer.practitioner.name}
                         fill
                         className="object-cover object-top"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <span className="font-semibold text-base" style={{ color: C.fg }}>Spencer Martin</span>
+                        <span className="font-semibold text-base" style={{ color: C.fg }}>{coachOffer.practitioner.name}</span>
                         <span
                           className="text-[10px] font-semibold px-2 py-0.5 rounded"
                           style={{ background: C.pill, color: C.pillFg }}
                         >
-                          Metabolic Health Coach · 25+ years
+                          {coachOffer.practitioner.role}
                         </span>
                         <span className="text-xs ml-auto shrink-0 font-semibold" style={{ color: C.primary }}>
                           Included
@@ -1002,6 +1175,13 @@ export default function CheckoutPage() {
                           </li>
                         ))}
                       </ul>
+                      <p className="text-xs mt-2" style={{ color: C.muted }}>
+                        Looking for the full {coachOffer.affiliateName} programmes?{' '}
+                        <Link href={coachOffer.programmesHref} className="underline" style={{ color: C.pillFg }}>
+                          the full coaching programmes
+                        </Link>
+                        {' '}are run by {coachOffer.practitioner.name} at {coachOffer.affiliateName}.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -1009,7 +1189,8 @@ export default function CheckoutPage() {
                 <button
                   onClick={() => setTherapySelected((v) => !v)}
                   aria-pressed={therapySelected}
-                  className="w-full text-left rounded-2xl p-5 transition-all"
+                  data-selected={therapySelected ? 'true' : 'false'}
+                  className="card-interactive w-full text-left rounded-2xl p-5"
                   style={{
                     background: therapySelected ? 'rgba(164,214,94,0.08)' : C.bgCard,
                     border: `1px solid ${therapySelected ? C.primary : C.border}`,
@@ -1018,20 +1199,20 @@ export default function CheckoutPage() {
                   <div className="flex items-start gap-4">
                     <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0">
                       <Image
-                        src="/spencer-martin.jpg"
-                        alt="Spencer Martin"
+                        src={coachOffer.practitioner.photo}
+                        alt={coachOffer.practitioner.name}
                         fill
                         className="object-cover object-top"
                       />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <span className="font-semibold text-base" style={{ color: C.fg }}>Spencer Martin</span>
+                        <span className="font-semibold text-base" style={{ color: C.fg }}>{coachOffer.practitioner.name}</span>
                         <span
                           className="text-[10px] font-semibold px-2 py-0.5 rounded"
                           style={{ background: C.pill, color: C.pillFg }}
                         >
-                          Metabolic Health Coach · 25+ years
+                          {coachOffer.practitioner.role}
                         </span>
                         <span className="font-semibold text-sm ml-auto shrink-0" style={{ color: C.fg }}>+£{THERAPY_PRICE}</span>
                       </div>
@@ -1060,6 +1241,7 @@ export default function CheckoutPage() {
                 </button>
               )}
             </section>
+            )}
 
             </>
             )}
@@ -1123,6 +1305,7 @@ export default function CheckoutPage() {
               plan={plan}
               selectedAddons={selectedAddons}
               therapySelected={therapySelected}
+              coachOffer={coachOffer}
               total={total}
               onPay={handleCheckout}
               isPending={isPending}
@@ -1134,7 +1317,7 @@ export default function CheckoutPage() {
       </div>
 
       <MobilePayBar plan={plan} total={total} onPay={handleCheckout} isPending={isPending} glucoseSelected={glucoseSelected} />
-      <Footer />
+      <Footer affiliate={affiliate ? { slug: affiliate.slug, name: affiliate.name } : null} />
     </div>
   );
 }

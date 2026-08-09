@@ -37,6 +37,26 @@ export const C = {
   danger: '#f59e0b',
 } as const;
 
+// ─── The ONE accent-card treatment ───────────────────────────────────
+//
+// Card grids across the site mark one card as the featured / fuller
+// option. Two different treatments had grown up: the tier ladders
+// (/, /pricing, /a/*) used a 2px primary border on the normal card
+// background, while /eos and /kraft-test used a 1px 45%-alpha primary
+// border on a lighter background. Same intent, two looks.
+//
+// This helper is now the single definition. Feed it `accent` and
+// spread the result — do not hand-roll a border in a page again.
+export function cardSurface(accent: boolean): {
+  background: string;
+  border: string;
+} {
+  return {
+    background: C.bgCard,
+    border: accent ? `2px solid ${C.primary}` : `1px solid ${C.border}`,
+  };
+}
+
 export const FONT_SERIF =
   'var(--font-serif), -apple-system, BlinkMacSystemFont, sans-serif';
 

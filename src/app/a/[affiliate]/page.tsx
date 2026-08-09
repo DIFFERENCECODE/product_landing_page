@@ -4,7 +4,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import SalesFunnel from '@/components/SalesFunnel';
-import { getAffiliate, AFFILIATE_TIERS } from '@/lib/affiliates';
+import { getAffiliate, getAffiliateOffer } from '@/lib/affiliates';
 
 interface PageProps {
   params: Promise<{ affiliate: string }>;
@@ -31,11 +31,15 @@ export default async function AffiliateRootPage({ params, searchParams }: PagePr
   if (!entry) notFound();
 
   const sp = await searchParams;
+  // Tiers are affiliate-SCOPED (funnel isolation) — EoS gets the EoS
+  // programmes, everyone else gets the generic Meterbolic ladder.
+  const offer = getAffiliateOffer(entry.slug);
   return (
     <SalesFunnel
       affiliate={entry}
       vertical={entry.defaultVertical}
-      tiers={AFFILIATE_TIERS}
+      tiers={offer.tiers}
+      pricingNote={offer.pricingNote}
       utm={{
         source: first(sp.utm_source)?.toLowerCase() ?? entry.slug.toLowerCase(),
         intent: first(sp.utm_intent),

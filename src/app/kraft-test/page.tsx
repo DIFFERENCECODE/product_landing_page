@@ -28,16 +28,18 @@ import {
   Mail,
   ShieldCheck,
 } from 'lucide-react';
-import { C, FONT_SERIF } from '@/lib/design-tokens';
+import { C, FONT_SERIF, cardSurface } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
 import { KraftCurve } from '@/components/Visuals';
 import { MeoEnterpriseBonus } from '@/components/MeoEnterpriseBonus';
+import { SelectableCard, SelectableCardGroup } from '@/components/SelectableCard';
 import {
   KRAFT_ENQUIRY_EMAIL,
   KRAFT_FROM_PRICE,
   KRAFT_TEST_MAILTO,
   KRAFT_TIERS,
   enquiryMailto,
+  kraftEnquirySubject,
 } from '@/lib/kitProducts';
 
 export const metadata: Metadata = {
@@ -247,15 +249,18 @@ export default function KraftTestPage() {
             arrange a slot and confirm the right route for you.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch">
+          {/* Shared selectable-card mechanism (components/SelectableCard)
+              — same behaviour as the /eos programme cards. */}
+          <SelectableCardGroup
+            className="grid grid-cols-1 md:grid-cols-2 gap-5 items-stretch"
+            defaultSelected={KRAFT_TIERS.find((t) => t.accent)?.id ?? KRAFT_TIERS[0].id}
+          >
             {KRAFT_TIERS.map((t) => (
-              <div
+              <SelectableCard
                 key={t.id}
-                className="relative rounded-2xl p-7 flex flex-col"
-                style={{
-                  background: t.accent ? C.bgCardHover : C.bgCard,
-                  border: `1px solid ${t.accent ? 'rgba(164,214,94,0.45)' : C.border}`,
-                }}
+                id={t.id}
+                className="rounded-2xl p-7 flex flex-col"
+                style={cardSurface(t.accent)}
               >
                 <span
                   className="self-start inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold tracking-wide mb-4"
@@ -299,8 +304,12 @@ export default function KraftTestPage() {
                   ))}
                 </ul>
 
+                {/* Subject names the tier, its price and whether it is
+                    the coached variant — the inbox triages on subject
+                    alone (kraftEnquirySubject in lib/kitProducts). */}
                 <a
-                  href={enquiryMailto(t.enquirySubject)}
+                  href={enquiryMailto(kraftEnquirySubject(t))}
+                  aria-label={`Enquire about ${t.name} (${t.price}) by email`}
                   className="w-full inline-flex items-center justify-center rounded-xl py-3 text-sm font-semibold transition-opacity hover:opacity-90"
                   style={{
                     background: t.accent ? C.primary : 'transparent',
@@ -310,9 +319,9 @@ export default function KraftTestPage() {
                 >
                   Enquire and book
                 </a>
-              </div>
+              </SelectableCard>
             ))}
-          </div>
+          </SelectableCardGroup>
 
           <p className="text-center text-xs mt-10 max-w-2xl mx-auto leading-relaxed" style={{ color: C.muted }}>
             Prices in GBP. The KRAFT Test is not sold online — every booking is arranged by

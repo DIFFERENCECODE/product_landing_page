@@ -95,7 +95,7 @@ mint without recording here.
 
 | Slug      | Affiliate / Counterparty       | Notes                              |
 | --------- | ------------------------------ | ---------------------------------- |
-| `EoS`     | Earth on Stage                 | Capitalisation matches their brand |
+| `EoS`     | EoS                            | Capitalisation matches their brand; the expanded form is retired |
 | `Arup`    | Arup                           | Engineering / longevity launch     |
 | `Fiori`   | Fiori                          | Existing FB campaign already named |
 
@@ -294,6 +294,7 @@ utm_hint = <product-slug>[ - <affiliate-slug-lower> ]
 | `ai-coach`        | AI agentic coach service                                        |
 | `ai-coach-plus`   | AI coach paired with human-in-the-loop review                   |
 | `therapist-1on1` | Booked human practitioner session                                |
+| `coach-eos`       | EoS 1:1 metabolic coaching (Dr Arup Sen), incl. the Meo Coached upgrade |
 | `kraft-test`      | Kraft insulin assay product                                     |
 
 Composed examples:
