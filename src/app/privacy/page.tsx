@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { LegalPageShell, LegalH2 } from '@/components/LegalPageShell';
 
 export const metadata: Metadata = {
@@ -23,6 +24,26 @@ export default function PrivacyPage() {
       title="Privacy Policy"
       lastUpdated="28 April 2026"
     >
+      {/* Pointer to the human-readable counterpart. /privacy is the
+          binding notice; /trust is the same substance written to be
+          read, plus the ICO registration certificate. Cross-linked both
+          ways — /trust links back here for the full notice. */}
+      <section
+        className="rounded-2xl p-5 not-prose"
+        style={{ background: 'rgba(30,70,60,0.85)', border: '1px solid rgba(164,214,94,0.45)' }}
+      >
+        <p style={{ color: '#f0ede6' }}>
+          <strong>Looking for the plain-English version?</strong>{' '}
+          <Link href="/trust" className="underline" style={{ color: '#f0ede6' }}>
+            Trust &amp; Data Protection
+          </Link>{' '}
+          explains what we collect and why, where your data lives, what our AI
+          does and does not do with it, and how to exercise your rights — and it
+          carries our ICO registration certificate so you can verify that we are
+          a registered data controller. This page is the full formal notice.
+        </p>
+      </section>
+
       <section>
         <LegalH2>1. Who we are</LegalH2>
         <p>

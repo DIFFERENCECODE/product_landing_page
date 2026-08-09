@@ -28,6 +28,7 @@ import Pricing from '@/components/coaching/Pricing';
 import Compliance from '@/components/coaching/Compliance';
 import Faq from '@/components/coaching/Faq';
 import CtaClosing from '@/components/coaching/CtaClosing';
+import TrustBadge from '@/components/TrustBadge';
 
 export const metadata: Metadata = {
   title: 'Metabolic coaching — Meo × Eos Longevity',
@@ -48,6 +49,15 @@ export default function EosCoachingPage() {
       <Pricing />
       <Compliance />
       <Faq />
+      {/* Data protection sits directly after the FAQ and before the
+          closing CTA: this page asks for a £850–£1,450 commitment and a
+          clinician's involvement, so "what happens to my data" is a
+          live objection at exactly this point in the page. */}
+      <section className="px-5 sm:px-6 pb-4">
+        <div className="max-w-3xl mx-auto">
+          <TrustBadge variant="panel" audience="user" />
+        </div>
+      </section>
       <CtaClosing />
       <Footer />
     </main>

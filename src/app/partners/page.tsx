@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { ArrowLeft, Stethoscope, Activity, Briefcase, Watch, FlaskConical, Mail, ArrowRight, Award, GraduationCap, Microscope, Quote, Sun } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
+import TrustBadge from '@/components/TrustBadge';
 
 export const metadata: Metadata = {
   title: 'Partners — Meterbolic',
@@ -288,6 +289,16 @@ export default function PartnersPage() {
           </div>
         </div>
       </section>
+
+      {/* Due-diligence surface. A partner puts their reputation and their
+          client list behind us, so the ICO credential and the partner
+          section of /trust belong on this page, not only in the footer. */}
+      <section className="px-5 sm:px-6 pb-16 sm:pb-24">
+        <div className="max-w-5xl mx-auto">
+          <TrustBadge variant="panel" audience="partner" />
+        </div>
+      </section>
+
       <Footer />
     </main>
   );

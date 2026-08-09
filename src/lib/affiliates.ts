@@ -33,7 +33,11 @@ export interface AffiliateEntry {
 export const AFFILIATES: Record<string, AffiliateEntry> = {
   EoS: {
     slug: 'EoS',
-    name: 'Earth on Stage',
+    // Written exactly "EoS". The expanded form "Earth on Stage" is
+    // RETIRED and must not appear in user-facing copy, metadata, alt
+    // text or page titles — this field renders directly into the /a/EoS
+    // hero, page title and the "IN PARTNERSHIP WITH" band.
+    name: 'EoS',
     logo: '/eos-logo.svg',
     practitioner: {
       name: 'Dr Arup Sen',

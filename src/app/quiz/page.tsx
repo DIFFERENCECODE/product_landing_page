@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 import { Navbar, Footer } from '@/components/MarketingLandingPage';
+import TrustBadge from '@/components/TrustBadge';
 
 const TOTAL_STEPS = 7;
 
@@ -315,6 +316,9 @@ export default function QuizPage() {
                   <p className="text-sm" style={{ color: C.muted }}>
                     You&apos;ll get a short summary and next steps based on your answers.
                   </p>
+                  {/* First step that asks for identifiable data — the
+                      reassurance belongs here, not at the end. */}
+                  <TrustBadge variant="strip" audience="user" />
                   <div>
                     <label className="block text-sm font-medium mb-2" style={{ color: C.fg }}>Email</label>
                     <input

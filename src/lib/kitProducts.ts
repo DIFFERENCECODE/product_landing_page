@@ -155,6 +155,113 @@ export const KIT_LITE: KitAddon = {
   priceId: process.env.NEXT_PUBLIC_DOWNSELL_LITE_PRICE_ID || 'price_meo_lite_placeholder',
 };
 
+// ─── Legacy product: the KRAFT Test (SCRUM-18) ──────────────────────
+//
+// Meterbolic's original diagnostic — Dr Joseph Kraft's insulin-survey
+// method run out-of-lab: an oral glucose challenge with serial insulin
+// readings from a single drop of blood, on a proprietary lateral-flow
+// analyser (CE-IVD, FDA-approved manufacturing facility).
+//
+// PRODUCT HIERARCHY (confirmed by Eric, 2026-06-14): the Lipid Meter
+// (Meo Starter) is the LEADING product; the KRAFT Test is LEGACY but
+// still on offer. Copy must position it that way — it is the deeper,
+// clinical-grade companion test, never the lead CTA. Do not let it
+// compete with the £149 bundle on the homepage.
+//
+// PRICED, BUT NOT PURCHASABLE ONLINE — by appointment (Eric, 2026-08-06).
+// Prices are published on the site (£397 / £897) but there is no cart
+// and no Stripe button: the test needs an appointment, so every CTA is
+// a `mailto:` to info@meterbolic.com, exactly like the /coaching
+// programme cards (components/coaching/Pricing.tsx, CtaClosing.tsx).
+//
+// Both tiers carry the complimentary 3-month Meo Enterprise
+// subscription — rendered by components/MeoEnterpriseBonus.tsx, which
+// the EoS coaching programmes share so the offer looks identical
+// wherever it appears.
+export const KRAFT_ENQUIRY_EMAIL = 'info@meterbolic.com';
+
+/** Build a `mailto:` href with a routable subject line. */
+export function enquiryMailto(subject: string): string {
+  return `mailto:${KRAFT_ENQUIRY_EMAIL}?subject=${encodeURIComponent(subject)}`;
+}
+
+export interface EnquiryProduct {
+  id: string;
+  name: string;
+  tagline: string;
+  /** Display string, not pence — these prices are never sent to Stripe. */
+  price: string;
+  duration: string;
+  includes: readonly string[];
+  enquirySubject: string;
+  /**
+   * Which card is lit on first paint. Selection is mutually exclusive —
+   * choosing the other card moves the highlight rather than adding a
+   * second one. See components/KraftPricingCards.tsx.
+   */
+  defaultSelected: boolean;
+}
+
+export const KRAFT_TEST: EnquiryProduct = {
+  id: 'kraft-test',
+  name: 'The KRAFT Test',
+  tagline:
+    'The insulin-response test itself, run through a certified clinic or as a home kit, with your results read against Dr Kraft’s response patterns.',
+  price: '£397',
+  duration: 'One-off test · by appointment',
+  includes: [
+    'The full KRAFT insulin-response assessment — glucose challenge with serial insulin readings',
+    'Analysis on Meterbolic’s CE-IVD lateral-flow analyser',
+    'Your curve read against Dr Kraft’s response patterns',
+    'A written report in plain English, reviewed before it reaches you',
+    'A follow-up conversation to walk through what it means',
+  ],
+  enquirySubject: 'KRAFT Test enquiry',
+  defaultSelected: false,
+};
+
+export const KRAFT_TEST_COACHED: EnquiryProduct = {
+  id: 'kraft-test-coached',
+  name: 'KRAFT Test + Coaching',
+  tagline:
+    'The same test, plus 1:1 coaching to act on what it finds — for people who want the result turned into a plan rather than a PDF.',
+  price: '£897',
+  duration: 'Test + coaching programme · by appointment',
+  includes: [
+    'Everything in The KRAFT Test',
+    '1:1 metabolic coaching built around your insulin curve',
+    'A personalised plan covering nutrition, movement, sleep and stress',
+    'Messaging support between sessions',
+    'A progress review to see how the plan is landing',
+  ],
+  enquirySubject: 'KRAFT Test + Coaching enquiry',
+  defaultSelected: true,
+};
+
+export const KRAFT_TIERS: readonly EnquiryProduct[] = [KRAFT_TEST, KRAFT_TEST_COACHED];
+
+/**
+ * `mailto:` for a general KRAFT enquiry — the hero, the closing block
+ * and the cross-page CTAs, where the visitor has not picked a tier.
+ *
+ * Deliberately its OWN subject rather than reusing the £397 tier's:
+ * info@ triages on the subject alone, and the closing block offers to
+ * help you choose between the two, so "undecided" must not arrive
+ * looking like "I want the test-only option".
+ */
+export const KRAFT_TEST_MAILTO = enquiryMailto('KRAFT Test enquiry — option not yet chosen');
+
+/** Lowest KRAFT price, for "from £397" teasers on other pages. */
+export const KRAFT_FROM_PRICE = KRAFT_TEST.price;
+
+/**
+ * One sentence, rendered on every surface that shows a KRAFT price, so
+ * the availability terms cannot drift between the homepage, /pricing
+ * and /kraft-test.
+ */
+export const KRAFT_AVAILABILITY_NOTE =
+  'Not sold online — booked by appointment with our team.';
+
 // ─── Biomarkers surfaced on the landing page ────────────────────────
 
 export const BIOMARKERS = [

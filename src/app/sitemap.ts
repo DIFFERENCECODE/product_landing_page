@@ -11,11 +11,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/',                freq: 'weekly',  priority: 1.0 },
     { path: '/about',           freq: 'monthly', priority: 0.7 },
     { path: '/how-it-works',    freq: 'monthly', priority: 0.7 },
+    { path: '/kraft-test',      freq: 'monthly', priority: 0.7 },
     { path: '/services',        freq: 'monthly', priority: 0.6 },
     { path: '/partners',        freq: 'monthly', priority: 0.6 },
     { path: '/quiz',            freq: 'monthly', priority: 0.6 },
     { path: '/pricing',         freq: 'monthly', priority: 0.7 },
     { path: '/checkout',        freq: 'monthly', priority: 0.7 },
+    // Trust hub — higher priority than the legal pages: it is a
+    // destination we actively want found, not a compliance footnote.
+    { path: '/trust',           freq: 'monthly', priority: 0.6 },
     { path: '/privacy',         freq: 'yearly',  priority: 0.3 },
     { path: '/terms',           freq: 'yearly',  priority: 0.3 },
     { path: '/cookies',         freq: 'yearly',  priority: 0.3 },
