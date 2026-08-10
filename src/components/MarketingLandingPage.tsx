@@ -639,11 +639,6 @@ function TrustPanel() {
       sub: 'Cleared for home use in the UK & EU',
     },
     {
-      icon: <Activity className="h-5 w-5" />,
-      label: '±10% of reference-lab',
-      sub: 'CE-marked BF-102 across TC, HDL, LDL, Triglycerides',
-    },
-    {
       icon: <Heart className="h-5 w-5" />,
       label: '30-day money-back',
       sub: 'Full refund on the device, no questions asked',
@@ -2162,7 +2157,7 @@ function ObjectionsSection() {
   const items = [
     {
       q: 'How accurate is the meter?',
-      a: 'The BF-102 is CE-marked and reads within ±10% of reference-lab panels for TC, HDL, LDL and Triglycerides. But the real value of Meo is in the trend across hundreds of your own readings — small per-reading variance washes out in the pattern.',
+      a: 'The BF-102 is a CE-marked clinical-grade lipid meter. But the real value of Meo is in the trend across hundreds of your own readings — small per-reading variance washes out in the pattern.',
     },
     {
       q: 'Is it hard to use?',

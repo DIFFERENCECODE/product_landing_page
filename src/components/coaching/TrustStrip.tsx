@@ -8,12 +8,11 @@
 // only lifts them above the fold. Do NOT add a claim that isn't
 // already stated in HowItWorks, Pricing, Compliance or Faq.
 // ──────────────────────────────────────────────────────────────────────
-import { Shield, Activity, Clock, UserRound } from 'lucide-react';
+import { Shield, Clock, UserRound } from 'lucide-react';
 import { C } from '@/lib/design-tokens';
 
 const ITEMS = [
   { icon: Shield, label: 'CE-marked wellness device' },
-  { icon: Activity, label: 'Within ~±10% of a reference lab' },
   { icon: Clock, label: 'Lipid panel at home in ~3 minutes' },
   { icon: UserRound, label: 'Every session 1:1 with Dr Arup Sen' },
 ] as const;
@@ -22,7 +21,7 @@ export default function TrustStrip() {
   return (
     <section className="px-5 sm:px-6 pb-16 sm:pb-20" style={{ background: C.bg }}>
       <div
-        className="max-w-4xl mx-auto rounded-2xl px-4 sm:px-6 py-4 grid grid-cols-2 md:grid-cols-4 gap-3 text-sm"
+        className="max-w-4xl mx-auto rounded-2xl px-4 sm:px-6 py-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm"
         style={{ background: C.bgCard, border: `1px solid ${C.border}` }}
       >
         {ITEMS.map((it) => {

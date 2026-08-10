@@ -188,7 +188,7 @@ Numbers change nothing. Understanding changes everything.
 ### Objection Handling
 
 **"How accurate is the meter?"**
-The Sejoy BF-101b lipid meter we ship is certified to clinical-grade precision for lipid panels (CE-marked; internal validation against reference labs within ±10% for TC/HDL/LDL). But the core accuracy of Meo isn't the meter — it's the *trend* across hundreds of your own readings. A few decimals of drift in a single reading vanish in the pattern.
+The Sejoy BF-101b lipid meter we ship is certified to clinical-grade precision for lipid panels (CE-marked). But the core accuracy of Meo isn't the meter — it's the *trend* across hundreds of your own readings. A few decimals of drift in a single reading vanish in the pattern.
 
 **"Is it hard to use?"**
 A finger-prick and a strip. The same motion a diabetic does three times a day. If you can tap your phone, you can run a Meo reading in under 3 minutes.
@@ -392,7 +392,7 @@ It's included with every Meo Starter System for 1 month. Most people renew.
 Four things people ask before they order.
 
 **1. Is it accurate?**
-The lipid meter we ship is CE-marked and reads within ±10% of reference-lab panels for TC, HDL, LDL, and triglycerides. More importantly: the *value* of Meo isn't in any one reading. It's in the trend across dozens. A 3% daily drift is invisible at the monthly view.
+The lipid meter we ship is a CE-marked clinical-grade instrument. More importantly: the *value* of Meo isn't in any one reading. It's in the trend across dozens. A 3% daily drift is invisible at the monthly view.
 
 **2. Is it hard to use?**
 A finger-prick and a strip. Same motion a diabetic runs three times a day. 3 minutes from start to digital reading.
