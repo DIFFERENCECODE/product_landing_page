@@ -21,12 +21,6 @@ const PEOPLE: readonly Person[] = [
     bio: 'Innovative engineer and medical doctor who founded Meterbolic to revolutionize metabolic health diagnostics.',
   },
   {
-    photo: '/team-andy.png',
-    name: 'Andy Taylor',
-    role: 'Clinic Lead',
-    bio: 'Former professional footballer turned metabolic health expert and UKSCA-accredited coach.',
-  },
-  {
     photo: '/team-spencer.png',
     name: 'Spencer Martin',
     role: 'Sales Manager',
