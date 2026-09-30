@@ -40,21 +40,21 @@ export interface AffiliateEntry {
 // docs/utm.md §3 — affiliate slug registry. Keys are the canonical
 // PascalCase slugs; lookup is case-insensitive (see getAffiliate).
 export const AFFILIATES: Record<string, AffiliateEntry> = {
-  // Naming rule (standing): the company is written exactly "EoS". The
+  // Naming rule (standing): the company is written exactly "Eos". The
   // expanded form "Earth on Stage" is RETIRED and must not reappear in
   // copy, metadata, alt text, page titles or assets.
-  EoS: {
-    slug: 'EoS',
-    // Written exactly "EoS". The expanded form "Earth on Stage" is
+  Eos: {
+    slug: 'Eos',
+    // Written exactly "Eos". The expanded form "Earth on Stage" is
     // RETIRED and must not appear in user-facing copy, metadata, alt
-    // text or page titles — this field renders directly into the /a/EoS
+    // text or page titles — this field renders directly into the /a/Eos
     // hero, page title and the "IN PARTNERSHIP WITH" band.
-    name: 'EoS',
+    name: 'Eos',
     logo: '/eos-logo.svg',
     practitioner: {
       name: 'Dr Arup Sen',
-      role: 'Founder, EoS Longevity · MRCP · Consultant Physician',
-      bio: 'A leading voice in metabolic health and longevity medicine, partnering with Meterbolic to bring personalised metabolic intelligence to the EoS community.',
+      role: 'Founder, Eos Longevity · MRCP · Consultant Physician',
+      bio: 'A leading voice in metabolic health and longevity medicine, partnering with Meterbolic to bring personalised metabolic intelligence to the Eos community.',
       quote:
         'Longevity is not simply about living longer — it is about preserving vitality, independence, and quality of life for as long as possible.',
       photo: '/coach-arup-sen.jpg',
@@ -73,7 +73,7 @@ export const AFFILIATES: Record<string, AffiliateEntry> = {
   },
 };
 
-// Case-insensitive lookup so /a/eos, /a/EoS and ?utm_source=eos all
+// Case-insensitive lookup so /a/eos, /a/Eos and ?utm_source=eos all
 // resolve to the same registry entry.
 export function getAffiliate(slug: string | undefined | null): AffiliateEntry | undefined {
   if (!slug) return undefined;
@@ -101,13 +101,13 @@ export function isValidVertical(v: string): boolean {
 //
 // These used to be one global `AFFILIATE_TIERS` array rendered for every
 // affiliate. That is safe only while every affiliate sells exactly the
-// same thing, and it stopped being true the moment EoS got its own
+// same thing, and it stopped being true the moment Eos got its own
 // programmes: a global array would have put Dr Arup Sen's £850/£1,450
 // coaching on Fiori's page — a different company, a different principal.
 // That breaks funnel isolation, so the tier set is now resolved PER
 // AFFILIATE via getAffiliateOffer():
 //
-//   • EoS   → BASIC £49 · MOST POPULAR £149 · Metabolic Optimisation
+//   • Eos   → BASIC £49 · MOST POPULAR £149 · Metabolic Optimisation
 //             £850 · Metabolic Continuum £1,450. The two programmes are
 //             read from lib/programmes.ts — the same file /eos renders
 //             from, so the two pages can never quote different prices.
@@ -218,14 +218,14 @@ export const GENERIC_AFFILIATE_TIERS: readonly Tier[] = [
 ];
 
 /**
- * Render an EoS programme (lib/programmes.ts — the price SSOT) as a
+ * Render an Eos programme (lib/programmes.ts — the price SSOT) as a
  * tier card in the affiliate ladder. The £850/£1,450 figures are read,
- * never retyped, so /eos and /a/EoS cannot drift apart.
+ * never retyped, so /eos and /a/Eos cannot drift apart.
  *
  * The CTA points at /coaching#pricing rather than /checkout: the
  * programmes are sold by enquiry to eos@meterbolic.com, and /coaching
  * is the canonical page for them. It also keeps the visitor inside the
- * EoS funnel.
+ * Eos funnel.
  */
 function programmeToTier(p: Programme): Tier {
   return {
@@ -280,12 +280,12 @@ export function getAffiliateOffer(slug: string | undefined | null): AffiliateOff
 // "Meo Coached" IS an affiliate's entry coaching programme. WHO delivers
 // it is not a global fact — it is supplied by an affiliate's principal.
 // A single global coach constant is the same funnel-isolation bug
-// getAffiliateOffer() fixed for tiers: it was selling EoS's Dr Arup Sen
+// getAffiliateOffer() fixed for tiers: it was selling Eos's Dr Arup Sen
 // to Fiori-attributed visitors at the payment step.
 //
 //   • no affiliate (the unattributed consumer funnel: /, /pricing,
-//     /checkout) → DEFAULT_COACH_OFFER, currently EoS. That is a
-//     commercial fact, not a fallback: "Meo Coached" IS the EoS entry
+//     /checkout) → DEFAULT_COACH_OFFER, currently Eos. That is a
+//     commercial fact, not a fallback: "Meo Coached" IS the Eos entry
 //     programme.
 //   • an affiliate that supplies a coach → that affiliate's principal.
 //   • an affiliate that supplies none (Fiori, Arup) → undefined, and
@@ -308,7 +308,7 @@ export interface AffiliateCoachOffer {
    * Coached". SSOT for its price, duration, tagline and bullets.
    */
   programme: Programme;
-  /** Order-summary label, e.g. "Metabolic Optimisation — Dr Arup Sen (EoS)". */
+  /** Order-summary label, e.g. "Metabolic Optimisation — Dr Arup Sen (Eos)". */
   label: string;
   /** Canonical page for this affiliate's full programme ladder. */
   programmesHref: string;
@@ -338,7 +338,7 @@ function buildCoachOffer(
 // no coaching layer — that is the default, and it is why there is no
 // `slug === 'Fiori'` check anywhere.
 const AFFILIATE_COACH_OFFERS: Record<string, AffiliateCoachOffer | undefined> = {
-  eos: buildCoachOffer('EoS', EOS_ENTRY_PROGRAMME, EOS_PROGRAMME_URL),
+  eos: buildCoachOffer('Eos', EOS_ENTRY_PROGRAMME, EOS_PROGRAMME_URL),
 };
 
 /** The coach sold on the unattributed consumer funnel. */

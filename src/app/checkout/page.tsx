@@ -54,7 +54,7 @@ const LITE_PRICE = KIT_LITE.price / 100; // £29
 // ─── What "Meo Coached" is ────────────────────────────────────────────
 //
 // The Coached plan IS the affiliate's entry coaching programme — for the
-// unattributed funnel, EoS's Metabolic Optimisation. Its price, name,
+// unattributed funnel, Eos's Metabolic Optimisation. Its price, name,
 // duration and bullets are read from the coach offer (which reads them
 // from lib/programmes.ts). Nothing about the programme is restated here.
 //
@@ -614,7 +614,7 @@ function OrderSummary({
         {isEnquiry ? (
           <>
             <Mail className="h-3 w-3" />
-            Goes to the EoS programme inbox · no payment taken online
+            Goes to the Eos programme inbox · no payment taken online
           </>
         ) : (
           <>
@@ -973,7 +973,7 @@ export default function CheckoutPage() {
 
         {/* Tier toggle — three-pill switch matching /pricing tiers.
             Lite (£29) is the downsell, Starter (£149) is the default,
-            Coached is the EoS entry programme — kit, AI and coaching in
+            Coached is the Eos entry programme — kit, AI and coaching in
             one price, read from lib/programmes.ts.
             Order is cheapest → most premium so the eye reads naturally.
             Each pill wears the shared `.card-interactive` selected
@@ -1214,7 +1214,7 @@ export default function CheckoutPage() {
               </section>
             )}
 
-            {/* ── The coaching programme (Dr Arup Sen · EoS) ──
+            {/* ── The coaching programme (Dr Arup Sen · Eos) ──
                 Coach identity comes from getAffiliateCoachOffer(); the
                 affiliate registry is the one source for the name, the
                 credential and the photo, and lib/programmes.ts is the

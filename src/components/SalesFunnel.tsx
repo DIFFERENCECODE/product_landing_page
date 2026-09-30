@@ -61,7 +61,7 @@ interface SalesFunnelProps {
   tiers: readonly Tier[];
   /**
    * Small print under the tier heading. Supplied by the registry
-   * (getAffiliateOffer) so an affiliate with FIRM prices — EoS, whose
+   * (getAffiliateOffer) so an affiliate with FIRM prices — Eos, whose
    * programmes are live introductory prices — is not captioned with
    * the generic "indicative pricing" caveat.
    */
@@ -287,7 +287,7 @@ function StickyMobileCTA({ tiers }: { tiers: readonly Tier[] }) {
 }
 
 // Affiliate partnership band — surfaces the affiliate logo and featured
-// practitioner (SCRUM-8 AC 3: Arup Sen image + EoS logo). Only rendered
+// practitioner (SCRUM-8 AC 3: Arup Sen image + Eos logo). Only rendered
 // for affiliate entries.
 function AffiliateBand({ affiliate }: { affiliate: AffiliateEntry }) {
   const pr = affiliate.practitioner;
@@ -634,7 +634,7 @@ export default function SalesFunnel({ affiliate, vertical, tiers, pricingNote, u
               {/* Practitioner column — driven ENTIRELY by the affiliate
                   registry. This used to hard-code Dr Arup Sen's name,
                   credential and a verbatim copy of his quote, so every
-                  affiliate funnel (Fiori, Arup) rendered EoS's principal
+                  affiliate funnel (Fiori, Arup) rendered Eos's principal
                   and the site carried three spellings of one credential.
                   No practitioner → a generic Meterbolic panel, never a
                   substitute practitioner. */}
@@ -667,7 +667,7 @@ export default function SalesFunnel({ affiliate, vertical, tiers, pricingNote, u
                   <a href="mailto:partner@meterbolic.com?subject=MeO%20Care%20enquiry" className="inline-flex items-center gap-2 rounded-xl font-semibold px-5 py-3 text-sm transition-opacity hover:opacity-90" style={{ background: C.primary, color: C.primaryFg }}>
                     <Mail className="h-4 w-4" />partner@meterbolic.com<ArrowRight className="h-4 w-4" />
                   </a>
-                  {/* /partners carries the EoS partner spotlight, so it
+                  {/* /partners carries the Eos partner spotlight, so it
                       is a rival link inside another affiliate's funnel.
                       Unattributed visitors still get it. */}
                   {!affiliate && (

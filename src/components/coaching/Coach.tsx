@@ -15,30 +15,14 @@ import type { ReactNode } from 'react';
 import { Check } from 'lucide-react';
 import { C, FONT_SERIF } from '@/lib/design-tokens';
 
-// ReactNode rather than string: the clinical-affiliation line carries an
-// outbound link, and the list renderer below is shared by every point.
 const POINTS: readonly { key: string; body: ReactNode }[] = [
   {
     key: 'clinics',
-    body: (
-      <>
-        Triple-certified physician, with clinics at the NHS and Cleveland Clinic
-        London{' '}
-        <a
-          href="https://clevelandcliniclondon.uk/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline underline-offset-2 transition-opacity hover:opacity-80"
-          style={{ color: C.primary }}
-        >
-          clevelandcliniclondon.uk
-        </a>
-      </>
-    ),
+    body: 'Triple-certified consultant physician',
   },
   {
     key: 'founder',
-    body: 'Founder of EoS Longevity, with a background in longevity medicine',
+    body: 'Founder of Eos Longevity, with a background in longevity medicine',
   },
   { key: 'personally', body: 'Delivers every coaching session personally, 1:1' },
   {

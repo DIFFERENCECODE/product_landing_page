@@ -5,7 +5,7 @@
 // One component, used by both surfaces so the offer looks identical
 // wherever it appears:
 //   • /kraft-test        — KRAFT Test and KRAFT Test + Coaching cards
-//   • /coaching          — the EoS Longevity programme cards
+//   • /coaching          — the Eos Longevity programme cards
 //
 // Design notes: built entirely from existing design tokens, so it
 // inherits the site palette rather than introducing a second accent.
@@ -70,7 +70,7 @@ export function MeoEnterpriseBonus({ variant = 'card' }: { variant?: 'card' | 'i
         >
           {HEADLINE}
         </p>
-        {/* No "for the length of your programme" — the EoS Continuum
+        {/* No "for the length of your programme" — the Eos Continuum
             programme runs six months, so that clause contradicted the
             three months this actually grants. */}
         <p className="text-xs leading-relaxed" style={{ color: C.muted }}>

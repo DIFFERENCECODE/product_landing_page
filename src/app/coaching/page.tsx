@@ -1,9 +1,9 @@
 // ─────────────────────────────────────────────────────────────────────
 // /coaching — CANONICAL page for the metabolic coaching programmes.
 //
-// This is the document that publishes the EoS programme prices; every
+// This is the document that publishes the Eos programme prices; every
 // other surface that quotes them (/checkout's Coached plan, the
-// homepage tier card, /pricing, /a/EoS) reads them from
+// homepage tier card, /pricing, /a/Eos) reads them from
 // lib/programmes.ts rather than restating them.
 //
 // The path is category-level on purpose. It survives a change of

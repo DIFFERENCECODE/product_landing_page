@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────
-// The metabolic coaching programme page (Dr Arup Sen · EoS Longevity).
+// The metabolic coaching programme page (Dr Arup Sen · Eos Longevity).
 //
 // Rendered at TWO routes, deliberately:
 //
@@ -57,10 +57,10 @@ import {
  * a repricing cannot leave a stale figure in a search-results snippet.
  */
 export const COACHING_METADATA = {
-  title: 'Metabolic coaching — Meo × EoS',
+  title: 'Metabolic coaching — Meo × Eos',
   description:
     `Meo's CE-marked at-home lipid testing system, paired with 1:1 wellness ` +
-    `coaching from ${EOS_PRINCIPAL}, founder of EoS Longevity. Understand your ` +
+    `coaching from ${EOS_PRINCIPAL}, founder of Eos Longevity. Understand your ` +
     `metabolic trends and build habits that last. Introductory programmes from ` +
     `${formatProgrammePrice(EOS_PROGRAMMES[0])}.`,
 } as const;

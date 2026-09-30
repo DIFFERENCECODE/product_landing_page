@@ -1,5 +1,5 @@
 // /a/<affiliate>/<vertical> — affiliate sales page for an explicit
-// vertical (docs/utm.md §1.1, e.g. /a/EoS/longevity). Same funnel as the
+// vertical (docs/utm.md §1.1, e.g. /a/Eos/longevity). Same funnel as the
 // single-segment route; the vertical only tunes one hero line.
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';

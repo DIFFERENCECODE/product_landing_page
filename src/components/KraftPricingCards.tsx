@@ -131,7 +131,7 @@ export function KraftPricingCards() {
             </p>
 
             {/* The complimentary Meo Enterprise offer, identical to the
-                one on the EoS coaching cards. */}
+                one on the Eos coaching cards. */}
             <div className="mb-6">
               <MeoEnterpriseBonus />
             </div>

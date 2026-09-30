@@ -31,7 +31,7 @@ export default async function AffiliateRootPage({ params, searchParams }: PagePr
   if (!entry) notFound();
 
   const sp = await searchParams;
-  // Tiers are affiliate-SCOPED (funnel isolation) — EoS gets the EoS
+  // Tiers are affiliate-SCOPED (funnel isolation) — Eos gets the Eos
   // programmes, everyone else gets the generic Meterbolic ladder.
   const offer = getAffiliateOffer(entry.slug);
   return (

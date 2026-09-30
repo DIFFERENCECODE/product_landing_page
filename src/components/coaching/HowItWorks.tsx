@@ -1,6 +1,6 @@
 // ─── Coaching · How it works ──────────────────────────────────────────
 //
-// Section 2 of the /eos page (Dr Arup Sen · EoS Longevity). A
+// Section 2 of the /eos page (Dr Arup Sen · Eos Longevity). A
 // 3-step horizontal sequence — Test → Coach → Track — using the shared
 // numbered-card treatment from the main /how-it-works page (numbered
 // badge + serif title + accent icon + muted body), laid out 3-up on
@@ -24,7 +24,7 @@ const STEPS = [
     icon: UserRound,
     title: 'Coach',
     body:
-      'Dr Arup Sen — founder of EoS Longevity, with a background in longevity medicine — works with you 1:1 to translate your trends into practical changes in nutrition, movement, sleep and stress.',
+      'Dr Arup Sen — founder of Eos Longevity, with a background in longevity medicine — works with you 1:1 to translate your trends into practical changes in nutrition, movement, sleep and stress.',
   },
   {
     n: 3,

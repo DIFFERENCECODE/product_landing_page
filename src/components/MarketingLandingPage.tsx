@@ -172,7 +172,7 @@ function SectionHeader({
 // Nav and footer are rendered on affiliate pages too, and they were the
 // last hole in funnel isolation: a Fiori visitor could click "Pricing"
 // and land on the unattributed consumer ladder, which sells Meo Coached
-// with EoS's Dr Arup Sen. Attribution was dropped in the same click.
+// with Eos's Dr Arup Sen. Attribution was dropped in the same click.
 //
 // Two rules, applied together:
 //   1. HIDE the destinations that carry another partner's offer or the
@@ -190,7 +190,7 @@ export interface ChromeAffiliate {
 }
 
 // Funnel isolation: destinations that must not appear inside another
-// affiliate's chrome. `/coaching` is EoS's own programme offer (see
+// affiliate's chrome. `/coaching` is Eos's own programme offer (see
 // lib/programmes.ts) — surfacing it inside, say, the Fiori funnel would
 // sell one partner's programme off another partner's traffic.
 const AFFILIATE_HIDDEN_PATHS = new Set(['/', '/pricing', '/partners', '/coaching']);

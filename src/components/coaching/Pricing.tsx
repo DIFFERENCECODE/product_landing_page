@@ -17,7 +17,7 @@
 //
 // The programme DATA (names, prices, includes) is NOT defined here —
 // it lives in lib/programmes.ts, the single source of truth that
-// /checkout, /pricing, the homepage tier card and /a/EoS also render
+// /checkout, /pricing, the homepage tier card and /a/Eos also render
 // from, so no two surfaces can quote different prices. This file is
 // presentation only: if you are tempted to type a price into it, the
 // number belongs in programmes.ts instead.

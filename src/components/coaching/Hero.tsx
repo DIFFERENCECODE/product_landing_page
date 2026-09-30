@@ -2,7 +2,7 @@
 
 // ─── Coaching Hero ────────────────────────────────────────────────────
 //
-// Hero for the /eos programme page (Dr Arup Sen · EoS Longevity).
+// Hero for the /eos programme page (Dr Arup Sen · Eos Longevity).
 // Matches the flagship marketing hero treatment: full-screen centered
 // layout over the liquid-metal video background with a dark overlay for
 // legibility, primary-accented serif-weight headline, muted subhead, a
@@ -94,7 +94,7 @@ export default function Hero() {
           style={{ color: C.muted }}
         >
           Meo&rsquo;s CE-marked at-home lipid testing system, paired with 1:1
-          wellness coaching from Dr Arup Sen, founder of EoS Longevity, to help
+          wellness coaching from Dr Arup Sen, founder of Eos Longevity, to help
           you understand your metabolic trends and build habits that last.
         </motion.p>
 

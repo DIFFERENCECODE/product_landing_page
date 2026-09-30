@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════
-// programmes.ts — the EoS coaching programmes, SINGLE SOURCE OF TRUTH.
+// programmes.ts — the Eos coaching programmes, SINGLE SOURCE OF TRUTH.
 //
 // £850 (Metabolic Optimisation) and £1,450 (Metabolic Continuum) live
 // HERE and nowhere else, as NUMBERS. Every surface that shows a price
@@ -13,7 +13,7 @@
 //                     Name, price, tagline and bullets are read from
 //                     EOS_ENTRY_PROGRAMME, never retyped.
 //   • /, /pricing   → the Coached tier card and the comparison table.
-//   • /a/EoS[...]   → lib/affiliates.ts maps these into the affiliate
+//   • /a/Eos[...]   → lib/affiliates.ts maps these into the affiliate
 //                     tier ladder (see programmeToTier there).
 //
 // If you are about to type "850" or "1,450" into another file: don't.
@@ -21,7 +21,7 @@
 // certainty of divergence.
 //
 // The programmes are delivered by Dr Arup Sen, the principal of the
-// EoS affiliate. They are EoS's offer — they must never be presented
+// Eos affiliate. They are Eos's offer — they must never be presented
 // inside another affiliate's funnel (funnel isolation).
 //
 // Deliberately React-free so both server components and the registry
@@ -122,7 +122,7 @@ export const EOS_PROGRAMMES: readonly Programme[] = [
 ];
 
 /**
- * The programme most people start on — the entry-level EoS offer, and
+ * The programme most people start on — the entry-level Eos offer, and
  * the definition of "Meo Coached" on the consumer funnel. /checkout,
  * the homepage tier card and /pricing all read their Coached price and
  * copy from here.
@@ -134,10 +134,10 @@ export function formatProgrammePrice(p: Programme): string {
   return `£${p.priceGBP.toLocaleString('en-GB')}`;
 }
 
-/** Lowest EoS programme price, for "from £850" teasers. */
+/** Lowest Eos programme price, for "from £850" teasers. */
 export const EOS_FROM_PRICE = formatProgrammePrice(EOS_PROGRAMMES[0]);
 
-/** The practitioner who delivers every EoS programme. */
+/** The practitioner who delivers every Eos programme. */
 export const EOS_PRINCIPAL = 'Dr Arup Sen';
 
 /**
@@ -158,7 +158,7 @@ export const EOS_PROGRAMME_ALIAS_URL = '/eos';
 
 /**
  * Where programme enquiries go. Deliberately NOT info@meterbolic.com:
- * the programmes are run with EoS Longevity and triaged by that inbox.
+ * the programmes are run with Eos Longevity and triaged by that inbox.
  * Every CTA that sells a programme — the /coaching cards, the closing
  * CTA, the Coached plan on /checkout — mails this one address.
  */

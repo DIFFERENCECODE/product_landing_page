@@ -111,10 +111,10 @@ export const KIT_PRODUCT: KitProduct = {
 // There WAS a £295 "Metabolic Coach" add-on here (40-minute onboarding
 // + two 30-minute follow-ups) which made Meo Coached £149 + £295 =
 // £444. It was built around a previous coach and, when the offer moved
-// to EoS, kept its old price and session structure under a new name.
+// to Eos, kept its old price and session structure under a new name.
 //
 // It is gone, and it is not coming back as a second coaching SKU. The
-// site sells ONE coaching offer: the EoS programme ladder in
+// site sells ONE coaching offer: the Eos programme ladder in
 // lib/programmes.ts, whose entry tier (Metabolic Optimisation, £850,
 // 6 sessions over 12 weeks) IS "Meo Coached". Two coaching products at
 // two prices with two session structures, both attributed to Dr Arup
@@ -195,7 +195,7 @@ export const KIT_LITE: KitAddon = {
 //
 // Both tiers carry the complimentary 3-month Meo Enterprise
 // subscription — rendered by components/MeoEnterpriseBonus.tsx, which
-// the EoS coaching programmes share so the offer looks identical
+// the Eos coaching programmes share so the offer looks identical
 // wherever it appears.
 export const KRAFT_ENQUIRY_EMAIL = 'info@meterbolic.com';
 

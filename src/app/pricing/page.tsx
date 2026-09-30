@@ -6,7 +6,7 @@
 // fetch.
 //
 // Three tiers — Lite / Starter / Coached. Lite and Starter link into
-// /checkout; Coached is the EoS entry coaching programme, so it links to
+// /checkout; Coached is the Eos entry coaching programme, so it links to
 // /coaching and is arranged by enquiry. Its price and bullets are read
 // from lib/programmes.ts and never restated here.
 // ─────────────────────────────────────────────────────────────────────

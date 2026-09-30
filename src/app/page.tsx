@@ -15,7 +15,7 @@ import { Fragment } from 'react';
 //   • What ships in the box — product imagery for the lipid meter
 //     and the Thin Book of Fat ebook.
 //   • Tiers — Lite / Starter / Coached. Lite and Starter are card
-//     sales; Coached is the EoS entry coaching programme and is sold by
+//     sales; Coached is the Eos entry coaching programme and is sold by
 //     enquiry. Every Coached figure comes from lib/programmes.ts.
 //   • MeO Care — B2B partnership block for clinics & practitioners.
 //   • Anonymised data callout — beta participant data; not a clinical
@@ -62,8 +62,8 @@ import {
 
 // The launch partner quoted in the MeO Care block. Read from the
 // affiliate registry — the name, quote and credential are defined once,
-// so this page cannot drift from /a/EoS or /checkout.
-const LAUNCH_PARTNER = AFFILIATES.EoS.practitioner;
+// so this page cannot drift from /a/Eos or /checkout.
+const LAUNCH_PARTNER = AFFILIATES.Eos.practitioner;
 
 // The programme behind the Coached tier. Its price and feature list are
 // never retyped on this page — see lib/programmes.ts.
@@ -207,7 +207,7 @@ const TIER_COMPARE_ROWS: Array<{ label: string; retail: string; lite: CompareCel
   // Coaching rows describe the actual programme: 6 sessions across 12
   // weeks, not the retired 40min + 2×30min add-on. No "typical retail"
   // figure is invented for coaching — the programme price IS the price.
-  { label: `1:1 coaching programme (${DEFAULT_COACH_OFFER?.practitioner.name ?? 'your coach'} · EoS)`, retail: '—', lite: false, starter: false, coached: COACHED_PROGRAMME?.duration ?? true },
+  { label: `1:1 coaching programme (${DEFAULT_COACH_OFFER?.practitioner.name ?? 'your coach'} · Eos)`, retail: '—', lite: false, starter: false, coached: COACHED_PROGRAMME?.duration ?? true },
   { label: '6 × 1:1 sessions (1×60min + 5×30min, fortnightly)', retail: 'included', lite: false, starter: false, coached: true },
   { label: 'Messaging support between sessions',        retail: 'included', lite: false,      starter: false, coached: true },
 ];

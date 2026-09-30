@@ -43,7 +43,7 @@ export default function Compliance() {
 
           <div className="space-y-6 mt-10">
           <p className="text-base sm:text-lg leading-relaxed" style={{ color: C.fg }}>
-            This programme, delivered by Dr Arup Sen of EoS Longevity in partnership with
+            This programme, delivered by Dr Arup Sen of Eos Longevity in partnership with
             Meterbolic, is a wellness and lifestyle coaching service. It supports healthy
             habits and helps you engage with your own metabolic trends.
           </p>
