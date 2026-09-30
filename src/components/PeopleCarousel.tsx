@@ -16,21 +16,15 @@ type Person = { photo: string; name: string; role: string; bio: string; objectPo
 const PEOPLE: readonly Person[] = [
   {
     photo: '/team-eric-smith.jpg',
-    name: 'Dr. Eric Smith',
+    name: 'Dr Eric Smith',
     role: 'Founder',
-    bio: 'Innovative engineer and medical doctor who founded Meterbolic to revolutionize metabolic health diagnostics.',
-  },
-  {
-    photo: '/team-andy.png',
-    name: 'Andy Taylor',
-    role: 'Clinic Lead',
-    bio: 'Former professional footballer turned metabolic health expert and UKSCA-accredited coach.',
+    bio: 'Innovative engineer and medical doctor who founded Meterbolic to revolutionise metabolic health diagnostics.',
   },
   {
     photo: '/team-spencer.png',
     name: 'Spencer Martin',
     role: 'Sales Manager',
-    bio: "Over 25 years in pharmaceutical sales, specialising in diabetes therapies and coaching. Driving Meterbolic's commercial outreach and partner growth.",
+    bio: "Over 25 years in pharmaceutical sales, specialising in diabetes therapies and coaching. Driving Meterbolic’s commercial outreach and partner growth.",
   },
   {
     photo: '/team-saad.jpg',
@@ -42,7 +36,7 @@ const PEOPLE: readonly Person[] = [
     photo: '/team-leonard.jpg',
     name: 'Leonard Lin',
     role: 'Product Supervisor',
-    bio: 'Overseeing product direction and ensuring every feature of Meo delivers real metabolic insight — from hardware integration to the AI conversation layer. Leonard is the man behind the world\'s leading Japanese translation AI model https://shisa.ai/ja/about/',
+    bio: 'Overseeing product direction and ensuring every feature of Meo delivers real metabolic insight — from hardware integration to the AI conversation layer. Leonard is the man behind the world’s leading Japanese translation AI model: https://shisa.ai/ja/about/',
   },
   {
     photo: '/team-gabor.png',
@@ -54,7 +48,7 @@ const PEOPLE: readonly Person[] = [
     photo: '/team-justin.png',
     name: 'Prof Justin Tondt',
     role: 'Chief Medical Officer',
-    bio: "Medical professional guiding Meterbolic's clinical protocols and ensuring scientific rigour in metabolic health interventions.",
+    bio: "Medical professional guiding Meterbolic’s clinical protocols and ensuring scientific rigour in metabolic health interventions.",
   },
   {
     photo: '/team-erik.jpg',
@@ -66,14 +60,14 @@ const PEOPLE: readonly Person[] = [
     photo: '/team-lech.jpeg',
     name: 'Alechenu Iyoko',
     role: 'AI Engineer · CAIO',
-    bio: "Building Meterbolic’s AI systems — MeO’s multi‑agent reasoning for practitioners and patients, and the internal intelligence layer that connects the company’s data, tools, and workflows.",
+    bio: "Building Meterbolic’s AI systems — Meo’s multi-agent reasoning for practitioners and patients, and the internal intelligence layer that connects the company’s data, tools, and workflows.",
     objectPosition: '50% 100%',
   },
   {
     photo: '/team-bhanu.jpeg',
     name: 'Bhanu Rangavazzala',
     role: 'DevSecOps',
-    bio: "Improving data infrastructure, rebuilding dashboards and developing AI training pipelines to support the company's analytics and product innovation.",
+    bio: "Improving data infrastructure, rebuilding dashboards and developing AI training pipelines to support the company’s analytics and product innovation.",
   },
   {
     photo: '/team-helen.png',
@@ -83,26 +77,26 @@ const PEOPLE: readonly Person[] = [
   },
   {
     photo: '/team-tim-noakes.png',
-    name: 'Prof. Tim Noakes',
+    name: 'Prof Tim Noakes',
     role: 'Scientific Advisor',
-    bio: "Emeritus Professor at UCT's Division of Exercise Science and Sports Medicine. Renowned for pioneering research in exercise physiology, nutrition, and low-carbohydrate science. Author and endurance athlete with 70+ marathons and ultramarathons.",
+    bio: "Emeritus Professor at UCT’s Division of Exercise Science and Sports Medicine. Renowned for pioneering research in exercise physiology, nutrition, and low-carbohydrate science. Author and endurance athlete with 70+ marathons and ultramarathons.",
   },
   {
     photo: '/team-robbert-slingerland.png',
-    name: 'Dr. Robbert Slingerland',
+    name: 'Dr Robbert Slingerland',
     role: 'Scientific Advisor',
     bio: 'Chair of Clinical Chemistry Laboratories at Isala Klinieken, Zwolle (Netherlands) and Chair of the European Reference Laboratory. Specialist in clinical chemistry and biostatistics with extensive research into metabolic biomarkers.',
   },
   {
     photo: '/team-david-jehring.jpg',
-    name: 'Dr. David Jehring',
+    name: 'Dr David Jehring',
     role: 'Technology Advisor',
     bio: 'CEO and Founder of Black Pear Software. Healthcare technology leader with a background as CTO at Apollo Medical Systems Ltd, specialising in digital health integration.',
     objectPosition: 'center',
   },
   {
     photo: '/team-isabella-cooper.jpg',
-    name: 'Dr. Isabella Cooper',
+    name: 'Dr Isabella Cooper',
     role: 'Research Advisor',
     bio: 'PhD in Biochemistry, Physiology and Pathophysiology. Researcher in hyperinsulinemia and ketogenic science, advising on metabolic disease mechanisms and nutritional interventions.',
   },
